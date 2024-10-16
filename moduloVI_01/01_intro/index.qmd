@@ -1,0 +1,305 @@
+---
+format: 
+  revealjs: 
+    chalkboard: true
+    logo: logos_ine.png
+    incremental: false
+    slide-number: true
+    #footer: "Programa de Maestría en Epidemiología para la Salud Pública"
+    css: custom.css
+---
+
+```{r}
+#| echo: false
+# Configuración global
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+# Paquetes necesarios
+pacman::p_load(
+  flextable,
+  patchwork,
+  rio,
+  janitor,
+  tidyverse
+)
+```
+
+## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
+
+:::: {style="margin-top: 1.5em;"}
+Docentes: Tamara Ricardo, Christian Ballejo
+
+::: {style="font-size: .75em; margin-bottom: 1.5em;"}
+Programa de Maestría en Epidemiología para la Salud Pública
+:::
+
+![](logos_ine.png){fig-align="center" width="70%"}
+::::
+
+## OBJETIVOS DEL MÓDULO
+
+::: incremental
+-   **Desarrollar habilidades en el uso de la estadística** como herramienta para la investigación epidemiológica.
+
+-   **Adquirir competencias básicas en R y RCommander** para realizar análisis de datos en salud pública.
+
+-   Aprender a ajustar y evaluar modelos de **regresión lineal simple y múltiple**.
+
+-   **Comprender los conceptos de confusión e interacción** y su impacto en los análisis estadísticos.
+:::
+
+
+## PROGRAMA DEL MÓDULO
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla 
+tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2), 
+                  rep("06 al 09 nov. 2024", 2),
+                  "13 al 16 nov. 2024", ""),      
+          
+      Tema = c("- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.",
+               "- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).",
+               "- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).",
+               "- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.",
+               "- Regresión lineal múltiple: Selección de variables; Multicolinealidad.",
+               "- Confusión e interacción.")
+      ) |>    
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 16, part = "all") |>   
+  merge_v() |>  
+  color(i = 3:6, color = "gray40") |> 
+  highlight(i = 1:2, color = "#FFB90F") |> 
+  autofit() 
+```
+:::
+
+## ESTRUCTURA DE LA CLASE
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla
+tibble(
+  Tiempo = c("20:30hs", 
+             "20:40hs", 
+             "1:20 horas",
+             "15 minutos", 
+             "1:15 horas"),
+  
+  Descripción = c("Ingreso a la videollamada", 
+                  "Inicio de la clase",
+                  "Clase teórica", 
+                  "Receso", 
+                  "Continuación clase y cierre")
+) |> 
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 20, part = "all") |>   
+  merge_v() |>  
+  autofit() 
+
+```
+:::
+
+## OBJETIVOS DE HOY
+
+::: incremental
+-   Conocer las características de las diferentes clases de softwares y lenguajes estadísticos.
+
+- Entender el esquema de trabajo de R + RCommander relacionado a sus paquetes y plugins, importación de datos y almacenamiento de sus archivos de trabajo
+
+-   Desarrollar habilidades básicas en el análisis estadístico utilizando R + RCommander.
+
+:::
+
+## INTRODUCCIÓN 
+
+![](images/epi_info.webp){.absolute top=200 left=0 width="15%"}
+
+![](images/ibm-spss-logo.png){.absolute top=450 left=40 width="20%"}
+
+![](images/Julia_Programming_Language_Logo.svg.png){.absolute top=150 left=230 width="20%"}
+
+![](images/Logo-sas-FINAL-1.png){.absolute top=210 left=600 width="20%"}
+
+![](images/Logo-stata-FINAL-1.png){.absolute top=330 left=800 width="20%"}
+
+![](images/logo_epidat.webp){.absolute top=500 left=700 width=15%"}
+
+![](images/python.webp){.absolute top=140 left=800 width="30%"}
+
+![](images/R.png){.absolute top=380 left=370 width="25%"}
+
+## INTRODUCCIÓN 
+
+::: incremental
+- Existen numerosos paquetes y lenguajes estadísticos actualmente disposición. 
+
+- Algunos propietarios o privativos con licencias de alto costo y otros gratuitos y/o open source (fuente abierta).
+
+- Los softwares privativos son desarrollados y comercializados por una empresa. Sólo ellos  pueden modificar el código fuente y sus funciones. 
+  - Ejemplo: SPSS, Stata, SAS, etc
+  
+:::
+  
+## INTRODUCCIÓN 
+
+::: incremental
+
+- Los softwares gratuitos que son de libre uso, desarrollados por organizaciones o empresas. Sólo ellos pueden modificar el código fuente y sus funciones. 
+  - Ejemplo: EpiInfo, EpiDat, Jamovi, etc
+  
+- Los open source que son abiertos, por lo tanto no tienen dueño. Cualquier usuario puede acceder al código fuente y modificarlo. 
+  - Ejemplo: lenguaje R, python, julia, etc
+  
+:::
+
+## TIPO DE INTERFAZ
+
+::: incremental
+
+- **GUI (Graphical User Interface)**:  interfaz gráfica con menúes. 
+
+  - El usuario interactúa con el sistema (íconos y botones). 
+  - Es intuitiva y facil de usar, pero tiene potencia limitada y no reproducible
+
+- **CLI (Command Line Interface)**: interfaz por línea de comandos
+
+  - No es interactiva (no hay botones e íconos)
+  - Sintaxis de texto muy precisa y reproducible (mediante scripts)
+
+:::
+
+## CURVAS DE APRENDIZAJE
+
+- `GUI`: curva de aprendizaje inicial muy rápida. Luego pierde la capacidad de realizar tareas nuevas.
+
+<br>
+
+- `CLI`: curva de aprendizaje lenta inicialmente, a largo plazo las posibilidades de combinar y automatizar procesos permite una versatilidad mucho mayor y por lo tanto un mayor potencial creativo.
+
+## CURVAS DE APRENDIZAJE
+
+![](images/gui_vs_cli.jpg){fig-align="center" width="60%"}
+
+## ENCUESTA INICIAL
+
+<br>
+
+**Software estadístico**
+
+![](images/Encuesta_R2.PNG){fig-align="center" width="10%"}
+
+## ENCUESTA INICIAL
+
+<br>
+
+**Lenguaje R**
+
+::: {.fragment .fade-up}
+
+![](images/Encuesta_R1.PNG){fig-align="center" width="100%"}
+
+:::
+
+## LENGUAJE R
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Lenguaje y entorno de software libre orientado a estadística 
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Open source y multiplapaforma
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Numerosas librerías de extensión (paquetes) 
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Amplia y activa comunidad de usuarios
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Interfaz por línea de comandos
+
+:::
+
+## R-COMMANDER
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Interfaz gráfica con menúes desplegables y ventanas
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Acceso a script con funciones
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Posibilidad de extender con plugins
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Desarrollada y mantenida por John Fox, profesor emérito de la Facultad de Ciencias Sociales de la Universidad de McMaster (Ontario, Canadá)
+
+:::
+
+## DESCARGA E INSTALACIÓN
+
+1. Descargamos el instalador de R desde <https://cran.r-project.org/>
+
+2. Instalamos el software R ejecutando el instalador **R-4.4.1-win.exe**
+
+3. Ingresamos al R e instalamos el paquete **Rcmdr**, mediante `install.packages("Rcmdr", dependencies = T)`
+
+4. Ejecutamos RCommander ejecutando `library(Rcmdr)`
+
+## ENTORNO PRINCIPAL
+
+![](images/Ventana_ppal.PNG){fig-align="center" width="100%"}
+
+
+## ENTORNO Y MENÚES
+
+
+
+
+## ARCHIVOS DE SISTEMA
+
+## IMPORTACIÓN DE DATOS
+
+## DATOS ESTRUCTURADOS
+
+## GESTION DE DATOS
+
+## TIPOS DE VARIABLES
+
+## VARIABLES: 
+
+## GRAFICOS
+
+## EXPORTACION
