@@ -1,0 +1,634 @@
+---
+format: 
+  revealjs: 
+    chalkboard: true
+    logo: logos_ine.png
+    incremental: true
+    slide-number: true
+    css: custom.css
+---
+
+```{r}
+#| echo: false
+# Configuración global
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+# Paquetes necesarios
+pacman::p_load(
+  flextable,
+  patchwork,
+  rio,
+  janitor,
+  tidyverse
+)
+```
+
+## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
+
+:::: {style="margin-top: 1.5em;"}
+Docentes: Tamara Ricardo, Christian Ballejo
+
+::: {style="font-size: .75em; margin-bottom: 1.5em;"}
+Programa de Maestría en Epidemiología para la Salud Pública
+:::
+
+![](logos_ine.png){fig-align="center"}
+::::
+
+## PROGRAMA DEL MÓDULO
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla 
+tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2), 
+                  rep("06 al 09 nov. 2024", 2),
+                  "13 al 16 nov. 2024", ""),      
+          
+      Tema = c("- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.",
+               "- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).",
+               "- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).",
+               "- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.",
+               "- Regresión lineal múltiple: Selección de variables; Multicolinealidad.",
+               "- Confusión e interacción.")
+      ) |>    
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 16, part = "all") |>   
+  merge_v() |>  
+  color(i = c(1:2, 4:6), color = "gray40") |> 
+  highlight(i = 3, color = "#FFB90F") |> 
+  autofit() 
+```
+:::
+
+## ESTRUCTURA DE LA CLASE
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla
+tibble(
+  Tiempo = c("20:30hs", 
+             "20:40hs", 
+             "1:20 horas",
+             "15 minutos", 
+             "1:15 horas"),
+  
+  Descripción = c("Ingreso a la videollamada", 
+                  "Inicio de la clase",
+                  "Clase teórica", 
+                  "Receso", 
+                  "Continuación clase y cierre")
+) |> 
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 20, part = "all") |>   
+  merge_v() |>  
+  autofit() 
+
+```
+:::
+
+## OBJETIVOS
+
+-   Comprender la **covarianza** como medida de la variabilidad conjunta entre dos variables.
+
+-   Interpretar su signo (positiva, negativa, o nula) y conocer sus limitaciones.
+
+-   Entender la **correlación** como una medida estandarizada de la relación lineal entre dos variables.
+
+-   Diferenciar entre correlación positiva, negativa y nula para evaluar la fuerza y dirección de la asociación.
+
+
+## INTRODUCCIÓN
+
+-   Cuando analizamos datos epidemiológicos es fundamental obtener información sobre la relación entre dos variables numéricas. Por ejemplo:
+
+    -   Presión sanguínea y edad
+
+    -   Estatura y peso
+
+    -   Concentración de un medicamento inyectable y frecuencia cardíaca, etc.
+
+
+## INTRODUCCIÓN
+
+-   Entender estas relaciones permite evaluar patrones, tendencias y posibles asociaciones en salud pública.
+
+-   La **covarianza** y la **correlación** son dos herramientas estadísticas clave para evaluar esta relación.
+
+## Covarianza ($Cov_{XY}$)
+
+-   La **covarianza** es una medida estadística que indica el grado de variabilidad conjunta de dos variables cuantitativas:
+
+    -   Si las variables aumentan o disminuyen en simultáneo, será **positiva**.
+
+    -   Si una variable aumenta mientras la otra disminuye, será **negativa**.
+
+    -   Si no existe relación entre los cambios de las dos variables, se **aproximará a cero**.
+
+------------------------------------------------------------------------
+
+-   La covarianza entre dos variables $X$ e $Y$ se expresa como:
+
+::: fragment
+$$Cov_{XY} = \frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})  $$
+
+donde:
+
+-   $X_i$ e $Y_i$ son los valores individuales de las variables.
+
+-   $\bar{X}_i$ y $\bar{Y}_i$ son las medias de las variables $X$ e $Y$.
+
+-   $n$ es el número de pares de datos.
+:::
+
+------------------------------------------------------------------------
+
+-   La covarianza se puede evaluar gráficamente usando **diagramas de dispersión** (*scatterplots*):
+
+    -   Permiten tener una idea de si existe covarianza positiva, negativa o nula.
+
+    -   Podemos observar si existen valores extremos, es decir, puntos muy alejados del resto.
+
+    -   Sin embargo, no podemos inferir la magnitud de la covarianza a partir de los gráficos.
+
+------------------------------------------------------------------------
+
+::: r-fit-text
+**Ejemplo covarianza positiva**: actividad física y salud cardiovascular
+:::
+
+```{r}
+# Covarianza positiva
+data_pos <- tibble(
+  x = sample(20:150, 50, replace = TRUE), 
+  y = 60 + (0.3 * x) + rnorm(50, 0, 5)
+)
+
+# Gráfico
+data_pos |> 
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  # puntos
+  geom_point(color = "#105185", size = 2, alpha = .8) +
+  geom_smooth(method = "lm", se = F, color = "#021326") +
+  
+  # líneas de referencia
+  geom_vline(xintercept = mean(data_pos$x), 
+             linetype = "dashed") +
+  geom_hline(yintercept = mean(data_pos$y),
+             linetype = "dashed") +
+  
+  # etiquetas
+  labs(x = "Actividad física (minutos/semana)",
+       y = "Salud Cardiovascular (capacidad aeróbica)") +
+  
+  # tema 
+  theme_minimal() +
+  theme(title = element_text(size = 12))
+
+## Limpia environment
+rm(list = ls())
+```
+
+::: {.fragment style="font-size: 0.75em;"}
+Cuando crece $X$ también crece $Y$, casi todos los puntos pertenecen a los cuadrantes primero y tercero.
+:::
+
+------------------------------------------------------------------------
+
+::: r-fit-text
+**Ejemplo covarianza negativa**: consumo de alcohol y salud hepática
+:::
+
+```{r}
+# Covarianza negativa
+data_neg <- tibble(
+  x = sample(0:100, 50, replace = TRUE), 
+  y = 100 - (0.5 * x) + rnorm(50, 0, 5)
+)
+
+# Gráfico
+data_neg |> 
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  # puntos
+  geom_point(color = "#105185", size = 2, alpha = .8) +
+  geom_smooth(method = "lm", se = F, color = "#021326") +
+  
+  # líneas de referencia
+  geom_vline(xintercept = mean(data_neg$x), 
+             linetype = "dashed") +
+  geom_hline(yintercept = mean(data_neg$y),
+             linetype = "dashed") +
+  
+  # etiquetas
+  labs(x = "Consumo de Alcohol (gramos/semana)",
+       y = "Salud del Hígado (niveles de enzimas)") +
+  
+  # tema 
+  theme_minimal() +
+  theme(title = element_text(size = 12))
+
+## Limpia environment
+rm(list = ls())
+```
+
+::: {.fragment style="font-size: 0.75em;"}
+Cuando crece $X$ decrece $Y$, casi todos los puntos pertenecen a los cuadrantes segundo y cuarto.
+:::
+
+------------------------------------------------------------------------
+
+::: r-fit-text
+**Ejemplo covarianza cercana a cero**: horas de sueño y colesterol en sangre
+:::
+
+```{r}
+# Covarianza nula
+data_cero <- tibble(
+  x = sample(4:10, 50, replace = TRUE), 
+  y = 180 + rnorm(50, 0, 10)
+)
+
+# Gráfico
+data_cero |> 
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  # puntos
+  geom_point(color = "#105185", size = 2, alpha = .8) +
+  geom_smooth(method = "lm", se = F, color = "#021326") +
+  
+  # líneas de referencia
+  geom_vline(xintercept = mean(data_cero$x), 
+             linetype = "dashed") +
+  geom_hline(yintercept = mean(data_cero$y),
+             linetype = "dashed") +
+  
+  # etiquetas
+  labs(title = "Covarianza cercana a cero",
+       x = "Horas de Sueño",
+       y = "Nivel de Colesterol (mg/dL)") +
+  
+  # tema 
+  theme_minimal() +
+  theme(title = element_text(size = 12))
+
+## Limpia environment
+rm(list = ls())
+```
+
+::: {.fragment style="font-size: 0.75em;"}
+No se observa un patrón claro de dispersión entre $X$ e $Y$.
+:::
+
+------------------------------------------------------------------------
+
+## Ejemplo en RCommander
+
+-   En la consola de R, activamos RCommander con `library(Rcmdr)` y el plugin KMggplot2 con `library(RcmdrPlugin.KMggplot2)`.
+
+-   Vamos al menú `Datos > Importar datos> desde archivos de texto, portapapeles o URL...`
+
+-   Se abrirá una nueva ventana, seleccionamos las opciones `Separador de campos: punto y coma [;]` y `Separador decimal: coma [,]` hacemos click en Aceptar.
+
+------------------------------------------------------------------------
+
+-   Seleccionamos el archivo "`cancer_rls.txt`", que contiene información sobre la tasa de mortalidad por cáncer para distintos condados de USA, y hacemos click en **Abrir**.
+-   Vamos al menú `KMggplot2 > Scatter plot`.
+-   En la nueva ventana seleccionamos `median_age` como variable $X$, `target_death rate` como variable $Y$, y activamos la casilla `Smoothing with CI (linear regression)`.
+-   Renombramos el eje X como `Edad (mediana)` y el eje Y como `Tasa de mortalidad`.
+
+------------------------------------------------------------------------
+
+![](images/clipboard-2553283583.png){fig-align="center"}
+
+------------------------------------------------------------------------
+
+### Limitaciones de la covarianza
+
+-   La covarianza está afectada por las unidades en las que se miden las variables, lo que puede dificultar la interpretación de su magnitud.
+
+-   Para resolver este problema, es necesario utilizar una medida que no esté afectada por las unidades de medida de las variables: **la correlación.**
+
+## Correlación de Pearson ($r$)
+
+-   La **correlación** mide de la relación lineal entre dos variables que se obtiene al estandarizar la covarianza.
+
+-   Se obtiene al dividir la covarianza entre los productos de las desviaciones estándar de las dos variables.
+
+-   Esto elimina la influencia de las unidades de medida, haciendo la correlación una medida adimensional.
+
+------------------------------------------------------------------------
+
+-   La correlación entre dos variables $X$ e $Y$ se expresa como:
+
+::: fragment
+$$r = \frac{Cov_{XY}}{S_xS_y} $$
+
+donde:
+
+-   $Cov_{XY}$ es la covarianza entre las variables $X$ e $Y$.
+
+-   $S_x$ y $S_y$ son las desviaciones estándar de las variables $X$ e $Y$.
+:::
+
+------------------------------------------------------------------------
+
+-   El valor del coeficiente de correlación oscila entre -1 (**correlación negativa**) y +1 (**correlación positiva**):
+
+-   En la correlación positiva, las variables tienen una relación directa (aumentan en simultáneo).
+
+-   En la correlación negativa, las variables tienen una relación inversa (una aumenta y la otra disminuye).
+
+-   También se debe tener en cuenta la magnitud de la correlación, siendo más fuerte cuanto más se acerca a los extremos.
+
+-   Si $r$ = 0 no existe asociación lineal entre $X$ e $Y$ (pero puede existir una asociación no-lineal).
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+tibble(
+  x = 1:100,
+  y = x + rnorm(100, mean = 0, sd = 10)
+) |> 
+  
+  # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color = "#105185", size = 2, alpha = .8) +
+  
+  labs(title = "Correlación positiva entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+tibble(
+  x = 1:100,
+  y = x + rnorm(100, mean = 0, sd = 5)
+) |> 
+  
+  # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color = "#105185", size = 2, alpha = .9) +
+  
+  labs(title =  "Correlación positiva fuerte entre X e Y") +
+  
+  theme_minimal() +
+  
+ theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+tibble(
+  x = 1:100,
+  y = x
+) |> 
+  
+  # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color =  "#105185", size = 2, alpha = .9) +
+  
+  labs(title = "Correlación positiva perfecta entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+tibble(
+  x = 1:100,
+  y = -x + rnorm(100, mean = 0, sd = 10)
+) |> 
+  
+# Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color =  "#105185", size = 2, alpha = .9) +
+  
+  labs(title = "Correlación negativa entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+tibble(
+  x = 1:100,
+  y = -x + rnorm(100, mean = 0, sd = 5)
+) |> 
+  
+  # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color =  "#105185", size = 2, alpha = .9) +
+  
+  labs(title = "Correlación negativa fuerte entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos 
+tibble(
+  x = 1:100,
+  y = -x
+) |>
+  
+  # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color =  "#105185", size = 2, alpha = .9) +
+  
+  labs(title = "Correlación negativa perfecta entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+ tibble(
+  x = 1:100,
+  y = rnorm(100, mean = 0, sd = 10)
+) |> 
+   
+   # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color =  "#105185", size = 2, alpha = .9) +
+  
+  labs(title = "Sin correlación entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+------------------------------------------------------------------------
+
+```{r}
+# Genera datos
+ tibble(
+  x = seq(-10, 10, by = 0.2),
+  y = -x^2 + rnorm(length(x), mean = 0, sd = 20)
+) |> 
+   
+   # Plot
+  ggplot(mapping = aes(x = x, y = y)) +
+  
+  geom_point(color =  "#105185", size = 2, alpha = .9) +
+  
+  labs(title = "Relación no lineal entre X e Y") +
+  
+  theme_minimal() +
+  
+   theme(title = element_text(size = 10, face = "bold"),
+       axis.text = element_text(size = 9))
+```
+
+## Ejemplo en RCommander
+
+-   Para testear la correlación entre dos variables vamos al menú `Estadísticos > Resúmenes > Test de correlación`.
+
+-   Seleccionamos las variables `median_age` y `target_death_rate` y apretamos **Aplicar** o **Aceptar**.
+
+-   Si queremos comparar todas las variables usamos `Estadísticos > Resúmenes > Matriz de correlaciones`.
+
+------------------------------------------------------------------------
+
+![](images/clipboard-2670933509.png){style="margin-top: 1.5em;" fig-align="center"}
+
+------------------------------------------------------------------------
+
+![](images/clipboard-2595964597.png){style="margin-top:1.5em;" fig-align="center"}
+
+------------------------------------------------------------------------
+
+### Visualización
+
+-   Podemos visualizar la matriz de correlación desde el menú `KMggplot2 > Scatter matrix`.
+
+-   También podemos representarla usando **correlogramas.**
+
+    -   Estos gráficos muestran tanto la matriz de correlaciones como signos y/o coeficientes.
+
+    -   RCommander no incluye una opción para realizarlos, pero podemos utilizar el paquete `GGally`.
+
+    -   Para ello vamos al menú `Herramientas>Cargar paquetes`, seleccionamos `GGally` de la lista y presionamos **Aceptar**.
+
+------------------------------------------------------------------------
+
+`Scatter matrix`
+
+![](images/clipboard-1948037079.png){fig-align="center" width="100%"}
+
+------------------------------------------------------------------------
+
+`ggpairs()`
+
+![](images/clipboard-3727507920.png){fig-align="center"}
+
+------------------------------------------------------------------------
+
+`ggcorr()`
+
+![](images/clipboard-4281112057.png)
+
+------------------------------------------------------------------------
+
+### INTERPRETACIÓN
+
+-   La tasa de mortalidad por cáncer (`target_death_rate`) tiene una correlación positiva con el nivel de pobreza (`poverty_percent`) y la cobertura de salud pública (`pct_public_coverage`).
+
+-   A medida que aumenta la mediana de edad de la población (`median_age`), disminuye la mortalidad por cáncer.
+
+-   Sin embargo, las tres variables tienen correlación baja con la tasa de mortalidad por cáncer.
+
+## Correlación de Spearman
+
+-   Es un método no paramétrico para medir la correlación entre dos variables numéricas.
+
+-   Se usa cuando los datos no presentan una relación lineal o no están normalmente distribuidos.
+
+-   Está basada en rangos, es decir en el orden de los valores en lugar de los valores en sí mismos.
+
+-   Es útil cuando la relación entre variables es monótona (crece o decrece en forma constante).
+
+## Correlación de Kendall
+
+-   Es un método no paramétrico para estimar la correlación entre dos variables numéricas.
+
+-   Se basa en el concepto de concordancia y discordancia entre pares de datos.
+
+-   Mide la fortaleza y dirección de la relación ordinal entre dos variables.
+
+-   Se usa cuando se tiene una muestra pequeña o datos con muchos valores repetidos.
+
+-   Es más robusta que la correlación de Spearman.
+
+## Ejemplo en RCommander
+
+-   Para comparar variables numéricas mediante correlación de Spearman vamos al menú `Estadísticos: Resúmenes: Matriz de correlaciones` y seleccionamos la opción `Coeficiente de Spearman`.
+
+-   Si quisiéramos utilizar correlación de Kendall, debemos hacerlo para cada par de variables por separado mediante el menú `Estadísticos: Resúmenes: Test de correlación` y seleccionar la opción `Coeficiente tau de Kendall`.
+
+------------------------------------------------------------------------
+
+![](images/clipboard-1244881628.png){fig-align="center"}
+
+------------------------------------------------------------------------
+
+![](images/clipboard-426222365.png){fig-align="center"}
+
+## EJERCITACIÓN
+
+-   Cargar en RCommander la base de ejemplo "`paises.txt`".
+
+-   Realizar los gráficos de dispersión para mostrar covarianza entre la variable respuesta `Esperanza_vida` y cada una de las variables independientes.
+
+-   Evaluar la correlación entre variables usando matrices de correlación y correlogramas.
+
+-   De ser necesario, usar correlación de Pearson o Kendall.
+
