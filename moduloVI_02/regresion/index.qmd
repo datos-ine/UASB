@@ -3,7 +3,7 @@ format:
   revealjs: 
     chalkboard: true
     logo: logos_ine.png
-    incremental: false
+    incremental: true
     slide-number: true
     css: custom.css
 ---
@@ -121,7 +121,6 @@ tibble(
 
 ------------------------------------------------------------------------
 
-::: incremental
 -   Modelos **determinísticos**:
 
     -   Asumen que todas las relaciones entre las variables son exactas y que los parámetros y variables son conocidos sin error.
@@ -129,7 +128,6 @@ tibble(
     -   No incorporan la variabilidad causada por el azar o la incertidumbre.
 
     -   Los resultados se pueden expresar mediante ecuaciones algebraicas exactas.
-:::
 
 ------------------------------------------------------------------------
 

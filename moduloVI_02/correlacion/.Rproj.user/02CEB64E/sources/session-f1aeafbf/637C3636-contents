@@ -1,0 +1,676 @@
+---
+format: 
+  revealjs: 
+    chalkboard: true
+    logo: logos_ine.png
+    incremental: false
+    slide-number: true
+    #footer: "Programa de Maestría en Epidemiología para la Salud Pública"
+    css: custom.css
+---
+
+```{r}
+#| echo: false
+# Configuración global
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+# Paquetes necesarios
+pacman::p_load(
+  flextable,
+  patchwork,
+  rio,
+  janitor,
+  tidyverse
+)
+```
+
+## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
+
+:::: {style="margin-top: 1.5em;"}
+Docentes: Tamara Ricardo, Christian Ballejo
+
+::: {style="font-size: .75em; margin-bottom: 1.5em;"}
+Programa de Maestría en Epidemiología para la Salud Pública
+:::
+
+![](logos_ine.png){fig-align="center" width="70%"}
+::::
+
+## OBJETIVOS DEL MÓDULO
+
+::: incremental
+-   **Desarrollar habilidades en el uso de la estadística** como herramienta para la investigación epidemiológica.
+
+-   **Adquirir competencias básicas en R y RCommander** para realizar análisis de datos en salud pública.
+
+-   Aprender a ajustar y evaluar modelos de **regresión lineal simple y múltiple**.
+
+-   **Comprender los conceptos de confusión e interacción** y su impacto en los análisis estadísticos.
+:::
+
+
+## PROGRAMA DEL MÓDULO
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla 
+tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2), 
+                  rep("06 al 09 nov. 2024", 2),
+                  "13 al 16 nov. 2024", ""),      
+          
+      Tema = c("- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.",
+               "- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).",
+               "- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).",
+               "- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.",
+               "- Regresión lineal múltiple: Selección de variables; Multicolinealidad.",
+               "- Confusión e interacción.")
+      ) |>    
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 16, part = "all") |>   
+  merge_v() |>  
+  color(i = 3:6, color = "gray40") |> 
+  highlight(i = 1:2, color = "#FFB90F") |> 
+  autofit() 
+```
+:::
+
+## ESTRUCTURA DE LA CLASE
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla
+tibble(
+  Tiempo = c("20:30hs", 
+             "20:40hs", 
+             "1:20 horas",
+             "15 minutos", 
+             "1:15 horas"),
+  
+  Descripción = c("Ingreso a la videollamada", 
+                  "Inicio de la clase",
+                  "Clase teórica", 
+                  "Receso", 
+                  "Continuación clase y cierre")
+) |> 
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 20, part = "all") |>   
+  merge_v() |>  
+  autofit() 
+
+```
+:::
+
+## OBJETIVOS DE HOY
+
+::: incremental
+-   Conocer las características de las diferentes clases de softwares y lenguajes estadísticos.
+
+- Entender el esquema de trabajo de R + RCommander relacionado a sus paquetes y plugins, importación de datos y almacenamiento de sus archivos de trabajo
+
+-   Desarrollar habilidades básicas en el análisis estadístico utilizando R + RCommander.
+
+:::
+
+## INTRODUCCIÓN 
+
+![](images/epi_info.webp){.absolute top=200 left=0 width="15%"}
+
+![](images/ibm-spss-logo.png){.absolute top=450 left=40 width="20%"}
+
+![](images/Julia_Programming_Language_Logo.svg.png){.absolute top=150 left=230 width="20%"}
+
+![](images/Logo-sas-FINAL-1.png){.absolute top=210 left=600 width="20%"}
+
+![](images/Logo-stata-FINAL-1.png){.absolute top=330 left=800 width="20%"}
+
+![](images/logo_epidat.webp){.absolute top=500 left=700 width=15%"}
+
+![](images/python.webp){.absolute top=140 left=800 width="30%"}
+
+![](images/R.png){.absolute top=380 left=370 width="25%"}
+
+## INTRODUCCIÓN 
+
+::: incremental
+- Existen numerosos paquetes y lenguajes estadísticos actualmente disposición. 
+
+- Algunos propietarios o privativos con licencias de alto costo y otros gratuitos y/o open source (fuente abierta).
+
+- Los softwares privativos son desarrollados y comercializados por una empresa. Sólo ellos  pueden modificar el código fuente y sus funciones. 
+  - Ejemplo: SPSS, Stata, SAS, etc
+  
+:::
+  
+## INTRODUCCIÓN 
+
+::: incremental
+
+- Los softwares gratuitos que son de libre uso, desarrollados por organizaciones o empresas. Sólo ellos pueden modificar el código fuente y sus funciones. 
+  - Ejemplo: EpiInfo, EpiDat, Jamovi, etc
+  
+- Los open source que son abiertos, por lo tanto no tienen dueño. Cualquier usuario puede acceder al código fuente y modificarlo. 
+  - Ejemplo: lenguaje R, python, julia, etc
+  
+:::
+
+## TIPO DE INTERFAZ
+
+::: incremental
+
+- **GUI (Graphical User Interface)**:  interfaz gráfica con menúes. 
+
+  - El usuario interactúa con el sistema (íconos y botones). 
+  - Es intuitiva y facil de usar, pero tiene potencia limitada y no reproducible
+
+- **CLI (Command Line Interface)**: interfaz por línea de comandos
+
+  - No es interactiva (no hay botones e íconos)
+  - Sintaxis de texto muy precisa y reproducible (mediante scripts)
+
+:::
+
+## CURVAS DE APRENDIZAJE
+
+- `GUI`: curva de aprendizaje inicial muy rápida. Luego pierde la capacidad de realizar tareas nuevas.
+
+<br>
+
+- `CLI`: curva de aprendizaje lenta inicialmente, a largo plazo las posibilidades de combinar y automatizar procesos permite una versatilidad mucho mayor y por lo tanto un mayor potencial creativo.
+
+## CURVAS DE APRENDIZAJE
+
+![](images/gui_vs_cli.jpg){fig-align="center" width="60%"}
+
+## ENCUESTA INICIAL
+
+<br>
+
+**Software estadístico**
+
+![](images/Encuesta_R2.PNG){fig-align="center" width="10%"}
+
+## ENCUESTA INICIAL
+
+<br>
+
+**Lenguaje R**
+
+::: {.fragment .fade-up}
+
+![](images/Encuesta_R1.PNG){fig-align="center" width="100%"}
+
+:::
+
+## LENGUAJE R
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Lenguaje y entorno de software libre orientado a estadística 
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Open source y multiplapaforma
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Numerosas librerías de extensión (paquetes) 
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Amplia y activa comunidad de usuarios
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Interfaz por línea de comandos
+
+:::
+
+## R-COMMANDER
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Interfaz gráfica con menúes desplegables y ventanas
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Acceso a script con funciones
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Posibilidad de extender con plugins
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Desarrollada y mantenida por John Fox, profesor emérito de la Facultad de Ciencias Sociales de la Universidad de McMaster (Ontario, Canadá)
+
+:::
+
+## DESCARGA E INSTALACIÓN
+
+1. Descargamos el instalador de R desde <https://cran.r-project.org/>
+
+2. Instalamos el software R ejecutando el instalador **R-4.4.1-win.exe**
+
+3. Ingresamos al R e instalamos el paquete **Rcmdr**, mediante `install.packages("Rcmdr", dependencies = T)`
+
+4. Ejecutamos RCommander ejecutando `library(Rcmdr)`
+
+## ENTORNO PRINCIPAL
+
+![](images/Ventana_ppal.PNG){fig-align="center" width="100%"}
+
+
+## ENTORNO Y MENÚES
+
+::: incremental
+
+- **Fichero**: para abrir archivos con instrucciones a ejecutar, o para guardar datos,
+resultados, sintaxis, etc.
+- **Editar**: las típicas opciones para cortar, pegar, borrar, etc.
+- **Datos**: utilidades para trabajar con datos (creación de datos, importación de
+variados formatos, recodificación de variables, etc.)
+- **Estadísticos**: ejecución de métodos estadísticos
+- **Gráficas**: gráficos con estética R base (graphics)
+
+:::
+
+## ENTORNO Y MENÚES
+
+::: incremental
+
+- **Modelos**: gestión modelos de regresión específicos para el análisis de datos.
+- **Distribuciones**: probabilidades, cuantiles y gráficos de las distribuciones de
+probabilidad más habituales.
+- **Herramientas**: carga de librerías (paquetes) y opciones del entorno.
+- **Ayuda**: ayuda y documentación sobre R-commander
+
+- **KMggplot2**: gráficos modernos basados en paquete ggplot2. Curvas de
+Kaplan-Meier, histogramas, Q-Q plot, etc.
+
+::: 
+
+## ARCHIVOS DE SISTEMA
+
+<br>
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Archivo de instrucciones (scripts de extensión **.R**)
+
+:::
+
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Archivo de resultados (salidas de consola de extensión **.txt**)
+
+:::
+
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Entorno de trabajo (formato propio de extensión **.RData**)
+
+:::
+
+
+## IMPORTACIÓN DE DATOS
+
+<br>
+
+RCommander permite importar un variado conjunto de formatos de archivos de datos: 
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Texto plano (.txt o .csv)
+- SPSS
+- SAS
+
+:::
+
+::: {.column width="50%"}
+
+- Minitab
+- Stata
+- Microsoft Excel
+
+:::
+
+::::
+
+## IMPORTACIÓN DE DATOS
+
+<br>
+
+![](images/Importar_datos.PNG){fig-align="center" width="100%"}
+
+## DATOS 
+
+Los datos con los que trabajamos tienen una estructura que se caracteriza por:
+
+::: incremental
+
+- Tener forma de tabla, con columnas y filas.
+- Una tabla representa a una sola unidad de análisis
+- Las columnas contienen a las variables.
+- Las filas representan las observaciones
+- Cada variable (columna) tiene un tipo de dato para todas las filas.
+
+:::
+
+## DATOS 
+
+<br>
+
+![](images/tidy.PNG){fig-align="center" width="100%"}
+
+
+## TIPO DE DATOS
+
+
+Las tipos de datos con lo que trabaja el lenguaje R son:
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- Numérico (integer -int- o numeric -num-)
+  - 36, 45.6, -709 
+- Caracter (character -chr-)
+  - *"A"*, *"Si"*, *"5"*, *"empleado"* 
+- Factor (factor -fct-)
+  - *"Alto"*, *"No"*
+
+:::
+
+::: {.column width="50%"}
+
+- Lógico (logical -logi-)
+  - `TRUE`, `FALSE`
+- Fecha / hora (Date / datetime) 
+  - *"2024-10-30"*, *"2024-10-30 18:00:00"*
+
+:::
+
+::::
+
+## IMPORTACIÓN DE DATOS
+
+::: incremental
+
+- Archivos de texto plano
+- Extensión **.txt** o **.csv**
+- Con cabeceras de etiquetas de nombre de variable
+- Separados por comas (**,**) o punto y coma **;**
+- Revisar si existen múmeros con decimales y que separador utiliza
+
+:::
+
+## IMPORTACIÓN DE DATOS
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](images/Datos1.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/Datos2.PNG){fig-align="center" width="100%"}
+
+:::
+
+::::
+
+## GESTION DE DATOS
+
+El menú **Datos -> Modificar variables del conjunto de datos activo** nos ofrece realizar las siguientes gestiones con datos:
+
+
+::: incremental
+
+- Recodificar variables
+- Incorporar una nueva variable con valor calculado
+- Convertir variables numéricas a factor
+- Reordenar niveles de un factor
+- Segmentar variable numérica
+- Renombrar o eliminar variables
+
+:::
+
+## FACTORES
+
+En situaciones donde la categoría de una variable cualitativa se codificó numéricamente es posible que necesitemos convertirla a factor antes de trabajar con ella.
+
+![](images/Numerica-factor1.PNG){fig-align="center"}
+
+
+## FACTORES
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](images/Numerica-factor2.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/Numerica-factor3.PNG){fig-align="center" width="100%"}
+
+:::
+
+::::
+
+
+## FACTORES
+
+Como en todas las situaciones donde utilicemos algún opción del menú, encontraremos en la ventana de instrucciones y en resultados la ejecución del código de R correspondiente:
+
+![](images/Numerica-factor4.PNG){fig-align="center"  width="100%"}
+
+Para verificar el cambio a factor de la variable y sus niveles, podemos escribir directamente en la ventana de instrucciones `levels(nombre_datos$nombre_variable)`
+
+![](images/Numerica-factor5.PNG){fig-align="center"  width="50%"}
+
+## FACTORES
+
+Otra tarea habitual, sobre todo en los modelados estadísticos, es reordenar
+niveles de un factor (necesario para definir el nivel de referencia de un predictor
+categórico).
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](images/Reordenar_factor1.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/Reordenar_factor2.PNG){fig-align="center" width="80%"}
+
+:::
+
+::::
+
+## FACTORES
+
+Visualizaremos el código en la ventana de instrucciones y en resultados: 
+
+![](images/Reordenar_factor3.PNG){fig-align="center"  width="100%"}
+
+Verificamos el reordenamiento de niveles: `levels(nombre_datos$nombre_variable)`
+
+![](images/Reordenar_factor4.PNG){fig-align="center"  width="30%"}
+
+Observamos que los niveles cambiaron y que no siguen el ordenamiento alfabetico predeterminado.
+
+## ESTADISTICOS
+
+Las funciones para el análisis estadístico las encontramos en el menú
+
+![](images/Estadisticos.PNG){fig-align="center"  width="100%"}
+
+
+## ESTADISTICOS
+
+<br>
+
+Algunas de las opciones que usaremos durante la cursada son:
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+![](images/Estadisticos2.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="60%"}
+
+![](images/Estadisticos3.PNG){fig-align="center" width="80%"}
+
+:::
+
+::::
+
+
+## ESTADISTICOS
+
+Cuando ajustemos modelos de regresión utilizaremos las opciones:
+
+![](images/Estadisticos4.PNG){fig-align="center" width="80%"}
+
+## GRAFICOS
+
+Los gráficos estándar que RCommander trae incorporados se basan en el sistema gráfico base del lenguaje R. Existe un sistema más moderno proveniente de la *gramática de gráficos* incluido en un paquete que se denomina `ggplot2`.
+
+. . .
+
+El **plugin KMggplot2** extendiende las funciones de RCommander e incluye también curvas de Kaplan Meier que verán en el módulo siguiente con el análisis de supervivencia.
+
+. . . 
+
+Este plugin, y probablemente algunos otros que necesitarán en el futuro, debe instalarse antes de activarlo en RCommander. 
+
+
+## PLUGINS
+
+Los plugins de RCommander son librerías del lenguaje R que descargaremos desde el sitio oficial CRAN.
+
+- Todos los paquetes que son plugin de RCommander comienzan con **"RcmdrPlugin."**.
+
+- Actualmente hay 34 extensiones en forma de plugin para RCommander.
+
+- El código para instalarlos es similar al de cualquier paquete de R.
+
+![](images/Instalacion_plugin.PNG){fig-align="center" width="50%"}
+
+
+## PLUGINS
+
+Luego, cuando ingresamos en el RCommander debemos activarlo:
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+![](images/Instalacion_plugin2.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="55%"}
+
+![](images/Instalacion_plugin3.PNG){fig-align="center" width="100%"}
+
+:::
+
+::::
+
+
+## PLUGINS
+
+A continuación el sistema nos solicitará reinicar el RCommander y cuando vuelva a abrirse aparecerá el menú asociado al plugin activado.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](images/Instalacion_plugin4.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/Instalacion_plugin5.PNG){fig-align="center" width="100%"}
+
+:::
+
+::::
+
+## GRAFICOS {.smaller}
+
+La extensión KMggplot2 nos va a permitir hacer:
+
+::: incremental
+
+- Histogramas (variable cuantitativa según categórica)
+- Q-Q plot (para ajuste de distintas distribuciones)
+- Box plot / violin plot (variable cuantitativa según categórica)
+- Scatter plot (dos variables cuantitativas)
+- Scatter matrix (tres o más variables cuantitativas)
+- Line chart (dos variables cuantitativas)
+- Gráfica de sectores (variable categórica)
+- Bar chart (variable categórica)
+- Curva de Kaplan Meier (análisis de supervivencia)
+
+:::
+
+## MODELOS
+
+
+
+## MODELOS
+
+
+## MODELOS
+
+
+
+## EXPORTACION
+
+
