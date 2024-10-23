@@ -39,7 +39,7 @@ Programa de Maestría en Epidemiología para la Salud Pública
 ![](logos_ine.png){fig-align="center" width="70%"}
 ::::
 
-## OBJETIVOS DEL MÓDULO
+## OBJETIVOS DE LA UNIDAD
 
 ::: incremental
 -   **Desarrollar habilidades en el uso de la estadística** como herramienta para la investigación epidemiológica.
@@ -52,7 +52,7 @@ Programa de Maestría en Epidemiología para la Salud Pública
 :::
 
 
-## PROGRAMA DEL MÓDULO
+## PROGRAMA DE LA UNIDAD
 
 ::: {style="margin-top: 2em;"}
 ```{r}
@@ -86,17 +86,17 @@ tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2),
 ```{r}
 # Genera datos para la tabla
 tibble(
-  Tiempo = c("20:30hs", 
+  Horario = c("20:30hs", 
              "20:40hs", 
-             "1:20 horas",
-             "15 minutos", 
-             "1:15 horas"),
+             "22:00hs",
+             "22:15hs", 
+             "23:30hs"),
   
   Descripción = c("Ingreso a la videollamada", 
                   "Inicio de la clase",
-                  "Clase teórica", 
                   "Receso", 
-                  "Continuación clase y cierre")
+                  "Continuación clase", 
+                  "Cierre")
 ) |> 
   
   #  Genera tabla    
@@ -333,6 +333,12 @@ Kaplan-Meier, histogramas, Q-Q plot, etc.
 ::: {.fragment .fade-in-then-semi-out}
 
 - Entorno de trabajo (formato propio de extensión **.RData**)
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Exportación de gráficos bajo estándar **.PNG**
 
 :::
 
@@ -660,17 +666,107 @@ La extensión KMggplot2 nos va a permitir hacer:
 
 :::
 
+## GRAFICOS
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](images/Histograma.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/Boxplot.PNG){fig-align="center" width="100%"}
+
+:::
+
+::::
+
+## GRAFICOS
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](images/QQplot.PNG){fig-align="center" width="100%"}
+
+:::
+
+::: {.column width="50%"}
+
+![](images/Scatter.PNG){fig-align="center" width="100%"}
+
+:::
+
+::::
+
 ## MODELOS
 
+<br>
 
+::: incremental
+
+- Los modelos se ajustan desde la opción del menú `Estadísticos -> Ajuste de modelos`
+
+- La sintaxis en R para los modelos estadísticos se basa en la función genérica **formula**.
+
+- Se pueden ajustar varios modelos de forman secuencial vinculándose a nombres diferentes.
+
+- Luego se gestionan desde el menú `Modelos` indicando previamente cuál es el nombre del **modelo activo.**
+
+::: 
 
 ## MODELOS
 
+::: {.fragment .fade-in-then-semi-out}
 
-## MODELOS
+La sintaxis fórmula se utiliza para construir expresiones compactas utilizando como operador el caracter virgulilla `~`
 
+:::
 
+::: {.fragment .fade-in-then-semi-out}
 
-## EXPORTACION
+La expresión básica es `y ~ modelo` y se interpreta como que la variable de respuesta `y` está modelada por un predictor lineal especificado simbólicamente por `modelo`.
 
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+El `modelo` esta compuesto por uno o más términos (variables explicativas y/o predictoras) separadas por operadores aditivos `+`
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+Para otros términos, como el de interacción, se utiliza el operador multiplicativo `*`
+
+:::
+
+## GUARDADO DE ARCHIVOS
+
+- Es conveniente guardar los archivos de trabajo de la sesión de RCommander
+
+  - Archivo de instrucciones (`.R`)
+  
+    Se puede cargar y volver a ejecutar en el futuro.
+  
+  - Archivo de resultados (`.txt`)
+  
+    Podemos copiar resultados desde fuera de **RCommander**
+  
+- Las opciones se encuentra en el menú `Ficheros`  
+
+## EXPORTACION DE DATOS
+
+<br>
+
+- Desde `Datos -> Conjunto de datos activos -> Exportar el conjunto de datos activo…` exportamos la tabla de datos con las modificaciones y/o agregados que realizamos durante la gestión con **RCommander**.
+
+## EXPORTACION DE DATOS
+
+![](images/Exportacion.PNG){fig-align="center" width="55%"}
+
+## RESUMEN
 
