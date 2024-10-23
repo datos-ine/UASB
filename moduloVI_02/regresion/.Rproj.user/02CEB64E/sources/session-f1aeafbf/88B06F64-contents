@@ -1,0 +1,229 @@
+---
+format: 
+  revealjs: 
+    chalkboard: true
+    logo: logos_ine.png
+    incremental: false
+    slide-number: true
+    css: custom.css
+---
+
+```{r}
+#| echo: false
+# Configuración global
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+# Paquetes necesarios
+pacman::p_load(
+  flextable,
+  patchwork,
+  rio,
+  janitor,
+  tidyverse
+)
+```
+
+## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
+
+:::: {style="margin-top: 1.5em;"}
+Docentes: Tamara Ricardo, Christian Ballejo
+
+::: {style="font-size: .75em; margin-bottom: 1.5em;"}
+Programa de Maestría en Epidemiología para la Salud Pública
+:::
+
+![](logos_ine.png){fig-align="center" width="70%"}
+::::
+
+## PROGRAMA DEL MÓDULO
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla 
+tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2), 
+                  rep("06 al 09 nov. 2024", 2),
+                  "13 al 16 nov. 2024", ""),      
+          
+      Tema = c("- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.",
+               "- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).",
+               "- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).",
+               "- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.",
+               "- Regresión lineal múltiple: Selección de variables; Multicolinealidad.",
+               "- Confusión e interacción.")
+      ) |>    
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 16, part = "all") |>   
+  merge_v() |>  
+  color(i = c(1:3, 5:6), color = "gray40") |> 
+  highlight(i = 4, color = "#FFB90F") |> 
+  autofit() 
+```
+:::
+
+## ESTRUCTURA DE LA CLASE
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla
+tibble(
+  Tiempo = c("20:30hs", 
+             "20:40hs", 
+             "1:20 horas",
+             "15 minutos", 
+             "1:15 horas"),
+  
+  Descripción = c("Ingreso a la videollamada", 
+                  "Inicio de la clase",
+                  "Clase teórica", 
+                  "Receso", 
+                  "Continuación clase y cierre")
+) |> 
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 20, part = "all") |>   
+  merge_v() |>  
+  autofit() 
+
+```
+:::
+
+## OBJETIVOS
+
+::: incremental
+-   Comprender los **fundamentos** de la regresión lineal simple y su aplicación.
+
+-   Ajustar modelos de regresión lineal utilizando RCommander.
+
+-   Aprender a interpretar los **coeficientes** del modelo.
+
+-   Evaluar la **bondad de ajuste** utilizando el coeficiente de determinación R^2^.
+
+-   Verificar el cumplimiento de los **supuestos de la relación lineal**.
+:::
+
+## INTRODUCCIÓN
+
+::: incremental
+-   Los **modelos estadísticos** son representaciones matemáticas que intentan describir de la manera más sencilla posible la relación entre dos o más variables.
+
+-   Se los utiliza para realizar **inferencias** sobre una población a partir de datos muestrales.
+
+-   Permiten explorar, **explicar** y **predecir** el comportamiento de los datos.
+:::
+
+------------------------------------------------------------------------
+
+::: incremental
+-   Modelos **determinísticos**:
+
+    -   Asumen que todas las relaciones entre las variables son exactas y que los parámetros y variables son conocidos sin error.
+
+    -   No incorporan la variabilidad causada por el azar o la incertidumbre.
+
+    -   Los resultados se pueden expresar mediante ecuaciones algebraicas exactas.
+:::
+
+------------------------------------------------------------------------
+
+::: incremental
+-   Modelos **probabilísticos** o de **regresión**:
+
+    -   Asumen que los fenómenos observados no son totalmente predecibles, y que ciertas variables del modelo están sujetas al azar.
+
+    -   Los resultados para un conjunto de datos pueden variar cada vez que se ejecute el modelo.
+
+    -   Los resultados se expresan en términos de probabilidades
+:::
+
+------------------------------------------------------------------------
+
+::: incremental
+-   Los modelos *de regresión* se componen de tres partes:
+
+    -   **Variable/s independiente/s** ($X$) : también llamadas variables explicativas o predictores, suelen estar bajo control del investigador.
+
+    -   **Variable dependiente** ($Y$): también llamada variable respuesta o resultado.
+
+    -   **Error aleatorio** ($\epsilon$): variabilidad no explicada por la variables independientes, debida principalmente a la variabilidad entre individuos y, en algunos casos, a errores de medición o calibración.
+:::
+
+------------------------------------------------------------------------
+
+-   Además, pueden ser:
+
+    ::: incremental
+    -   **Paramétricos**:
+        -   Asumen que los datos provienen de una distribución con un número fijo de parámetros (media, varianza, etc.).
+        -   Requieren hacer suposiciones explícitas sobre la forma de la distribución de los datos
+    -   **No paramétrico**s:
+        -   Se utilizan para analizar datos cuya distribución subyacente es desconocida o no sigue una distribución estándar.
+    :::
+
+## REGRESIÓN LINEAL SIMPLE {.center style="text-align: center;"}
+
+------------------------------------------------------------------------
+
+-   En resumen:
+
+```{dot}
+//| echo: false
+digraph G {
+ node [style = filled, fontcolor = "white"];
+    n0 [shape = ellipse, 
+    label = "Variable respuesta \n continua", 
+    color = "#1B0D33"];
+    
+    n1 [shape = box, 
+    label = "Intensidad de \n asociación", 
+    color = "#4B2044"];
+    
+    n2 [shape = box, 
+    label = "Predicción o \n estimación", 
+    color = "#8DC16E"];
+    
+    n3 [shape = box, 
+    label = "Correlación",
+    color = "#683F4D"];
+    
+    n4 [shape = box, 
+    label = "Correlación de \n Pearson", 
+    color = "#705751"];
+    
+    n5 [shape = box, 
+    label = "Correlación de \n Spearman y \n de Kendall",
+    color = "#705751"];
+    
+   
+    n6 [shape = box, 
+    label = "Regresión lineal",
+    color = "#7B9859"];
+    
+    n7 [shape = box, 
+    label = "Simple",
+    color = "#757A53"];
+    
+    n8 [shape = box, 
+    label = "Múltiple",
+    color = "#757A53"]
+    
+    
+    n0 -> n1;
+    n0 -> n2;
+    
+    n1-> n3 
+    n3 -> n4 [labeldistance=2.5, labelangle=90, fontsize=10, headlabel="Paramétrico"];
+    n3-> n5 [labeldistance=4.5,labelangle=-70, fontsize=10,headlabel="No \n paramétrico"];
+    
+    n2 -> n6;
+    n6 -> n7;
+    n6 -> n8;
+}
+```
