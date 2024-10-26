@@ -987,6 +987,7 @@ Para otros términos, como el de interacción, se utiliza el operador multiplica
 //| echo: false
 digraph G {
  node [style = filled, fontcolor = "white"];
+ edge [arrowhead=none,arrowtail=none];
     n0 [shape = tab, 
     label = "Fichero",
     color = "#1f53ad"];
