@@ -46,7 +46,7 @@ Programa de Maestría en Epidemiología para la Salud Pública
 
 -   **Adquirir competencias básicas en R y RCommander** para realizar análisis de datos en salud pública.
 
--   Aprender a ajustar y evaluar modelos de **regresión lineal simple y múltiple**.
+-   Aprender a ajustar, interpretar y evaluar modelos de **regresión lineal simple y múltiple**.
 
 -   **Comprender los conceptos de confusión e interacción** y su impacto en los análisis estadísticos.
 :::
@@ -86,11 +86,11 @@ tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2),
 ```{r}
 # Genera datos para la tabla
 tibble(
-  Horario = c("20:30hs", 
-             "20:40hs", 
-             "22:00hs",
-             "22:15hs", 
-             "23:30hs"),
+  Horario = c("18:30hs", 
+             "18:40hs", 
+             "20:00hs",
+             "20:15hs", 
+             "21:30hs"),
   
   Descripción = c("Ingreso a la videollamada", 
                   "Inicio de la clase",
@@ -184,6 +184,8 @@ tibble(
 
 <br>
 
+. . . 
+
 - `CLI`: curva de aprendizaje lenta inicialmente, a largo plazo las posibilidades de combinar y automatizar procesos permite una versatilidad mucho mayor y por lo tanto un mayor potencial creativo.
 
 ## CURVAS DE APRENDIZAJE
@@ -246,29 +248,78 @@ tibble(
 
 :::
 
+## LENGUAJE R
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Desarrollado por Ross Ihaka y Robert Gentleman de la Universidad de Auckland, Nueva Zelanda en 1995
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Inspirado en el lenguaje comercial **S** y **S-plus** usados desde los años 70
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- El lenguaje R se basa en funciones con argumentos, de sintaxis muy precisa, que interactúan con estructuras de datos.
+
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
+- Además de las funciones básicas se incorporan otras a partir de paquetes. Al día de hoy existen 21582 paquetes publicados en CRAN.
+
+:::
+
+
+## LENGUAJE R
+
+El instalador del lenguaje R trae incorporado un editor denominado R GUI que se visualiza cuando ejecutamos el acceso directo `R 4.4.1`:
+
+![](images/RGui.PNG){fig-align="center" width="100%"}
+
+## LENGUAJE R
+
+<br>
+
+::: incremental
+
+Existen otros editores, o mejor llamados, entornos de desarrollo integrado (**IDE** - *Integrated Development Environment *) como:
+
+- RStudio (open source - Posit)
+
+- VS Code (Visual Studio Code - Microsoft)
+
+- Positron (open source - Posit - en desarrollo)
+
+:::
+
 ## R-COMMANDER
 
 ::: {.fragment .fade-in-then-semi-out}
 
-- Interfaz gráfica con menúes desplegables y ventanas
+- Interfaz gráfica con menúes desplegables y ventanas (*Point-and-Click*)
 
 :::
 
 ::: {.fragment .fade-in-then-semi-out}
 
-- Acceso a script con funciones
+- Acceso a script con funciones (*ventana de instrucciones*)
 
 :::
 
 ::: {.fragment .fade-in-then-semi-out}
 
-- Posibilidad de extender con plugins
+- Posibilidad de extender con plugins (*paquetes especiales*)
 
 :::
 
 ::: {.fragment .fade-in-then-semi-out}
 
-- Desarrollada y mantenida por John Fox, profesor emérito de la Facultad de Ciencias Sociales de la Universidad de McMaster (Ontario, Canadá)
+- Desarrollada y mantenida por John Fox, profesor emérito de la Facultad de Ciencias Sociales de la Universidad de McMaster - Ontario, Canadá.
 
 :::
 
@@ -432,11 +483,49 @@ Las tipos de datos con lo que trabaja el lenguaje R son:
 - Lógico (logical -logi-)
   - `TRUE`, `FALSE`
 - Fecha / hora (Date / datetime) 
-  - *"2024-10-30"*, *"2024-10-30 18:00:00"*
+  - *"2024-10-30"*, *"2024-10-30 18:30:00"*
 
 :::
 
 ::::
+
+## TIPO DE DATO FACTOR
+
+<br>
+
+Son un tipo de dato que se emplea para trabajar con variables que tienen un conjunto fijo de valores posibles (niveles). 
+
+. . .
+
+- Representan a variables categóricas y tienen etiquetas asociadas a valores enteros únicos (internos).
+
+. . .
+
+- Pueden estar ordenados o desordenados. 
+
+  Por defecto, los niveles se ordenan alfabéticamente.
+
+
+## SOBRE LOS DATOS
+
+<br>
+
+![](images/flujo.png){fig-align="center" width="100%"}
+
+Las tablas de datos con las que trajaremos durante la cursada están ordenadas, depuradas y preprocesadas para sólo centrarnos en el análisis.
+
+En la práctica, esto no ocurre y generalmente hay que dedicarle un largo tiempo al preproceso que nos lleva de los **datos crudos** a los **datos limpios**.
+
+
+## DATOS FALTANTES (NA)
+
+<br>
+
+- El lenguaje R utiliza el valor reservado `NA` (Not Available), que significa *"No Disponible"*, para representar datos faltantes, perdidos o omitidos.
+
+- Este tipo de datos tiene comportamiento particular que obliga a un tratamiento especial.
+
+- En el marco de los modelos, cuando una variable tiene algún valor faltante (NA) en alguna observación, y participa del modelo de regresión, se omite automáticamente la observación completa.
 
 ## IMPORTACIÓN DE DATOS
 
@@ -468,9 +557,47 @@ Las tipos de datos con lo que trabaja el lenguaje R son:
 
 ::::
 
+## EXPLORACIÓN 
+
+<br>
+
+Una tarea inicial, luego de haber importado una tabla de datos, es explorar su contenido.
+
+La forma más sencilla de realizarla es solicitar que R nos muestre la estructura. Para esto, escribimos y Ejecutamos la siguiente línea de código:
+
+<br>
+
+```{r}
+#| echo: true
+#| eval: false
+
+str(bajo_peso)
+
+```
+
+## EXPLORACIÓN 
+
+<br>
+
+En la ventana de resultados visualizaremos la estructura de la tabla de datos:
+
+![](images/Estructura.PNG){fig-align="center" width="100%"}
+
+## DETECCIÓN DE VALORES NA
+
+<br>
+
+Otra exploración que realizamos al inicio es la detección de valores faltantes en las variables del conjunto de datos.
+
+Pulsando sobre `Estadísticos -> Resúmenes -> Número de observaciones ausentes`.
+
+<br>
+
+![](images/Valores_NA.PNG){fig-align="center" width="100%"}
+
 ## GESTION DE DATOS
 
-El menú **Datos -> Modificar variables del conjunto de datos activo** nos ofrece realizar las siguientes gestiones con datos:
+El menú `Datos -> Modificar variables del conjunto de datos activo` nos ofrece realizar las siguientes gestiones con datos:
 
 
 ::: incremental
@@ -587,6 +714,49 @@ Algunas de las opciones que usaremos durante la cursada son:
 
 ::::
 
+## ESTADISTICOS
+
+<br>
+
+Estos menúes nos van a permitir explorar estadísticamente los datos y conocer la distribución de las variables de interés a partir de:
+
+::: incremental
+
+- Resumir datos mediante estadísticos
+- Resumir datos mediante gráficos
+- Detectar patrones y relaciones entre variables
+- Detectar valores atípicos (outlier) e influyentes
+
+:::
+
+## ESTADISTICOS
+
+Por ejemplo, vamos a poder describir una variable mediante:
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Cuantitativas**
+
+- Tendencial central: media, mediana
+- Dispersión: varianza, desvío estándar, intervalo intercuartílico
+- Posición: mínimo, máximo, quartiles
+
+
+:::
+
+::: {.column width="50%"}
+
+**Cualitativas**
+
+- Tabla de frecuencias absolutas 
+- Tabla de frecuencias relativas
+
+:::
+
+::::
+
 
 ## ESTADISTICOS
 
@@ -681,6 +851,8 @@ La extensión KMggplot2 nos va a permitir hacer:
 
 ## GRAFICOS
 
+<br>
+
 :::: {.columns}
 
 ::: {.column width="50%"}
@@ -699,6 +871,8 @@ La extensión KMggplot2 nos va a permitir hacer:
 
 ## GRAFICOS
 
+<br>
+
 :::: {.columns}
 
 ::: {.column width="50%"}
@@ -714,6 +888,32 @@ La extensión KMggplot2 nos va a permitir hacer:
 :::
 
 ::::
+
+## GRAFICOS
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+En el marco de la exploración descriptiva de los datos, es muy valiosa la información sobre la distribución de una variable cuantitativa que nos brindan los boxplots.
+
+:::
+
+::: {.column width="50%"}
+
+![](images/boxplot_explicado.png){fig-align="center" width="100%"}
+
+:::
+
+::::
+
+## GRAFICOS
+
+Otro gráfico importante es el **Q-Q plot** (gráfico quantil-quantil) para ver si la distribución de la variable cuantitativa se aproxima a una distribución teórica (Normal).
+
+![](images/qqplot_explicado.webp){fig-align="center" width="100%"}
 
 ## MODELOS
 

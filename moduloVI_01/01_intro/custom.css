@@ -1,4 +1,6 @@
-/* Cambia color del texto */
+
+$code-block-font-size: 0.9em;
+
 .reveal {
   color: #2F2E4E;
 }
@@ -20,6 +22,10 @@
 /* Cambiar el color de los elementos de lista */
 .reveal ul li, .reveal ol li {
     color: #2F2E4E;
+}
+
+.reveal code.r { /* Code block */
+    font-size: 40px;
 }
 
 /* Aplicar imagen de fondo a todas las diapositivas */

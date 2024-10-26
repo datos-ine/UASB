@@ -8,7 +8,7 @@
 <link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="index_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.57">
+  <meta name="generator" content="quarto-1.4.553">
 
   <title>index</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,6 +28,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="custom.css">
@@ -352,7 +417,7 @@
 <ul>
 <li class="fragment"><p><strong>Desarrollar habilidades en el uso de la estadística</strong> como herramienta para la investigación epidemiológica.</p></li>
 <li class="fragment"><p><strong>Adquirir competencias básicas en R y RCommander</strong> para realizar análisis de datos en salud pública.</p></li>
-<li class="fragment"><p>Aprender a ajustar y evaluar modelos de <strong>regresión lineal simple y múltiple</strong>.</p></li>
+<li class="fragment"><p>Aprender a ajustar, interpretar y evaluar modelos de <strong>regresión lineal simple y múltiple</strong>.</p></li>
 <li class="fragment"><p><strong>Comprender los conceptos de confusión e interacción</strong> y su impacto en los análisis estadísticos.</p></li>
 </ul>
 </div>
@@ -362,7 +427,7 @@
 <div style="margin-top: 2em;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-a70dc862{}.cl-a701d52a{font-family:'Arial';font-size:16pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a701d534{font-family:'Arial';font-size:16pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:rgba(255, 185, 15, 1.00);}.cl-a701d535{font-family:'Arial';font-size:16pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(102, 102, 102, 1.00);background-color:transparent;}.cl-a7062a3a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a7064e20{width:2.534in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7064e2a{width:17.615in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7064e2b{width:2.534in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7064e34{width:17.615in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7064e35{width:2.534in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a7064e36{width:17.615in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a70dc862"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a7064e20"><p class="cl-a7062a3a"><span class="cl-a701d52a">Semana</span></p></th><th class="cl-a7064e2a"><p class="cl-a7062a3a"><span class="cl-a701d52a">Tema</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="2" class="cl-a7064e2b"><p class="cl-a7062a3a"><span class="cl-a701d534">30 oct. al 03 nov. 2024</span></p></td><td class="cl-a7064e34"><p class="cl-a7062a3a"><span class="cl-a701d534">- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7064e34"><p class="cl-a7062a3a"><span class="cl-a701d534">- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td rowspan="2" class="cl-a7064e2b"><p class="cl-a7062a3a"><span class="cl-a701d535">06 al 09 nov. 2024</span></p></td><td class="cl-a7064e34"><p class="cl-a7062a3a"><span class="cl-a701d535">- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7064e34"><p class="cl-a7062a3a"><span class="cl-a701d535">- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7064e2b"><p class="cl-a7062a3a"><span class="cl-a701d535">13 al 16 nov. 2024</span></p></td><td class="cl-a7064e34"><p class="cl-a7062a3a"><span class="cl-a701d535">- Regresión lineal múltiple: Selección de variables; Multicolinealidad.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a7064e35"><p class="cl-a7062a3a"><span class="cl-a701d535"></span></p></td><td class="cl-a7064e36"><p class="cl-a7062a3a"><span class="cl-a701d535">- Confusión e interacción.</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-4cd496be{}.cl-4cc46870{font-family:'Arial';font-size:16pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4cc468a2{font-family:'Arial';font-size:16pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:rgba(255, 185, 15, 1.00);}.cl-4cc468a3{font-family:'Arial';font-size:16pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(102, 102, 102, 1.00);background-color:transparent;}.cl-4cca37dc{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4cca5cf8{width:2.534in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4cca5d02{width:17.615in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4cca5d03{width:2.534in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4cca5d04{width:17.615in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4cca5d0c{width:2.534in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4cca5d0d{width:17.615in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4cd496be"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4cca5cf8"><p class="cl-4cca37dc"><span class="cl-4cc46870">Semana</span></p></th><th class="cl-4cca5d02"><p class="cl-4cca37dc"><span class="cl-4cc46870">Tema</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="2" class="cl-4cca5d03"><p class="cl-4cca37dc"><span class="cl-4cc468a2">30 oct. al 03 nov. 2024</span></p></td><td class="cl-4cca5d04"><p class="cl-4cca37dc"><span class="cl-4cc468a2">- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4cca5d04"><p class="cl-4cca37dc"><span class="cl-4cc468a2">- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td rowspan="2" class="cl-4cca5d03"><p class="cl-4cca37dc"><span class="cl-4cc468a3">06 al 09 nov. 2024</span></p></td><td class="cl-4cca5d04"><p class="cl-4cca37dc"><span class="cl-4cc468a3">- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4cca5d04"><p class="cl-4cca37dc"><span class="cl-4cc468a3">- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4cca5d03"><p class="cl-4cca37dc"><span class="cl-4cc468a3">13 al 16 nov. 2024</span></p></td><td class="cl-4cca5d04"><p class="cl-4cca37dc"><span class="cl-4cc468a3">- Regresión lineal múltiple: Selección de variables; Multicolinealidad.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4cca5d0c"><p class="cl-4cca37dc"><span class="cl-4cc468a3"></span></p></td><td class="cl-4cca5d0d"><p class="cl-4cca37dc"><span class="cl-4cc468a3">- Confusión e interacción.</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 </div>
@@ -372,7 +437,7 @@
 <div style="margin-top: 2em;">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-a74028fc{}.cl-a735e84c{font-family:'Arial';font-size:20pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a735e856{font-family:'Arial';font-size:20pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a739ffd6{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a73a56ca{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56d4{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56d5{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56de{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56e8{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56e9{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56ea{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56eb{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56f2{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a73a56f3{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-a74028fc"><thead><tr style="overflow-wrap:break-word;"><th class="cl-a73a56ca"><p class="cl-a739ffd6"><span class="cl-a735e84c">Horario</span></p></th><th class="cl-a73a56d4"><p class="cl-a739ffd6"><span class="cl-a735e84c">Descripción</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a73a56d5"><p class="cl-a739ffd6"><span class="cl-a735e856">20:30hs</span></p></td><td class="cl-a73a56de"><p class="cl-a739ffd6"><span class="cl-a735e856">Ingreso a la videollamada</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a73a56e8"><p class="cl-a739ffd6"><span class="cl-a735e856">20:40hs</span></p></td><td class="cl-a73a56e9"><p class="cl-a739ffd6"><span class="cl-a735e856">Inicio de la clase</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a73a56e8"><p class="cl-a739ffd6"><span class="cl-a735e856">22:00hs</span></p></td><td class="cl-a73a56e9"><p class="cl-a739ffd6"><span class="cl-a735e856">Receso</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a73a56ea"><p class="cl-a739ffd6"><span class="cl-a735e856">22:15hs</span></p></td><td class="cl-a73a56eb"><p class="cl-a739ffd6"><span class="cl-a735e856">Continuación clase</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-a73a56f2"><p class="cl-a739ffd6"><span class="cl-a735e856">23:30hs</span></p></td><td class="cl-a73a56f3"><p class="cl-a739ffd6"><span class="cl-a735e856">Cierre</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-4d1671ba{}.cl-4d0a91d8{font-family:'Arial';font-size:20pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4d0a91e2{font-family:'Arial';font-size:20pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4d0ee5b2{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4d0f04a2{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04a3{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04ac{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04ad{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04ae{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04b6{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04b7{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04c0{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04c1{width:1.274in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4d0f04ca{width:3.451in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4d1671ba"><thead><tr style="overflow-wrap:break-word;"><th class="cl-4d0f04a2"><p class="cl-4d0ee5b2"><span class="cl-4d0a91d8">Horario</span></p></th><th class="cl-4d0f04a3"><p class="cl-4d0ee5b2"><span class="cl-4d0a91d8">Descripción</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4d0f04ac"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">18:30hs</span></p></td><td class="cl-4d0f04ad"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">Ingreso a la videollamada</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4d0f04ae"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">18:40hs</span></p></td><td class="cl-4d0f04b6"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">Inicio de la clase</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4d0f04ae"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">20:00hs</span></p></td><td class="cl-4d0f04b6"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">Receso</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4d0f04b7"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">20:15hs</span></p></td><td class="cl-4d0f04c0"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">Continuación clase</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4d0f04c1"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">21:30hs</span></p></td><td class="cl-4d0f04ca"><p class="cl-4d0ee5b2"><span class="cl-4d0a91e2">Cierre</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 </div>
@@ -449,9 +514,11 @@
 <li><code>GUI</code>: curva de aprendizaje inicial muy rápida. Luego pierde la capacidad de realizar tareas nuevas.</li>
 </ul>
 <p><br></p>
+<div class="fragment">
 <ul>
 <li><code>CLI</code>: curva de aprendizaje lenta inicialmente, a largo plazo las posibilidades de combinar y automatizar procesos permite una versatilidad mucho mayor y por lo tanto un mayor potencial creativo.</li>
 </ul>
+</div>
 </section>
 <section id="curvas-de-aprendizaje-1" class="slide level2">
 <h2>CURVAS DE APRENDIZAJE</h2>
@@ -509,26 +576,66 @@
 </ul>
 </div>
 </section>
+<section id="lenguaje-r-1" class="slide level2">
+<h2>LENGUAJE R</h2>
+<div class="fragment fade-in-then-semi-out">
+<ul>
+<li>Desarrollado por Ross Ihaka y Robert Gentleman de la Universidad de Auckland, Nueva Zelanda en 1995</li>
+</ul>
+</div>
+<div class="fragment fade-in-then-semi-out">
+<ul>
+<li>Inspirado en el lenguaje comercial <strong>S</strong> y <strong>S-plus</strong> usados desde los años 70</li>
+</ul>
+</div>
+<div class="fragment fade-in-then-semi-out">
+<ul>
+<li>El lenguaje R se basa en funciones con argumentos, de sintaxis muy precisa, que interactúan con estructuras de datos.</li>
+</ul>
+</div>
+<div class="fragment fade-in-then-semi-out">
+<ul>
+<li>Además de las funciones básicas se incorporan otras a partir de paquetes. Al día de hoy existen 21582 paquetes publicados en CRAN.</li>
+</ul>
+</div>
+</section>
+<section id="lenguaje-r-2" class="slide level2">
+<h2>LENGUAJE R</h2>
+<p>El instalador del lenguaje R trae incorporado un editor denominado R GUI que se visualiza cuando ejecutamos el acceso directo <code>R 4.4.1</code>:</p>
+
+<img data-src="images/RGui.PNG" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
+<section id="lenguaje-r-3" class="slide level2">
+<h2>LENGUAJE R</h2>
+<p><br></p>
+<div>
+<p>Existen otros editores, o mejor llamados, entornos de desarrollo integrado (<strong>IDE</strong> - <em>Integrated Development Environment </em>) como:</p>
+<ul>
+<li class="fragment"><p>RStudio (open source - Posit)</p></li>
+<li class="fragment"><p>VS Code (Visual Studio Code - Microsoft)</p></li>
+<li class="fragment"><p>Positron (open source - Posit - en desarrollo)</p></li>
+</ul>
+</div>
+</section>
 <section id="r-commander" class="slide level2">
 <h2>R-COMMANDER</h2>
 <div class="fragment fade-in-then-semi-out">
 <ul>
-<li>Interfaz gráfica con menúes desplegables y ventanas</li>
+<li>Interfaz gráfica con menúes desplegables y ventanas (<em>Point-and-Click</em>)</li>
 </ul>
 </div>
 <div class="fragment fade-in-then-semi-out">
 <ul>
-<li>Acceso a script con funciones</li>
+<li>Acceso a script con funciones (<em>ventana de instrucciones</em>)</li>
 </ul>
 </div>
 <div class="fragment fade-in-then-semi-out">
 <ul>
-<li>Posibilidad de extender con plugins</li>
+<li>Posibilidad de extender con plugins (<em>paquetes especiales</em>)</li>
 </ul>
 </div>
 <div class="fragment fade-in-then-semi-out">
 <ul>
-<li>Desarrollada y mantenida por John Fox, profesor emérito de la Facultad de Ciencias Sociales de la Universidad de McMaster (Ontario, Canadá)</li>
+<li>Desarrollada y mantenida por John Fox, profesor emérito de la Facultad de Ciencias Sociales de la Universidad de McMaster - Ontario, Canadá.</li>
 </ul>
 </div>
 </section>
@@ -613,7 +720,8 @@
 <li>Stata</li>
 <li>Microsoft Excel</li>
 </ul>
-</div></div>
+</div>
+</div>
 </section>
 <section id="importación-de-datos-1" class="slide level2">
 <h2>IMPORTACIÓN DE DATOS</h2>
@@ -672,10 +780,43 @@
 </ul></li>
 <li>Fecha / hora (Date / datetime)
 <ul>
-<li><em>“2024-10-30”</em>, <em>“2024-10-30 18:00:00”</em></li>
+<li><em>“2024-10-30”</em>, <em>“2024-10-30 18:30:00”</em></li>
 </ul></li>
 </ul>
-</div></div>
+</div>
+</div>
+</section>
+<section id="tipo-de-dato-factor" class="slide level2">
+<h2>TIPO DE DATO FACTOR</h2>
+<p><br></p>
+<p>Son un tipo de dato que se emplea para trabajar con variables que tienen un conjunto fijo de valores posibles (niveles).</p>
+<div class="fragment">
+<ul>
+<li>Representan a variables categóricas y tienen etiquetas asociadas a valores enteros únicos (internos).</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><p>Pueden estar ordenados o desordenados.</p>
+<p>Por defecto, los niveles se ordenan alfabéticamente.</p></li>
+</ul>
+</div>
+</section>
+<section id="sobre-los-datos" class="slide level2">
+<h2>SOBRE LOS DATOS</h2>
+<p><br></p>
+
+<img data-src="images/flujo.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><p>Las tablas de datos con las que trajaremos durante la cursada están ordenadas, depuradas y preprocesadas para sólo centrarnos en el análisis.</p>
+<p>En la práctica, esto no ocurre y generalmente hay que dedicarle un largo tiempo al preproceso que nos lleva de los <strong>datos crudos</strong> a los <strong>datos limpios</strong>.</p>
+</section>
+<section id="datos-faltantes-na" class="slide level2">
+<h2>DATOS FALTANTES (NA)</h2>
+<p><br></p>
+<ul>
+<li><p>El lenguaje R utiliza el valor reservado <code>NA</code> (Not Available), que significa <em>“No Disponible”</em>, para representar datos faltantes, perdidos o omitidos.</p></li>
+<li><p>Este tipo de datos tiene comportamiento particular que obliga a un tratamiento especial.</p></li>
+<li><p>En el marco de los modelos, cuando una variable tiene algún valor faltante (NA) en alguna observación, y participa del modelo de regresión, se omite automáticamente la observación completa.</p></li>
+</ul>
 </section>
 <section id="importación-de-datos-2" class="slide level2">
 <h2>IMPORTACIÓN DE DATOS</h2>
@@ -704,11 +845,36 @@
 <p><img data-src="images/Datos2.PNG" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
+<section id="exploración" class="slide level2">
+<h2>EXPLORACIÓN</h2>
+<p><br></p>
+<p>Una tarea inicial, luego de haber importado una tabla de datos, es explorar su contenido.</p>
+<p>La forma más sencilla de realizarla es solicitar que R nos muestre la estructura. Para esto, escribimos y Ejecutamos la siguiente línea de código:</p>
+<p><br></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">str</span>(bajo_peso)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exploración-1" class="slide level2">
+<h2>EXPLORACIÓN</h2>
+<p><br></p>
+<p>En la ventana de resultados visualizaremos la estructura de la tabla de datos:</p>
+
+<img data-src="images/Estructura.PNG" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
+<section id="detección-de-valores-na" class="slide level2">
+<h2>DETECCIÓN DE VALORES NA</h2>
+<p><br></p>
+<p>Otra exploración que realizamos al inicio es la detección de valores faltantes en las variables del conjunto de datos.</p>
+<p>Pulsando sobre <code>Estadísticos -&gt; Resúmenes -&gt; Número de observaciones ausentes</code>.</p>
+<p><br></p>
+
+<img data-src="images/Valores_NA.PNG" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
 <section id="gestion-de-datos" class="slide level2">
 <h2>GESTION DE DATOS</h2>
-<p>El menú <strong>Datos -&gt; Modificar variables del conjunto de datos activo</strong> nos ofrece realizar las siguientes gestiones con datos:</p>
+<p>El menú <code>Datos -&gt; Modificar variables del conjunto de datos activo</code> nos ofrece realizar las siguientes gestiones con datos:</p>
 <div>
 <ul>
 <li class="fragment">Recodificar variables</li>
@@ -741,7 +907,8 @@
 <p><img data-src="images/Numerica-factor3.PNG" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
 <section id="factores-2" class="slide level2">
 <h2>FACTORES</h2>
@@ -774,7 +941,8 @@
 <p><img data-src="images/Reordenar_factor2.PNG" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
 <section id="factores-4" class="slide level2">
 <h2>FACTORES</h2>
@@ -815,9 +983,43 @@
 <p><img data-src="images/Estadisticos3.PNG" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
 <section id="estadisticos-2" class="slide level2">
+<h2>ESTADISTICOS</h2>
+<p><br></p>
+<p>Estos menúes nos van a permitir explorar estadísticamente los datos y conocer la distribución de las variables de interés a partir de:</p>
+<div>
+<ul>
+<li class="fragment">Resumir datos mediante estadísticos</li>
+<li class="fragment">Resumir datos mediante gráficos</li>
+<li class="fragment">Detectar patrones y relaciones entre variables</li>
+<li class="fragment">Detectar valores atípicos (outlier) e influyentes</li>
+</ul>
+</div>
+</section>
+<section id="estadisticos-3" class="slide level2">
+<h2>ESTADISTICOS</h2>
+<p>Por ejemplo, vamos a poder describir una variable mediante:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Cuantitativas</strong></p>
+<ul>
+<li>Tendencial central: media, mediana</li>
+<li>Dispersión: varianza, desvío estándar, intervalo intercuartílico</li>
+<li>Posición: mínimo, máximo, quartiles</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Cualitativas</strong></p>
+<ul>
+<li>Tabla de frecuencias absolutas</li>
+<li>Tabla de frecuencias relativas</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="estadisticos-4" class="slide level2">
 <h2>ESTADISTICOS</h2>
 <p>Cuando ajustemos modelos de regresión utilizaremos las opciones:</p>
 
@@ -858,7 +1060,8 @@
 <p><img data-src="images/Instalacion_plugin3.PNG" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
 <section id="plugins-2" class="slide level2">
 <h2>PLUGINS</h2>
@@ -876,7 +1079,8 @@
 <p><img data-src="images/Instalacion_plugin5.PNG" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
 <section id="graficos-1" class="slide level2 smaller">
 <h2>GRAFICOS</h2>
@@ -897,6 +1101,7 @@
 </section>
 <section id="graficos-2" class="slide level2">
 <h2>GRAFICOS</h2>
+<p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
@@ -910,10 +1115,12 @@
 <p><img data-src="images/Boxplot.PNG" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
 <section id="graficos-3" class="slide level2">
 <h2>GRAFICOS</h2>
+<p><br></p>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
@@ -927,8 +1134,29 @@
 <p><img data-src="images/Scatter.PNG" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
 </figure>
 </div>
-</div></div>
+</div>
+</div>
 </section>
+<section id="graficos-4" class="slide level2">
+<h2>GRAFICOS</h2>
+<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>En el marco de la exploración descriptiva de los datos, es muy valiosa la información sobre la distribución de una variable cuantitativa que nos brindan los boxplots.</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/boxplot_explicado.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="graficos-5" class="slide level2">
+<h2>GRAFICOS</h2>
+<p>Otro gráfico importante es el <strong>Q-Q plot</strong> (gráfico quantil-quantil) para ver si la distribución de la variable cuantitativa se aproxima a una distribución teórica (Normal).</p>
+
+<img data-src="images/qqplot_explicado.webp" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
 <section id="modelos" class="slide level2">
 <h2>MODELOS</h2>
 <p><br></p>
@@ -1599,7 +1827,18 @@
         }
         return false;
       }
-      const onCopySuccess = function(e) {
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1631,29 +1870,7 @@
         }, 1000);
         // clear code selection
         e.clearSelection();
-      }
-      const getTextToCopy = function(trigger) {
-          const codeEl = trigger.previousElementSibling.cloneNode(true);
-          for (const childEl of codeEl.children) {
-            if (isCodeAnnotation(childEl)) {
-              childEl.remove();
-            }
-          }
-          return codeEl.innerText;
-      }
-      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-        text: getTextToCopy
       });
-      clipboard.on('success', onCopySuccess);
-      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-        // For code content inside modals, clipBoardJS needs to be initialized with a container option
-        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-          text: getTextToCopy,
-          container: window.document.getElementById('quarto-embedded-source-code-modal')
-        });
-        clipboardModal.on('success', onCopySuccess);
-      }
         var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
         var mailtoRegex = new RegExp(/^mailto:/);
           var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1661,7 +1878,7 @@
             return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
         }
         // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
         for (var i=0; i<links.length; i++) {
           const link = links[i];
           if (!isInternal(link.href)) {
