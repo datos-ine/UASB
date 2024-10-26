@@ -581,7 +581,7 @@ str(bajo_peso)
 
 En la ventana de resultados visualizaremos la estructura de la tabla de datos:
 
-![](images/Estructura.PNG){fig-align="center" width="100%"}
+![](images/estructura.PNG){fig-align="center" width="100%"}
 
 ## DETECCIÓN DE VALORES NA
 
@@ -593,7 +593,7 @@ Pulsando sobre `Estadísticos -> Resúmenes -> Número de observaciones ausentes
 
 <br>
 
-![](images/Valores_NA.PNG){fig-align="center" width="100%"}
+![](images/valores_NA.PNG){fig-align="center" width="100%"}
 
 ## GESTION DE DATOS
 
