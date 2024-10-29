@@ -1,0 +1,175 @@
+---
+format: 
+  revealjs: 
+    chalkboard: true
+    logo: logos_ine.png
+    incremental: false
+    slide-number: true
+    #footer: "Programa de Maestría en Epidemiología para la Salud Pública"
+    css: custom.css
+---
+
+```{r}
+#| echo: false
+# Configuración global
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+# Paquetes necesarios
+pacman::p_load(
+  flextable,
+  patchwork,
+  rio,
+  janitor,
+  tidyverse
+)
+```
+
+## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
+
+:::: {style="margin-top: 1.5em;"}
+Docentes: Tamara Ricardo, Christian Ballejo
+
+::: {style="font-size: .75em; margin-bottom: 1.5em;"}
+Programa de Maestría en Epidemiología para la Salud Pública
+:::
+
+![](logos_ine.png){fig-align="center" width="70%"}
+::::
+
+## OBJETIVOS DE LA UNIDAD
+
+::: incremental
+-   **Desarrollar habilidades en el uso de la estadística** como herramienta para la investigación epidemiológica.
+
+-   **Adquirir competencias básicas en R y RCommander** para realizar análisis de datos en salud pública.
+
+-   Aprender a ajustar, interpretar y evaluar modelos de **regresión lineal simple y múltiple**.
+
+-   **Comprender los conceptos de confusión e interacción** y su impacto en los análisis estadísticos.
+:::
+
+
+## PROGRAMA DE LA UNIDAD
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla 
+tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2), 
+                  rep("06 al 09 nov. 2024", 2),
+                  "13 al 16 nov. 2024", ""),      
+          
+      Tema = c("- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.",
+               "- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).",
+               "- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).",
+               "- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.",
+               "- Regresión lineal múltiple: Selección de variables; Multicolinealidad.",
+               "- Confusión e interacción.")
+      ) |>    
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 16, part = "all") |>   
+  merge_v() |>  
+  color(i = 3:6, color = "gray40") |> 
+  highlight(i = 5, color = "#FFB90F") |> 
+  autofit() 
+```
+:::
+
+## ESTRUCTURA DE LA CLASE
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla
+tibble(
+  Horario = c("18:30hs", 
+             "18:40hs", 
+             "20:00hs",
+             "20:15hs", 
+             "21:30hs"),
+  
+  Descripción = c("Ingreso a la videollamada", 
+                  "Inicio de la clase",
+                  "Receso", 
+                  "Continuación clase", 
+                  "Cierre")
+) |> 
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 20, part = "all") |>   
+  merge_v() |>  
+  autofit() 
+
+```
+:::
+
+## OBJETIVOS DE HOY
+
+::: incremental
+-   
+
+:::
+
+## CONFUSIÓN {transition="zoom"}
+
+Definición diccionario epidemiologia
+
+## SESGOS EN ESTUDIOS EPIDEMIOLÓGICOS
+
+sesgos en estudios epidemiológicos
+sesgo de confusión
+
+## MODELOS TEÓRICOS - DAG
+
+modelos teóricos, inferencia causal, DAG
+
+## ROL DE LAS COVARIABLES
+
+variables confundidoras y mediadoras
+
+ejemplos en DAG, ejemplo en la practica
+
+## CONTROL DE LA CONFUSIÓN
+
+control en distintas etapas del estudio
+control en la regresión multiple
+
+## INTERPRETACIÓN EN LA RLM
+
+Interpretación del ajuste y cuando detectar que hay confusion en la regresion
+
+## SOSPECHA EN LA EXPLORACIÓN
+
+sospecha gráfica
+ejemplos
+
+## EJEMPLO EN RCOMMANDER
+
+buscar ejemplo completo
+
+## INTERACCIÓN{transition="zoom"}
+
+Definición diccionario epidemiologia
+
+## DAG CON INTERACCIÓN
+
+modelo DAG y ejemplo
+
+## INTERPRETACIÓN EN LA RLM
+
+interpretación de coeficientes en la RLM
+ejemplos
+
+## SOSPECHA EN LA EXPLORACIÓN
+
+sospecha en gráficos
+
+## EJEMPLO EN RCOMMANDER
+
+ejemplo completo
