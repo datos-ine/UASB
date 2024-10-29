@@ -48,7 +48,8 @@ Programa de Maestría en Epidemiología para la Salud Pública
 
 -   Aprender a ajustar, interpretar y evaluar modelos de **regresión lineal simple y múltiple**.
 
--   **Comprender los conceptos de confusión e interacción** y su impacto en los análisis estadísticos.
+-   **Comprender los conceptos de confusión e interacción**, el abordaje durante el análisis y su impacto en la interpretación de resultados.
+
 :::
 
 
@@ -61,12 +62,12 @@ tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2),
                   rep("06 al 09 nov. 2024", 2),
                   "13 al 16 nov. 2024", ""),      
           
-      Tema = c("- Introducción a los paquetes / lenguajes estadísticos: GUI vs CLI; privativos vs gratuitos/open source.",
-               "- R / R-Commander: Menúes; Lectura de archivos de datos; Estadística descriptiva; Agrupamiento de variables; Factores; Guardado de script y resultados; Paquetes y plugins).",
-               "- Relación entre variables: Covarianza; Correlación (Pearson, Spearman, Kendall).",
-               "- Regresión lineal simple: Presupuestos; Bondad de ajuste; Coeficiente de determinación; Análisis de residuales; Interpretación.",
-               "- Regresión lineal múltiple: Selección de variables; Multicolinealidad.",
-               "- Confusión e interacción.")
+      Tema = c("- Introducción a los Paquetes y Lenguajes Estadístico. Diferencias entre interfaces gráficas (GUI) y de línea de comandos (CLI). Comparativa entre software privativo y gratuito/open source.",
+               "- R y R-Commander. Navegación del menú. Lectura e importación de archivos de datos. Estadística descriptiva. Agrupamiento de variables. Manejo de factores. Guardado de scripts y resultados. Paquetes y plugins.",
+               "- Relación entre variables numéricas. Covarianza y representación gráfica. Limitaciones. Correlación de Pearson: interpretación del signo y la magnitud.Visualización con correlogramas. Métodos no paramétricos: correlación de Spearman y de Kendall.",
+               "- Introducción al Modelado Estadístico. Modelo lineal general: concepto y supuestos. Bondad de ajuste y análisis de residuos. Regresión lineal simple y análisis de la varianza (ANOVA). Interpretación de los resultados.",
+               "- Regresión Lineal Múltiple. Selección de variables explicativas y control de multicolinealidad. Análisis e interpretación de residuos.",
+               "- Confusión e Interacción. Identificación y roles de las covariables. Control y detección de la confusión. Interpretación de resultados en presencia de interacción.")
       ) |>    
   
   #  Genera tabla    
