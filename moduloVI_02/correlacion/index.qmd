@@ -665,8 +665,6 @@ tibble(
 
     -   Este archivo contiene variables socioeconómicas y de salud para distintos países.
 
-<!-- -->
-
 -   **Análisis de Correlación**:
 
     -   Realizar gráficos de dispersión entre la **esperanza de vida** y las variables independientes.
@@ -680,3 +678,9 @@ tibble(
     -   Si hay valores atípicos o distribuciones no normales, elegir Spearman o Kendall.
 
     -   Visualizar todas las correlaciones mediante una **matriz de correlación** o un **correlograma**.
+
+-   **Interpretación de resultados:**
+
+    -   Elaborar un informe con los resultados obtenidos, incorporando las gráficas y capturas de pantalla que consideren necesarias.
+
+    -   Entregar un solo informe por grupo.
