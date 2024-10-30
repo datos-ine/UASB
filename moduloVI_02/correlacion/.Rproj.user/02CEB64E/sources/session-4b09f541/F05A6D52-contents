@@ -1,0 +1,6 @@
+data <- data |> 
+  mutate(median_age_cat = fct_recode(median_age_cat,
+                                     "23-38 yrs" = "[23.3,38]",
+                                     "38-41 yrs" = "(38,41.1]",
+                                     "41-44 yrs" = "(41.1,44.2]",
+                                     "44-57 yrs" = "(44.2,57.1]"))

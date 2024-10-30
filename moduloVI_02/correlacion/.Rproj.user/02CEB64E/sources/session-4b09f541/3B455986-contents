@@ -24,7 +24,7 @@
 
 /* Cambia el tamaño de letra de los elementos de lista de segundo nivel */
 ul li ul li {
-  font-size: 0.9em; /* Ajusta el tamaño aquí, por ejemplo, 0.85em para reducir */
+  font-size: 0.85em; /* Ajusta el tamaño aquí, por ejemplo, 0.85em para reducir */
 }
 /* Aplicar imagen de fondo a todas las diapositivas */
 .reveal::before {
