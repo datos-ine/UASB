@@ -779,7 +779,7 @@ Los gráficos estándar que RCommander trae incorporados se basan en el sistema 
 
 . . .
 
-El **plugin KMggplot2** extendiende las funciones de RCommander e incluye también curvas de Kaplan Meier que verán en el módulo siguiente con el análisis de supervivencia.
+El **plugin KMggplot2** extendiende las funciones de RCommander e incluye también curvas de Kaplan Meier que verán en la unidad siguiente con el análisis de supervivencia.
 
 . . . 
 
