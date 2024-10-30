@@ -343,9 +343,8 @@ Existen otros editores, o mejor llamados, entornos de desarrollo integrado (**ID
 
 4. Ejecutamos RCommander ejecutando `library(Rcmdr)`
 
-. . . 
+5. Ejecutamos `Commander()` si queremos volver a entrar desde R Gui.
 
-Vamos a mostrarlo...
 
 ## ENTORNO PRINCIPAL
 
