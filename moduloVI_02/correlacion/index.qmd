@@ -129,7 +129,7 @@ tibble(
 
 ## Covarianza ($Cov_{XY}$)
 
--   La **covarianza** es una medida estadística que indica el grado de variabilidad conjunta de dos variables cuantitativas $X$ e $Y$:
+-   La **covarianza** es una medida estadística que indica el grado de variabilidad conjunta de dos variables cuantitativas $X$ e $Y$
 
     -   **Covarianza positiva**: ambas variables aumentan o disminuyen en simultáneo.
 
@@ -141,17 +141,13 @@ tibble(
 
 -   La covarianza entre dos variables $X$ e $Y$ se expresa como:
 
-::: fragment
-$$Cov_{XY} = \frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})  $$
+    $$Cov_{XY} = \frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})  $$
 
-donde:
+    donde:
 
--   $X_i$ e $Y_i$ son los valores individuales de las variables.
-
--   $\bar{X}_i$ y $\bar{Y}_i$ son las medias de las variables $X$ e $Y$.
-
--   $n$ es el número de pares de datos.
-:::
+    -   $X_i$ e $Y_i$ son los valores individuales de las variables.
+    -   $\bar{X}_i$ y $\bar{Y}_i$ son las medias de las variables $X$ e $Y$.
+    -   $n$ es el número de pares de datos.
 
 ------------------------------------------------------------------------
 
@@ -295,9 +291,9 @@ No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ 
 
 ------------------------------------------------------------------------
 
-## Ejemplo en RCommander
+## Ejemplo en R Commander
 
--   Activar RCommander (`library(Rcmdr)`) y el plugin `KMggplot2`.
+-   Activar R Commander (`library(Rcmdr)`) y el plugin `KMggplot2`.
 
 -   Importar datos desde `Datos > Importar datos> desde archivos de texto, portapapeles o URL...`
 
@@ -328,14 +324,13 @@ No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ 
 
 -   Es una medida adimensional, obtenida al estandarizar la covarianza entre dos variables $X$ e $Y$:
 
-::: {.fragment style="font-size: 0.75em;"}
-$$r = \frac{Cov_{XY}}{S_xS_y} $$
+    $$r = \frac{Cov_{XY}}{S_xS_y} $$
 
-donde:
+    donde:
 
--   $Cov_{XY}$ es la covarianza entre las variables $X$ e $Y$.
--   $S_x$ y $S_y$ son las desviaciones estándar de las variables $X$ e $Y$.
-:::
+    -   $Cov_{XY}$ es la covarianza entre las variables $X$ e $Y$.
+
+    -   $S_x$ y $S_y$ son las desviaciones estándar de las variables $X$ e $Y$.
 
 ------------------------------------------------------------------------
 
@@ -532,11 +527,11 @@ tibble(
 
 ```
 
-## Ejemplo en RCommander
+## Ejemplo en R Commander
 
--   Activar RCommander (`library(Rcmdr`) y el plugin `KMggplot2`.
+-   Activar R Commander (`library(Rcmdr`) y el plugin `KMggplot2`.
 
--   Cargar los datos del ejemplo de covarianza ("`cancer_rls.txt`").
+-   Cargar los datos del ejemplo de covarianza ("`cancer.txt`").
 
 -   Ir a **Estadísticos \> Resúmenes \> Test de correlación** para probar la correlación entre dos variables como `median_age` y `target_death_rate`.
 
@@ -560,7 +555,7 @@ tibble(
 
     -   Estos gráficos muestran tanto la matriz de correlaciones como signos y/o coeficientes.
 
-    -   RCommander no incluye una opción para realizarlos, pero podemos utilizar el paquete `GGally`.
+    -   R Commander no incluye una opción para realizarlos, pero podemos utilizar el paquete `GGally`.
 
     -   Para ello vamos al menú `Herramientas>Cargar paquetes`, seleccionamos `GGally` de la lista y presionamos **Aceptar**.
 
@@ -586,9 +581,9 @@ tibble(
 
 ### INTERPRETACIÓN
 
--   La **tasa de mortalidad por cáncer** (`target_death_rate`) tiene una correlación positiva con la **pobreza** (`poverty_percent`) y la **cobertura de salud pública** (`pct_public_coverage`).
+-   La **tasa de mortalidad por cáncer** (`target_death_rate`) tiene una correlación positiva con la **pobreza porcentual** (`poverty_percent`) y la **cobertura de salud pública** (`pct_public_coverage`).
 
--   La **edad promedio de la población** (`median_age`) muestra una correlación negativa con la mortalidad por cáncer.
+-   La **mediana de** **edad de la población** (`median_age`) muestra una correlación negativa con la mortalidad por cáncer.
 
 -   Las tres variables tienen una correlación baja con la tasa de mortalidad por cáncer, lo que sugiere una relación débil.
 
@@ -643,7 +638,7 @@ tibble(
     -   $n_c$ y $n_d$ son los pares concordantes o discordantes.
     :::
 
-## Ejemplo en RCommander
+## Ejemplo en R Commander
 
 -   Para comparar variables numéricas mediante correlación de Spearman vamos al menú `Estadísticos > Resúmenes > Matriz de correlaciones` y seleccionamos la opción `Coeficiente de Spearman`.
 
@@ -665,8 +660,6 @@ tibble(
 
     -   Este archivo contiene variables socioeconómicas y de salud para distintos países.
 
-<!-- -->
-
 -   **Análisis de Correlación**:
 
     -   Realizar gráficos de dispersión entre la **esperanza de vida** y las variables independientes.
@@ -680,3 +673,9 @@ tibble(
     -   Si hay valores atípicos o distribuciones no normales, elegir Spearman o Kendall.
 
     -   Visualizar todas las correlaciones mediante una **matriz de correlación** o un **correlograma**.
+
+-   **Interpretación de resultados:**
+
+    -   Elaborar un informe con los resultados obtenidos, incorporando las gráficas y capturas de pantalla que consideren necesarias.
+
+    -   Entregar un solo informe por grupo.

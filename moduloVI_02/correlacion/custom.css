@@ -7,7 +7,7 @@
     background: #2F2E4E;
     color: white; 
     text-indent: 10px;         /* Ajusta la sangría en píxeles */
-    padding: 15px;             /* Espaciado interno para que el texto no esté pegado al borde */
+    padding: 10px;             /* Espaciado interno para que el texto no esté pegado al borde */
     border-radius: 20px;        /* Bordes redondeados opcionales */
     
 }
@@ -22,6 +22,10 @@
     color: #2F2E4E;
 }
 
+/* Cambia el tamaño de letra de los elementos de lista de segundo nivel */
+ul li ul li {
+  font-size: 0.9em; /* Ajusta el tamaño aquí, por ejemplo, 0.85em para reducir */
+}
 /* Aplicar imagen de fondo a todas las diapositivas */
 .reveal::before {
     content: "";
