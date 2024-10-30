@@ -39,6 +39,15 @@ Programa de Maestría en Epidemiología para la Salud Pública
 ![](logos_ine.png){fig-align="center" width="70%"}
 ::::
 
+## OBJETIVO GENERAL DEL MÓDULO
+
+<br>
+
+::: {style="font-size: 1.2em;"}
+Comprender los fundamentos y aplicaciones de los modelos lineales generalizados —incluyendo regresión lineal múltiple, regresión logística y el modelo de Cox— para interpretar adecuadamente los resultados de análisis de datos en salud pública y apoyar la toma de decisiones.
+:::
+
+
 ## OBJETIVOS DE LA UNIDAD
 
 ::: incremental
