@@ -900,29 +900,17 @@ La extensión KMggplot2 nos va a permitir hacer:
 
 ## GRAFICOS
 
-<br>
-
-:::: {.columns}
-
-::: {.column width="50%"}
 
 En el marco de la exploración descriptiva de los datos, es muy valiosa la información sobre la distribución de una variable cuantitativa que nos brindan los boxplots.
 
-:::
+![](images/boxplot.jpg){fig-align="center"}
 
-::: {.column width="50%"}
-
-![](images/boxplot_explicado.png){fig-align="center" width="100%"}
-
-:::
-
-::::
 
 ## GRAFICOS
 
 Otro gráfico importante es el **Q-Q plot** (gráfico quantil-quantil) para ver si la distribución de la variable cuantitativa se aproxima a una distribución teórica (Normal).
 
-![](images/qqplot_explicado.webp){fig-align="center" width="100%"}
+![](images/qqplot2.PNG){fig-align="center"}
 
 ## MODELOS
 
