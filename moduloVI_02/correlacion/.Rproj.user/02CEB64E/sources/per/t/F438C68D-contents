@@ -456,7 +456,7 @@ check_model(fit, check = c("homogeneity", "outliers"))
 
     -   `Estimate`: valores del intercepto y de la pendiente
 
-    -   `Std. error`: errores estándar del intercepto y la pendiente.
+    -    `Std. error`: errores estándar del intercepto y la pendiente.
 
     -   `t value`: estadístico $t$
 
