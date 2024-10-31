@@ -39,6 +39,15 @@ Programa de Maestría en Epidemiología para la Salud Pública
 ![](logos_ine.png){fig-align="center" width="70%"}
 ::::
 
+## OBJETIVO GENERAL DEL MÓDULO
+
+<br>
+
+::: {style="font-size: 1.2em;"}
+Comprender los fundamentos y aplicaciones de los modelos lineales generalizados —incluyendo regresión lineal múltiple, regresión logística y el modelo de Cox— para interpretar adecuadamente los resultados de análisis de datos en salud pública y apoyar la toma de decisiones.
+:::
+
+
 ## OBJETIVOS DE LA UNIDAD
 
 ::: incremental
@@ -334,9 +343,8 @@ Existen otros editores, o mejor llamados, entornos de desarrollo integrado (**ID
 
 4. Ejecutamos RCommander ejecutando `library(Rcmdr)`
 
-. . . 
+5. Ejecutamos `Commander()` si queremos volver a entrar desde R Gui.
 
-Vamos a mostrarlo...
 
 ## ENTORNO PRINCIPAL
 
@@ -771,7 +779,7 @@ Los gráficos estándar que RCommander trae incorporados se basan en el sistema 
 
 . . .
 
-El **plugin KMggplot2** extendiende las funciones de RCommander e incluye también curvas de Kaplan Meier que verán en el módulo siguiente con el análisis de supervivencia.
+El **plugin KMggplot2** extendiende las funciones de RCommander e incluye también curvas de Kaplan Meier que verán en la unidad siguiente con el análisis de supervivencia.
 
 . . . 
 
@@ -892,29 +900,17 @@ La extensión KMggplot2 nos va a permitir hacer:
 
 ## GRAFICOS
 
-<br>
-
-:::: {.columns}
-
-::: {.column width="50%"}
 
 En el marco de la exploración descriptiva de los datos, es muy valiosa la información sobre la distribución de una variable cuantitativa que nos brindan los boxplots.
 
-:::
+![](images/boxplot.jpg){fig-align="center"}
 
-::: {.column width="50%"}
-
-![](images/boxplot_explicado.png){fig-align="center" width="100%"}
-
-:::
-
-::::
 
 ## GRAFICOS
 
 Otro gráfico importante es el **Q-Q plot** (gráfico quantil-quantil) para ver si la distribución de la variable cuantitativa se aproxima a una distribución teórica (Normal).
 
-![](images/qqplot_explicado.webp){fig-align="center" width="100%"}
+![](images/qqplot2.PNG){fig-align="center"}
 
 ## MODELOS
 
