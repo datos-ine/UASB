@@ -1,0 +1,144 @@
+## Carga paquetes
+pacman::p_load(
+  rio,
+  janitor,
+  GGally,
+  gtsummary,
+  performance,
+  tidyverse
+)
+
+
+### Carga datos
+datos <- import("../enterobacterias.txt") |> 
+  
+  mutate(tratamiento = paste("Trat.", tratamiento)) |> 
+  
+  select(enterobacterias, tratamiento, dias_almacenamiento, histamina:cadaverrina)
+
+
+## Guarda datos
+export(datos, file = "../enterobacterias.txt", format = ";")
+
+
+# Explora datos -----------------------------------------------------------
+glimpse(datos)
+
+skimr::skim(datos)
+
+## Análisis VR
+# Histograma
+datos |> 
+  ggplot(aes(x = enterobacterias)) +
+  
+  geom_histogram(fill = "orange") +
+  
+  theme_minimal()
+
+# qqplot
+datos |> 
+  ggplot(aes(sample = enterobacterias)) + 
+  
+  geom_qq() +
+  geom_qq_line() +
+  
+  theme_minimal()
+
+# Boxplot
+datos |> 
+  ggplot(aes(x = tratamiento, y = enterobacterias, fill = tratamiento)) +
+  
+  geom_boxplot() +
+  
+  theme_minimal()
+
+
+## Correlación
+# ggpairs
+datos |> 
+  select(where(is.numeric)) |> 
+  
+  ggpairs()
+
+# correlograma
+datos |> 
+  select(where(is.numeric)) |> 
+  
+  ggcorr()
+
+
+## Modelo simple para días de almacenamiento
+mod1 <- lm(enterobacterias ~ dias_almacenamiento, data = datos)
+
+summary(mod1)
+
+anova(mod1)
+
+check_model(mod1)
+
+check_normality(mod1)
+
+check_heteroscedasticity(mod1)
+
+check_outliers(mod1)
+
+
+## Modelo simple para histamina
+mod2 <- lm(enterobacterias ~ histamina, data = datos)
+
+summary(mod2)
+
+anova(mod2)
+
+check_model(mod2)
+
+check_normality(mod2)
+
+check_heteroscedasticity(mod2)
+
+check_outliers(mod2)
+
+## Modelo simple para tiramina
+mod3 <- lm(enterobacterias ~ tiramina, data = datos)
+
+summary(mod3)
+
+anova(mod3)
+
+check_model(mod3)
+
+check_normality(mod3)
+
+check_heteroscedasticity(mod3)
+
+check_outliers(mod3)
+
+## Modelo simple para putrescina
+mod4 <- lm(enterobacterias ~ putrescina, data = datos)
+
+summary(mod4)
+
+anova(mod4)
+
+check_model(mod4)
+
+check_normality(mod4)
+
+check_heteroscedasticity(mod4)
+
+check_outliers(mod4)
+
+## Modelo simple para cadaverrina
+mod5 <- lm(enterobacterias ~ cadaverrina, data = datos)
+
+summary(mod5)
+
+anova(mod5)
+
+check_model(mod5)
+
+check_normality(mod5)
+
+check_heteroscedasticity(mod5)
+
+check_outliers(mod5)

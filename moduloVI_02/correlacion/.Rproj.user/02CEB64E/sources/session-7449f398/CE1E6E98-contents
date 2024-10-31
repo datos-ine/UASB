@@ -1,0 +1,229 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+## ------------------------------------------------------------------------
+
+\![\](images/clipboard-1173782349.png)
+
+\`\`\`{r}
+
+cor.test(datos\$mediana_edad, datos\$tasa_mortalidad)
+
+\`\`\`
+
+------------------------------------------------------------------------
+
+::::: columns
+
+::: {.column width="50%"}
+
+\![\](images/clipboard-747358656.png)
+
+:::
+
+::: {.column width="50%"}
+
+\`\`\`{r}
+
+datos \|\>
+
+select(where(is.numeric)) \|\>
+
+cor()
+
+\`\`\`
+
+:::
+
+:::::
+
+------------------------------------------------------------------------
+
+\### Visualización
+
+\- Podemos visualizar la matriz de correlación desde el menú \`KMggplot2 \> Scatter matrix\`.
+
+\- También podemos representarla usando \*\*correlogramas.\*\*
+
+ - Estos gráficos muestran tanto la matriz de correlaciones como signos y/o coeficientes.
+
+ - R Commander no incluye una opción para realizarlos, pero podemos utilizar el paquete \`GGally\`.
+
+ - Para ello vamos al menú \`Herramientas\>Cargar paquetes\`, seleccionamos \`GGally\` de la lista y presionamos \*\*Aceptar\*\*.
+
+------------------------------------------------------------------------
+
+\#### Scatter matrix
+
+\![\](images/clipboard-505853380.png)
+
+------------------------------------------------------------------------
+
+\#### ggpairs(datos)
+
+\`\`\`{r}
+
+datos \|\>
+
+select(where(is.numeric)) \|\>
+
+ggpairs()
+
+\`\`\`
+
+------------------------------------------------------------------------
+
+\#### ggcorr(datos, method = c("pairwise", "pearson"))
+
+\`\`\`{r}
+
+datos \|\>
+
+select(where(is.numeric)) \|\>
+
+ggcorr()
+
+\`\`\`
+
+------------------------------------------------------------------------
+
+\### INTERPRETACIÓN
+
+\- Existe una correlación positiva fuerte entre \`pct_pobreza\` y \`pct_salud_publica\`.
+
+\- Existe correlación negativa fuerte entre \`mediana_ingresos\`, \`pct_pobreza\` y \`pct_salud_publica\`.
+
+\- La \*\*mediana de\*\* \*\*ingresos de la población\*\* (\`mediana_ingresos\`) muestra una correlación negativa fuerte con la mortalidad por cáncer (\`tasa_mortalidad\`).
+
+\- Las demás variables presentan una correlación positiva débil con \`tasa_mortalidad\`.
+
+\## Correlaciones no paramétricas
+
+\- Los métodos de correlación no paramétricos, como los coeficientes de Spearman y Kendall, se utilizan cuando:
+
+ - Los datos \*\*no tienen una relación lineal\*\*.
+
+ - No cumplen con el \*\*supuesto de normalidad\*\*.
+
+ - La \*\*relación es monótona\*\* (creciente o decreciente constante).
+
+------------------------------------------------------------------------
+
+\### Correlación de Spearman (\$ρ\$)
+
+\- Mide la correlación entre dos variables basada en los \*\*rangos\*\* (orden) de los valores.
+
+\- Se utiliza cuando los datos \*\*no presentan una relación lineal\*\*.
+
+\- Útil para relaciones monótonas.
+
+\- Se calcula como:
+
+::: {style="font-size: .75em;"}
+
+\$\$
+
+ρ = \\frac{1− 6∑d_i\^2}{n(n\^2−1)}
+
+\$\$
+
+ - \$d_i\$​ es la diferencia en los rangos de cada par de observaciones.
+
+ - \$n\$ es el número de observaciones.
+
+:::
+
+------------------------------------------------------------------------
+
+\### Correlación de Kendall (\$τ\$)
+
+\- Mide la relación ordinal entre dos variables numéricas en base a la \*\*concordancia\*\* y \*\*discordancia\*\* entre pares.
+
+\- Se utiliza cuando hay datos con valores repetidos o la muestra es pequeña.
+
+\- Es más robusta frente a datos con valores atípicos en comparación con Spearman.
+
+\- Se calcula como:
+
+::: {style="font-size: .75em;"}
+
+\$\$
+
+τ = \\frac{(n_c​−n_d​)​}{n(n-1)/2}
+
+\$\$
+
+ - \$n_c\$ y \$n_d\$ son los pares concordantes o discordantes.
+
+:::
+
+\## Ejemplo en R Commander
+
+\- Para comparar variables numéricas mediante correlación de Spearman vamos al menú \`Estadísticos \> Resúmenes \> Matriz de correlaciones\` y seleccionamos la opción \`Coeficiente de Spearman\`.
+
+\- Si quisiéramos utilizar correlación de Kendall, debemos hacerlo para cada par de variables por separado mediante el menú \`Estadísticos \> Resúmenes \> Test de correlación\` y seleccionar la opción \`Coeficiente tau de Kendall\`.
+
+------------------------------------------------------------------------
+
+\![\](images/clipboard-245801609.png){fig-align="center"}
+
+------------------------------------------------------------------------
+
+\#### ggcorr(datos, method = c("pairwise", "spearman"))
+
+\`\`\`{r}
+
+datos \|\>
+
+select(where(is.numeric)) \|\>
+
+ggcorr(method = c("pairwise", "spearman"))
+
+\`\`\`
+
+------------------------------------------------------------------------
+
+\#### ggcorr(datos, method = c("pairwise", "kendall"))
+
+\`\`\`{r}
+
+datos \|\>
+
+select(where(is.numeric)) \|\>
+
+ggcorr(method = c("pairwise", "kendall"))
+
+\`\`\`
+
+------------------------------------------------------------------------
+
+\## Trabajo práctico 3 (parte 1)
+
+\- \*\*Carga de Datos\*\*:
+
+ - Importar el archivo "\`enterobacterias.txt\`" en R Commander.
+
+ - Esta base de datos contiene información sobre presencia de enterobacterias en cortes cárnicos almacenados a distintos tiempos.
+
+\- \*\*Covarianza\*\*:
+
+ - Se desea saber si la carga de enterobacterias co-varía en función de las aminas biogénicas (histamina, tiramina, putrescina y cadaverina).
+
+------------------------------------------------------------------------
+
+\- \*\*Evaluación de correlación\*\*:
+
+ - Si las relaciones parecen lineales, usar correlación de Pearson.
+
+ - Si hay valores atípicos o distribuciones no normales, elegir correlación de Spearman o Kendall.
+
+ - Visualizar todas las correlaciones mediante una \*\*matrices de correlación\*\* y \*\*correlogramas\*\*.
+
+\- \*\*Interpretación de resultados:\*\*
+
+ - Elaborar un informe con los resultados obtenidos, incorporando las gráficas y capturas de pantalla que consideren necesarias.
+
+ - Entregar un solo informe por grupo.

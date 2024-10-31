@@ -1,0 +1,3 @@
+"0",""
+"0","## Limpia environment"
+"0","rm(list = ls())"
