@@ -654,7 +654,9 @@ datos |>
     $n$ es el número de observaciones.
     :::
 
--------### Correlación de Kendall ($τ$)
+------------------------------------------------------------------------
+
+#### Correlación de Kendall ($τ$)
 
 -   Mide la relación ordinal entre dos variables numéricas en base a la **concordancia** y **discordancia** entre pares.
 
