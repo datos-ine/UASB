@@ -3,7 +3,7 @@
     "path": null,
     "project_path": null,
     "type": "quarto_markdown",
-    "hash": "3682581360",
+    "hash": "2469236583",
     "contents": "",
     "dirty": true,
     "created": 1730390658708.0,
@@ -19,14 +19,14 @@
         "rmdVisualCollapsedChunks": "",
         "cursorPosition": "6,0",
         "scrollLine": "0",
-        "rmdVisualModeLocation": "5194:4000"
+        "rmdVisualModeLocation": "2:0"
     },
     "folds": "",
     "lastKnownWriteTime": 8367798494561399397,
     "encoding": "",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1730390669432,
+    "last_content_update": 1730392918265,
     "read_only": false,
     "read_only_alternatives": []
 }

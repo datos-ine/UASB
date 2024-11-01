@@ -1,0 +1,560 @@
+---
+title: "Ejemplo práctico en R"
+author: "Christian Ballejo, Andrea Silva, Tamara Ricardo"
+---
+
+```{r}
+#| echo: false
+source("setup.R")
+```
+
+## Introducción
+
+Para llevar a cabo el análisis en R y presentar las funciones y paquetes que nos pueden ayudar en la tarea vamos a trabajar con un set de datos llamado `cancer_rls.txt` que contiene información sobre la tasa de mortalidad por cáncer cada 100.000 habitantes de distintos condados de Estados Unidos.
+
+El dataset contiene datos agregados sobre la tasa de mortalidad por cáncer, el porcentaje de personas con cobertura pública de salud, el porcentaje de personas bajo la línea de pobreza y la mediana de edad. Para el ejemplo de regresión linear simple, evaluaremos la asociación entre cobertura pública de salud y mortalidad por cáncer.
+
+Comenzaremos cargando los paquetes necesarios:
+
+```{r}
+#| message: false
+# tablas salida del modelo
+library(gtsummary)
+
+# Unir gráficos
+library(patchwork)
+
+# chequeo de supuestos y análisis de residuales
+library(performance)
+library(lmtest) 
+library(nortest)
+
+# manejo de datos
+library(tidyverse) 
+```
+
+Cargamos los datos
+
+```{r}
+#| message: false
+
+datos <- read_csv2("data/cancer_rls.txt")
+```
+
+La estructura de la tabla es:
+
+```{r}
+glimpse(datos)
+```
+
+La variable dependiente es la tasa de mortalidad (`target_death_rate`) y la independiente la mediana de edad (`median_age`).
+
+## Diagrama de dispersión
+
+Para dibujar gráficos de dispersión podemos utilizar funciones del paquete `ggplot2`.
+
+```{r}
+datos |> 
+  
+  ggplot(mapping = aes(x = median_age, y = target_death_rate)) +
+  
+  # gráfico de dispersión
+  geom_point(color = pal[5], alpha = .9) +
+  
+  # modifico color de fondo
+  theme_minimal()
+```
+
+En todos los casos, lo que observamos en el gráfico es una clara relación inversa entre las variables, dado que los condados en las que las personas tienen mayor mediana de edad, tienen bajos valores en porcentajes de muertes por cáncer y viceversa.
+
+## Correlación
+
+La función `cor()` estima la correlación entre dos variables. El método predeterminado devuelve la correlación de Pearson, pero puede modificarse el argumento `method` para obtener la correlación de Kendall o Spearman.
+
+```{r}
+cor(datos$median_age, datos$target_death_rate,
+    method = "pearson")
+```
+
+El valor es negativo, lo que confirma lo observado en la nube de puntos anterior.
+
+### Significación de la correlación
+
+Hasta ahora obtuvimos dos elementos de la correlación, la magnitud y el signo.
+
+Para poder descartar que esta **correlación negativa** se debe al azar, debemos calcular su significancia.
+
+La función `cor.test()` determina si la prueba de correlación de Pearson calculada es significativa y lo realiza mediante el estadístico $t$ de Student.
+
+```{r}
+cor.test(datos$median_age, datos$target_death_rate)
+```
+
+Los resultados de la función son:
+
+-   El valor del estadístico $t$
+-   El valor de $p$ para el estadístico
+-   El valor de la correlación de Pearson
+-   Los intervalos de confianza para la correlación
+
+Los argumentos predeterminados para la función `cor.test()` son:
+
+-   `alternative = "two.sided"`: indica la hipotesis alternativa, también puede ser `"greater"` para asociación positiva, `"less"` para asociación negativa.
+
+-   `conf.level = 0.95`: determina el nivel de confianza (se puede modificar).
+
+-   `method = "pearson"`: especifíca el tipo de test de correlación. También permite `"kendall"` o `"spearman".`
+
+El *p*-valor de la correlación para este ejemplo es menor a 0,05 (*p*-value: `r cor.test(datos$median_age, datos$target_death_rate)$p.value`), por lo tanto significativa.
+
+## Presupuestos
+
+Anteriormente mencionamos que para dar por válidos, los modelos lineales debían cumplir con cuatro presupuestos: independencia, linealidad, homocedasticidad y normalidad.
+
+Habitualmente la comprobación precisa de estos criterios se realiza con los residuos del modelo al finalizar el proceso, pero también nos podemos adelantar efectuando un análisis previo de los datos de forma similar a lo realizado en ANOVA.
+
+La independencia, también conocida como no autocorrelación, puede afirmarse de forma general, a partir del conocimiento previo de la fuente de los datos y su forma de recolección, aunque siempre conviene verificarla en los residuos.
+
+La linealidad es producto de la relación entre las variables `target_death_rate` y `median_age`, que confirmamos mediante el diagrama de dispersión y la $r$ de Pearson significativa.
+
+La homocedasticidad es conveniente definirla a partir del modelo realizado, donde buscamos que la varianza de la gráfica de los residuos sea aproximadamente constante a lo largo del eje x. También se puede probar mediante contraste de hipótesis (test de Breusch-Pagan)
+
+Finalmente para la normalidad utilizamos el mismo análisis previo visto en la unidad anterior (\@sec-un2_anova).
+
+```{r}
+## Test normalidad
+lillie.test(datos$target_death_rate)
+
+## QQplot
+datos %>% 
+  ggplot(mapping = aes(sample = target_death_rate)) +
+  
+  # añade qqplot
+  stat_qq() +
+  stat_qq_line() +
+  
+  # cambia nombres de los ejes X e Y
+  labs(title = "QQplot", 
+       x = "Theoretical Quantiles", 
+       y = "Sample Quantiles") +
+  
+  # modifico color de fondo
+  theme_minimal()
+```
+
+Tanto el test de hipótesis como los gráficos de cuantiles nos informan que las distribuciones de la variable dependiente cumple con el criterio de "normalidad".
+
+## Modelo lineal simple
+
+Para construir modelos de regresión utilizamos en los argumentos el formato fórmula. Esto significa especificar primero el nombre de la variable dependiente y luego la variable independiente.
+
+La estructura sintáctica es:
+
+> variable_dependiente \~ variable_independiente
+
+La función que recibe esta estructura tipo fórmula es `lm()` cuyas letras vienen de "linear models" (modelos lineales).
+
+```{r}
+lm(target_death_rate ~ median_age, data = datos)
+```
+
+La función muestra resultados básicos, tales como la relación entre las variables que son parte del modelo y los coeficientes.
+
+**Intercept** es el valor de `median_age` cuando `target_death_rate` vale cero (Ordenada en el origen) y el coeficiente de `median_age`representa la pendiente de la recta.
+
+Estos resultados obtenidos y aplicados en la fórmula del modelo simple quedarían así:
+
+$$\operatorname{target death rate} = \alpha + \beta_{1}(\operatorname{median age}) + \epsilon $$
+
+$$
+\operatorname{target death rate} = 201.3229 + -0.5682*\operatorname{median age} + \epsilon
+$$
+
+Habitualmente `lm()` suele asignarse a un objeto de regresión para que contenga todos los resultados producto del ajuste.
+
+```{r}
+modelo <- lm(target_death_rate ~ median_age, data = datos)
+```
+
+Los resultados se almacenan en forma de lista y sus componentes pueden ser llamados en resúmenes más completos, mediante `summary()` o por separado, por ejemplo para evaluar los residuos.
+
+```{r}
+summary(modelo)
+```
+
+Con `summary()` observamos que los resultados son numerosos y comprenden a:
+
+`Call`: formula del modelo
+
+`Residuals`: distribución de los residuos (mediana, mínimo, máximo y percentilos 25-75)
+
+`Coefficients`: valores del intercepto y de la pendiente. Además se agregan los errores estandar y el estadístico $t$ con el *p*-valor de probabilidad dada la hipótesis nula que los coeficientes sean iguales a cero. (Lo que se pretende mediante estos contrastes es determinar si los efectos de la constante intercepto y de la variable independiente son realmente importantes para explicar la variable dependiente o si, por el contario, pueden considerarse nulos.)
+
+`Residual standard error`: Error estándar de los residuos con sus grados de libertad
+
+`Multiple R-squared`: Coeficiente de determinación $R^2$
+
+`Adjusted R-squared`: Coeficiente $R^2$ ajustado
+
+`F-statistic`: estadístico $F$ sobre la hipótesis nula que el cociente entre la varianza de la ecuación de regresión y la varianza de los residuos es igual a 1.
+
+`p-value`: p-valor del estadistico $F$.
+
+Como elemento extra, notese que la salida en R tiene unos códigos que ayudan a realizar la lectura de la significación de los coeficientes. Funciona mediante el uso de asteriscos (\*) al extremo derecho de cada parámetro calculado.
+
+Debajo de la tabla de coeficientes se encuentra la referencia del significado de los códigos, que van desde el 0 hasta el 1 como posible resultado del valor de probabilidad, y donde:
+
+```{r}
+#| echo: false
+#| message: false
+
+# Datos tabla
+tibble(
+  `Código` = c("***", "**", "*", ".", ""),
+    Rango = c("0 a 0,001", "0,001 a 0,01", "0,01 a 0,05", "0,05 a 0,1", "0,1 a 1")
+  ) %>% 
+ # Formato tabla
+  tab_style()
+
+```
+
+### Estructura del objeto resultado de regresión
+
+Todos los ajustes de modelos lineales que produce la función `lm()` tienen la forma de una lista de 12 componentes.
+
+La manera de conocer su clase es `class()` y su estructura mediante `str()`
+
+```{r}
+#| eval: false
+
+class(modelo)
+str(modelo)
+```
+
+La clase de este tipo (clase base = lista) es "lm" y de todos estos componentes, los más relevantes son:
+
+**coefficients**
+
+Es un vector con dos valores. El intercepto y la pendiente de la recta.
+
+Lo podemos llamar desde el objeto:
+
+```{r}
+modelo$coefficients
+```
+
+O bien utilizar la función `coef()`
+
+```{r}
+coef(modelo)
+```
+
+La función `tbl_regression()` del paquete `gtsummary` también nos permite explorar los coeficientes del modelo, ajustando el nivel de confianza con el argumento `conf.level` y mostrando u ocultando el intercepto con el argumento `intercept`.
+
+```{r}
+tbl_regression(modelo, 
+               intercept = T, 
+               conf.level = .95)
+```
+
+**residuals**
+
+Los residuos o residuales para cada valor que surgen de la diferencia entre los valores predictivos calculados por el modelo y los valores reales.
+
+Se visualizan desde el objeto resultado de la regresión:
+
+```{r}
+#| eval: false
+
+modelo$residuals
+```
+
+Usando la función `resid()`
+
+```{r}
+#| eval: false
+
+resid(modelo)
+```
+
+**fitted.values**
+
+Los valores calculados por el modelo en base a los datos existentes en la variable independiente.
+
+Los encontramos en:
+
+```{r}
+#| eval: false
+
+modelo$fitted.values
+```
+
+También pueden ser vistos por medio de la función `fitted()`
+
+```{r}
+#| eval: false
+
+fitted(modelo)
+```
+
+Otra función interesante para el análisis del objeto de regresión es `confint()` que calcula los intervalos de confianza de los coeficientes o parámetros del modelo de regresión.
+
+Para este modelo la línea de ejecución de la función es:
+
+```{r}
+confint(modelo)
+```
+
+Si agregamos la función `round()` podemos redondear los valores con la cantidad de decimales que necesitemos.
+
+```{r}
+## redondeo con 2 decimales
+round(confint(modelo),2)  
+```
+
+En forma predeterminada los IC se calculan al 95%, pero mediante el argumento `level` podemos modificarlo, por ejemplo al 99%:
+
+```{r}
+confint(modelo, level = 0.99)
+```
+
+### Agregar la recta de regresión al diagrama de dispersión
+
+Retomando la cuestión gráfica, podemos dibujar la recta de regresión lineal sobre el diagrama de dispersión hecho con `ggplot2` adicionando una capa más al gráfico mediante `geom_smooth()` e indicando `method = "lm"` como método. Además de la recta se puede ver el IC (zona gris alrededor de ella).
+
+```{r}
+datos %>% 
+  ggplot(mapping = aes(x = median_age, y = target_death_rate)) +
+  
+ # diagrama de dispersión
+   geom_point(color = pal[5], alpha = .9) +
+  
+  # añade línea de regresión
+  geom_smooth(method = "lm", color = pal[6]) + 
+  
+  # cambia color de fondo
+  theme_minimal()
+```
+
+## Residuales
+
+El residuo o residual de una estimación se define como la diferencia entre el valor observado y el valor calculado por el modelo de regresión.
+
+A la hora de resumir el conjunto de residuales hay dos posibilidades:
+
+-   La sumatoria del valor absoluto de cada residual.
+
+-   La sumatoria del cuadrado de cada residuo (RSS). Esta es la aproximación más empleada (mínimos cuadrados) ya que magnifica las desviaciones extremas.
+
+En R vimos que estos residuos quedan almacenados dentro del objeto de regresión y pueden ser llamados mediante la expresión `nombre_del_objeto_de_regresion$residuals`
+
+Cuanto mayor es la sumatoria del cuadrado de los residuales menor la precisión con la que el modelo puede predecir el valor de la variable dependiente a partir de la variable predictora. Los residuales son muy importantes puesto que en ellos se basan las diferentes medidas de la bondad de ajuste del modelo y con ellos se determina el cumplimiento de los supuestos de los modelos lineales.
+
+Un análisis visual de estos residuos se puede obtener fácilmente aplicando la función `plot()` al objeto de regresión modelado. La salida presentará 4 gráficas automáticas.
+
+```{r}
+par(mfrow = c(2,2))
+plot(modelo)
+```
+
+El gráfico **Residuals vs Fitted** (Residuales vs valores ajustados) sirve para probar linealidad.
+
+Se examina evaluando que la linea roja sea lo mas horizontal posible y sin curvatura pronunciada. Si tuviera curvatura indicaría que el modelo puede necesitar un término de ajuste no lineal (por ejemplo: cuadrático, logarítmico, etc) o que hay una variable importante no incluida en el modelo.
+
+El siguiente gráfico **Normal Q-Q**, es el típico diagrama de cuantiles para evaluar normalidad, donde los valores (puntos) deben estar lo más cercanos de la linea diagonal. Las desviaciones pronunciadas indican desajuste.
+
+**Scale-Location** es útil para ver si los residuales se distribuyen por igual a lo largo del rango de los predictores. Así es como se puede verificar la suposición de igual varianza (homocedasticidad).
+
+Es bueno si vemos una línea aproximadamente horizontal con puntos de distribución igualmente aleatorios.
+
+Finalmente el cuarto diagrama **Residuals vs Leverage** nos ayuda a encontrar valores influyentes.
+
+Aunque los datos tengan valores extremos, es posible que no sean influyentes para determinar una línea de regresión. Eso significa que los resultados no serían muy diferentes si los incluyéramos o los excluyéramos del análisis.
+
+Pero existen otros valores que si pueden influir y en el gráfico aparecen en las esquinas, fuera de unas líneas rojas entrecortadas que determinan altas puntuaciones de distancia de Cook (medida muy utilizada que combina, en un único valor, la magnitud del residual y el grado de leverage).
+
+Otra forma de evaluar gráficamente los supuestos del modelo es mediante la función `check_model()` del paquete `performance`:
+
+```{r}
+check_model(modelo)
+```
+
+El argumento `check` nos permite seleccionar cuales gráficos de residuales queremos visualizar (opciones: `"all"`, `"vif"`, `"qq"`, `"normality"`, `"linearity"`, `"ncv"`, `"homogeneity"`, `"outliers"`, `"reqq"`, `"pp_check"`, `"binned_residuals"`, `"overdispersion"`).
+
+```{r}
+check_model(modelo, check = c("normality","qq", "linearity",
+                              "homogeneity", "outliers"))
+```
+
+Además del análisis gráfico/visual de residuos se pueden aplicar test analíticos.
+
+### Linealidad
+
+El paquete `lmtest` implementa el *Ramsey's RESET* bajo la función `resettest()`
+
+```{r}
+resettest(modelo)
+```
+
+La hipótesis nula de este test es que las variables se relacionan de modo lineal. Por lo que si el p-valor es menor a 0,05 se rechaza la hipótesis nula, lo que indicaría algún tipo de relación no lineal.
+
+Aplicado a nuestro modelo da un valor p de `r round(resettest(modelo)$p.value,3)` con lo cual podemos asumir que hay linealidad.
+
+### Normalidad
+
+Otra premisa exige que los residuos se tienen que distribuir de forma normal, con media igual a 0. Como prueba analítica complementaria de los qq-plot ejecutamos el *test de lilliefors*.
+
+```{r}
+lillie.test(modelo$residuals)
+```
+
+Los resultados del test nos confirman lo que se intuía en los gráficos anteriores, el valor $p$ es de `r round(lillie.test(modelo$residuals)$p.value, 3)` y no podemos descartar normalidad.
+
+### Homocedasticidad
+
+Desde el punto de vista analítico podemos ejecutar el **test de Breush-Pagan**, incluído en los paquetes `lmtest` y `performance`. Parte de la hipótesis nula de homocedasticidad o varianza constante en las perturbaciones y la enfrenta a la alternativa de varianza variable, por lo que es válido decir que cumple con el supuesto de homocedasticidad si el valor $p$ es mayor a 0,05
+
+```{r}
+# paquete lmtest
+bptest(modelo)
+
+# paquete performance
+check_heteroscedasticity(modelo)
+```
+
+### Valores atípicos y de alta influencia
+
+Además de los elementos relevantes recién vistos del análisis de residuales, debemos tener en cuenta la influencia que valores atípicos y/o extremos causan en los modelos de regresión lineal.
+
+Generalmente los *outliers* son observaciones que no se ajustan bien al modelo. El valor real de la variable respuesta se aleja mucho del valor predicho, por lo que su residual es excesivamente grande.
+
+Por otra parte pueden existir observaciones con alto *leverage*, es decir que poseen un valor extremo para alguno de los predictores y son potencialmente puntos influyentes.
+
+Independientemente que el modelo se haya podido aceptar, siempre es conveniente identificar si hay algún posible *outlier*, observación con alto *leverage* u observación altamente influyente, puesto que podría estar condicionando en gran medida el modelo. La eliminación de este tipo de observaciones debe de analizarse con detalle.
+
+Para detectar estos posibles *outliers* podemos utilizar los residuales. Si la variable respuesta real de una observación está muy alejada del valor esperado acorde al modelo, su residual será grande.
+
+Asumiendo que los residuales de un modelo se distribuyen de forma normal, se pueden estandarizar/normalizar (mediante el cociente con su desvío estándar), e identificar aquellos cuyo valor exceda $\pm$ 3 como atípicos. Esta aproximación, aunque útil, tiene una limitación importante. Si la observación es un outlier tal que influye sobre el modelo lo suficiente para aproximarlo hacia ella, el residual será pequeño y pasará desapercibido en la estandarización.
+
+Una forma de evitar pasar por alto este tipo de outliers es emplear los residuales estudentizados (studentized residuals).
+
+Se trata de un proceso iterativo en el que se va excluyendo cada vez una observación $i$ distinta y se reajusta el modelo con las $n-1$ restantes. En cada proceso de exclusión y reajuste se calcula la diferencia ($d_i$) entre el valor predicho para $i$ habiendo y sin haber excluido esa observación. Finalmente, se normalizan las diferencias $d_i$ y se detectan aquellas cuyo valor absoluto es mayor que 3. El estudio de outliers mediante *studentized residuals* es el más adecuado, dado que nos permiten localizar los outliers de la relación lineal.
+
+Estos dos procesos sobre los residuales se pueden calcular en R mediante las funciones `rstandar()` y `rstudent()`.
+
+Hagamos una comparación de boxplot´s de residuales, residuales estandarizados y residuales estudentizados:
+
+```{r}
+## crea dataset residuales
+residuales <- tibble(
+  residuales = residuals(modelo),
+  resid_normalizados = rstandard(modelo),
+  resid_estudentizados = rstudent(modelo)
+)
+
+## Gráficos residuales
+
+# Residuales
+  g1 <- residuales %>% 
+    ggplot(mapping = aes(y = residuales)) +
+    geom_boxplot(fill = pal[4]) +
+    theme_minimal()
+  
+# Residuales normalizados
+g2 <- residuales %>% 
+    ggplot(mapping = aes(y = resid_normalizados)) +
+    geom_boxplot(fill = pal[5]) +
+    theme_minimal()
+    
+# Residuales estudentizados
+ g3 <- residuales %>% 
+    ggplot(mapping = aes(y = resid_estudentizados)) +
+    geom_boxplot(fill = pal[6]) +
+    theme_minimal()
+
+ # Une gráficos
+ g1 + g2 + g3
+```
+
+Observamos que existen residuales atípicos que se repiten en las tres gráficas, aunque ninguno es mayor o menor a 3 desvíos en el boxplot de los residuos estudentizados.
+
+Si pretendiésemos conocer que valores tienen las variables de la observación con residual mayor a 3 desvíos estándar, basta con hacer lo siguiente:
+
+```{r}
+# detectamos observaciones mayor a 3 ds
+table(rstudent(modelo) > 3)
+```
+
+El hecho de que un valor sea atípico o con alto grado de *leverage* no implica que sea influyente en el conjunto del modelo. Sin embargo, si un valor es influyente, suele ser o atípico o de alto *leverage*. Existen diferentes formas de evaluar la influencia de las observaciones:
+
+-   La **distancia de Cook** es una medida muy utilizada que combina, en un único valor, la magnitud del residual y el grado de leverage. Valores de Cook mayores a 1 suelen considerarse como influyentes.
+
+-   Evaluar el cambio en los coeficientes de regresión tras excluir la observación: Se trata de un proceso iterativo en el que cada vez se excluye una observación distinta y se reajusta el modelo para comparar.
+
+Esto lo podemos visualizar en el siguiente gráfico (*Cook's distance*) incluído en salida completa de `plot(modelo)`
+
+```{r}
+plot(modelo, which = 5)
+```
+
+Al observar este gráfico, estaremos atentos a valores periféricos en la esquina superior e inferior. Esos lugares, fuera de las líneas punteadas rojas, son los lugares donde los puntos pueden ser influyentes contra una línea de regresión.
+
+Los casos que encontremos tienen altas puntuaciones de distancia de Cook y por lo tanto influyen en los resultados de la regresión.
+
+En caso de detectarse algún punto fuera de esos límites que establecen las líneas discontinuas debe estudiarse este punto de forma aislada para detectar, por ejemplo, si la elevada influencia de esa observación se debe a un error.
+
+En el ejemplo visualizado no encontramos evidentes valores influyentes.
+
+El paquete `performance` incluye la función `check_outliers()` que permite detectar valores atípicos según su distancia de Cook:
+
+```{r}
+check_outliers(modelo) 
+```
+
+En el caso de detectar algún valor de este tipo, sobre todo si es severo, es importante investigarlo. Puede tratarse de un dato mal registrado, o que fue mal transcripto a la base de datos. En tal caso podremos eliminar la observación (o corregirla) y analizar los casos restantes. Pero si el dato es correcto, quizás sea diferente de las otras observaciones y encontrar las causas de este fenómeno puede llegar a ser la parte más interesante del análisis. Por supuesto que todo esto dependerá del contexto del problema que uno esta estudiando.
+
+## Bondad de ajuste del modelo
+
+Una vez que se ha ajustado un modelo es necesario verificar su eficiencia, ya que aun siendo la línea que mejor se ajusta a las observaciones de entre todas las posibles, el modelo puede ser malo. Las medidas más utilizadas para medir la calidad del ajuste son: error estándar de los residuales, el test $F$ y el coeficiente de determinación $R^2$.
+
+Estos valores se encuentran en la parte final de la salida del `summary(modelo)`, donde leemos RSE - error estandar de los residuos (`Residual standar error`), coeficiente de determinación $R^2$ (`Multiple R-squared`) y $R^2$ ajustado (`Adjusted R-squared`).
+
+Podemos acceder al valor de $R^2$ del modelo usando la función `r2()` del paquete `performance`
+
+```{r}
+r2(modelo)
+```
+
+$R^2$ oscila entre 0 y 1, de manera que, valores de $R^2$ próximos a 1 indican un buen ajuste del modelo lineal a los datos. Por otro lado, $R^2$ ajustado es similar a $R^2$, pero penaliza la introducción en el modelo de variables independientes poco relevantes a la hora de explicar la variable dependiente (se utiliza en modelos lineales múltiples). Por tanto, $R^2$ ajustado \< = $R^2$.
+
+En nuestro ejemplo, $R^2$ = `r r2(modelo)$R2 %>% round(., 3)` y $R^2$ ajustado = `r r2(modelo)$R2_adjusted %>% round(., 3)`; por lo que podemos concluir que el modelo lineal simple no se ajusta demasiado bien a nuestros datos.
+
+Esto indica que aproximadamente el 1.4 % de la variación en la tasa de mortalidad por cáncer se puede explicar por el modelo que solo contiene la mediana de edad como variable explicativa. Es bajo, por lo que las predicciones de la ecuación de regresión son bastante poco confiables, ya que también significa que hay otro 98.6 % de la variación que aún no se explica, por lo que quizás agregar otras variables independientes podría mejorar el ajuste del modelo.
+
+La última línea de la salida de `summary(modelo)` incluye un estadístico de distribución continua $F$ *de Snedecor* (Test F) y el *valor* $p$ correspondiente que se utilizan para resolver lo que se conoce habitualmente como contraste ómnibus. Mediante este contraste se comprueba si, de forma global, el modelo lineal es apropiado para modelizar los datos.
+
+En nuestro ejemplo, el *p*-valor asociado a este contraste es inferior a 0,05 por lo que, al 95% de confianza podemos rechazar la hipótesis nula y afirmar que, efectivamente, el modelo lineal es adecuado para nuestro conjunto de datos.
+
+Cuando el modelo de regresión tiene una única variable explicativa, el contraste de la regresión es equivalente al contraste del parámetro $\beta_1$ (ciclistas).
+
+Otra manera de verificar, en forma independiente, la significación del modelo de regresión es por medio de la función `anova()` que plantea el contraste de la regresión mediante el análisis de la varianza.
+
+```{r}
+anova(modelo)
+```
+
+La tabla de analisis de varianza muestra el mismo resultado que el bloque final de `summary(modelo)` con un valor F de `r summary(modelo)$fstatistic[1] %>% round(.,2)` y un *p*-valor significativo.
+
+## Resumen del resultado del ejemplo
+
+Se llevó a cabo una regresión lineal simple para analizar la relación entre la mediana de edad y la tasa de mortalidad por cáncer en 236 condados de Estados Unidos.
+
+El diagrama de dispersión mostró una relación lineal negativa moderada entre los dos, que se confirmó con un coeficiente de correlación de Pearson de `r cor(datos$pct_public_coverage, datos$target_death_rate, method = "pearson") %>% round(., 2)` . La regresión lineal simple mostró una relación significativa entre las variables (t = `r summary(modelo)$coefficients [2,3] %>% round(.,2)` *p* = `r summary(modelo)$coefficients [2,4] %>% round(.,3)`).
+
+El coeficiente de pendiente de la recta para la mediana de edad fue de `r summary(modelo)$coefficients [2,1] %>% round(.,2)`, por lo que la tasa de mortalidad por cáncer disminuye aproximadamente 0,6 % por cada unidad que sube la mediana de edad de los pacientes.
+
+El valor $R^2$ mostró que el 1.4 % de la variación en la tasa de mortalidad por cáncer se puede explicar por el modelo que solo contiene la mediana de edad.
+
+La gráfica de dispersión de los valores pronosticados estandarizados frente a los residuos estandarizados, mostró que los datos cumplían los supuestos de homogeneidad de varianza y linealidad y que los residuos se distribuían aproximadamente de forma normal.
+
+Se cumplieron todos los presupuestos necesarios para validar la regresión y no se encontraron valores atípicos influyentes.

@@ -1,0 +1,65 @@
+---
+title: "Untitled"
+format: revealjs
+editor: visual
+---
+
+### Análisis de la varianza (ANOVA)
+
+-   Compara la media de la variable independiente $Y$ entre niveles de una variable explicativa categórica ($X$).
+
+-   Se basa en la hipótesis estadística de que los grupos son distintos entre sí:
+
+    -   $H_0: \mu_1 = \mu_2 = ... = \mu_i$ (la media de $Y$ no difiere entre grupos)
+
+    -   $H_1: \mu_1 \not= \mu_2 \not= ...\not=\mu_i$ (la media de $Y$ difiere entre grupos)
+
+------------------------------------------------------------------------
+
+-   Divide la variación total en:
+
+    -   variación entre muestras
+
+    -   variación dentro de las muestras
+
+------------------------------------------------------------------------
+
+### Ejemplo en R Commander
+
+-   Vamos a **Estadísticos \> Ajuste de Modelos \> Modelo Lineal**.
+
+-   Seleccionamos `target_death_rate` como variable dependiente y `estado` como variable explicativa y apretamos **Aceptar** o **Aplicar.**
+
+-   A continuación vamos a **Modelos \> Test de hipótesis \> Tabla ANOVA.**
+
+    ```{r}
+    mod2 <- lm(tasa_mortalidad ~ estado, data = datos)
+
+    anova(mod2)
+    ```
+
+------------------------------------------------------------------------
+
+-   Sin embargo, en el ANOVA nos interesa saber **cuáles grupos** son diferentes entre sí mediante tests de comparaciones múltiples.
+
+-   Si bien R Commander tiene una opción para realizar tests de comparaciones múltiples, usaremos el paquete `emmeans` (`library(emmeans)`).
+
+-   En la consola escribimos el código: `comp<- emmeans(mod2, specs = "estado", contr = "pairwise")` y presionamos **Ejecutar**.
+
+------------------------------------------------------------------------
+
+-   Si escribimos `comp` y presionamos nuevamente el botón **Ejecutar**, nos aparecerá la siguiente salida
+
+    ```{r}
+    comp <- emmeans(mod2, specs = "estado", contr = "pairwise")
+
+    comp
+    ```
+
+------------------------------------------------------------------------
+
+-   Si queremos ver el gráfico del test de comparaciones múltiples escribimos `plot(comp)` y presionamos **Ejecutar**
+
+```{r}
+plot(comp)
+```

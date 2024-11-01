@@ -17,15 +17,11 @@ cor.test(datos\$mediana_edad, datos\$tasa_mortalidad)
 ------------------------------------------------------------------------
 
 ::::: columns
-
 ::: {.column width="50%"}
-
 \![\](images/clipboard-747358656.png)
-
 :::
 
 ::: {.column width="50%"}
-
 \`\`\`{r}
 
 datos \|\>
@@ -35,9 +31,7 @@ select(where(is.numeric)) \|\>
 cor()
 
 \`\`\`
-
 :::
-
 :::::
 
 ------------------------------------------------------------------------
@@ -48,11 +42,11 @@ cor()
 
 \- También podemos representarla usando \*\*correlogramas.\*\*
 
- - Estos gráficos muestran tanto la matriz de correlaciones como signos y/o coeficientes.
+-   Estos gráficos muestran tanto la matriz de correlaciones como signos y/o coeficientes.
 
- - R Commander no incluye una opción para realizarlos, pero podemos utilizar el paquete \`GGally\`.
+-   R Commander no incluye una opción para realizarlos, pero podemos utilizar el paquete \`GGally\`.
 
- - Para ello vamos al menú \`Herramientas\>Cargar paquetes\`, seleccionamos \`GGally\` de la lista y presionamos \*\*Aceptar\*\*.
+-   Para ello vamos al menú \`Herramientas\>Cargar paquetes\`, seleccionamos \`GGally\` de la lista y presionamos \*\*Aceptar\*\*.
 
 ------------------------------------------------------------------------
 
@@ -104,11 +98,11 @@ ggcorr()
 
 \- Los métodos de correlación no paramétricos, como los coeficientes de Spearman y Kendall, se utilizan cuando:
 
- - Los datos \*\*no tienen una relación lineal\*\*.
+-   Los datos \*\*no tienen una relación lineal\*\*.
 
- - No cumplen con el \*\*supuesto de normalidad\*\*.
+-   No cumplen con el \*\*supuesto de normalidad\*\*.
 
- - La \*\*relación es monótona\*\* (creciente o decreciente constante).
+-   La \*\*relación es monótona\*\* (creciente o decreciente constante).
 
 ------------------------------------------------------------------------
 
@@ -123,17 +117,15 @@ ggcorr()
 \- Se calcula como:
 
 ::: {style="font-size: .75em;"}
-
 \$\$
 
 ρ = \\frac{1− 6∑d_i\^2}{n(n\^2−1)}
 
 \$\$
 
- - \$d_i\$​ es la diferencia en los rangos de cada par de observaciones.
+-   \$d_i\$​ es la diferencia en los rangos de cada par de observaciones.
 
- - \$n\$ es el número de observaciones.
-
+-   \$n\$ es el número de observaciones.
 :::
 
 ------------------------------------------------------------------------
@@ -149,15 +141,13 @@ ggcorr()
 \- Se calcula como:
 
 ::: {style="font-size: .75em;"}
-
 \$\$
 
 τ = \\frac{(n_c​−n_d​)​}{n(n-1)/2}
 
 \$\$
 
- - \$n_c\$ y \$n_d\$ son los pares concordantes o discordantes.
-
+-   \$n_c\$ y \$n_d\$ son los pares concordantes o discordantes.
 :::
 
 \## Ejemplo en R Commander
@@ -204,26 +194,26 @@ ggcorr(method = c("pairwise", "kendall"))
 
 \- \*\*Carga de Datos\*\*:
 
- - Importar el archivo "\`enterobacterias.txt\`" en R Commander.
+-   Importar el archivo "\`enterobacterias.txt\`" en R Commander.
 
- - Esta base de datos contiene información sobre presencia de enterobacterias en cortes cárnicos almacenados a distintos tiempos.
+-   Esta base de datos contiene información sobre presencia de enterobacterias en cortes cárnicos almacenados a distintos tiempos.
 
 \- \*\*Covarianza\*\*:
 
- - Se desea saber si la carga de enterobacterias co-varía en función de las aminas biogénicas (histamina, tiramina, putrescina y cadaverina).
+-   Se desea saber si la carga de enterobacterias co-varía en función de las aminas biogénicas (histamina, tiramina, putrescina y cadaverina).
 
 ------------------------------------------------------------------------
 
 \- \*\*Evaluación de correlación\*\*:
 
- - Si las relaciones parecen lineales, usar correlación de Pearson.
+-   Si las relaciones parecen lineales, usar correlación de Pearson.
 
- - Si hay valores atípicos o distribuciones no normales, elegir correlación de Spearman o Kendall.
+-   Si hay valores atípicos o distribuciones no normales, elegir correlación de Spearman o Kendall.
 
- - Visualizar todas las correlaciones mediante una \*\*matrices de correlación\*\* y \*\*correlogramas\*\*.
+-   Visualizar todas las correlaciones mediante una \*\*matrices de correlación\*\* y \*\*correlogramas\*\*.
 
 \- \*\*Interpretación de resultados:\*\*
 
- - Elaborar un informe con los resultados obtenidos, incorporando las gráficas y capturas de pantalla que consideren necesarias.
+-   Elaborar un informe con los resultados obtenidos, incorporando las gráficas y capturas de pantalla que consideren necesarias.
 
- - Entregar un solo informe por grupo.
+-   Entregar un solo informe por grupo.
