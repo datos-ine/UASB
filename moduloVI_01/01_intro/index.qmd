@@ -236,7 +236,7 @@ tibble(
 
 ::: {.fragment .fade-in-then-semi-out}
 
-- Open source y multiplapaforma
+- Open source y multiplataforma
 
 :::
 
@@ -355,8 +355,7 @@ Existen otros editores, o mejor llamados, entornos de desarrollo integrado (**ID
 
 ::: incremental
 
-- **Fichero**: para abrir archivos con instrucciones a ejecutar, o para guardar datos,
-resultados, sintaxis, etc.
+- **Fichero**: para abrir archivos con instrucciones a ejecutar, o para guardar datos, resultados, sintaxis, etc.
 - **Editar**: las típicas opciones para cortar, pegar, borrar, etc.
 - **Datos**: utilidades para trabajar con datos (creación de datos, importación de
 variados formatos, recodificación de variables, etc.)
