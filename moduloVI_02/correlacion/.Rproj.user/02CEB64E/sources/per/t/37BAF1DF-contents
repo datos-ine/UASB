@@ -716,19 +716,19 @@ tibble(
 
 -   Para comparar variables numéricas mediante correlación de Spearman vamos al menú `Estadísticos > Resúmenes > Matriz de correlaciones` y seleccionamos la opción `Coeficiente de Spearman`.
 
-    ![](images/cor_test_spearman.png){width="90%"}
+    ![](images/cor_test_spearman.png){width="70%"}
 
 ------------------------------------------------------------------------
 
 -   Para generar el correlograma de Spearman escribimos el siguiente código en la consola: `ggcorr(datos, method = c("pairwise", "spearman"))`
 
-```{r}
-datos |> 
+    ```{r}
+    datos |> 
 
-  select(where(is.numeric)) |> 
+      select(where(is.numeric)) |> 
 
-  ggcorr(method = c("pairwise", "spearman"))
-```
+      ggcorr(method = c("pairwise", "spearman"))
+    ```
 
 ------------------------------------------------------------------------
 
