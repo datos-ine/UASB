@@ -22,7 +22,6 @@ pacman::p_load(
   flextable,
   patchwork,
   performance,
-  emmeans,
   rio,
   janitor,
   tidyverse
@@ -236,25 +235,25 @@ tibble(
 ### Regresión lineal simple
 
 -   Expresa la relación lineal entre $Y$ y una variable independiente continua ($X$).
--   Veamos el *scatterplot* para la covarianza entre la tasa de mortalidad por cáncer (`tasa_mortalidad`) y desempleo (`pct_desempleo`).
+-   Veamos nuevamente el *scatterplot* que mostraba la covarianza entre la tasa de mortalidad por cáncer (`target_death_rate`) y la pobreza porcentual (`poverty_percent`).
 
 ------------------------------------------------------------------------
 
-#### *Scatterplot*: tasa de mortalidad vs. desempleo
+#### *Scatterplot*: tasa de mortalidad vs. pobreza porcentual
 
 ```{r}
 # Carga datos
-datos <- read.csv2("../cancer_USA.txt")
+datos <- read.csv2("cancer.txt")
 
 # Genera scatter plot
 datos |> 
-  ggplot(mapping = aes(x = pct_desempleo, 
-                       y = tasa_mortalidad)) +
+  ggplot(mapping = aes(x = poverty_percent, 
+                       y = target_death_rate)) +
   
   geom_point() +
   geom_smooth(method = "lm", se = F) +
   
-  labs(x = "Desempleo (%)", 
+  labs(x = "Pobreza (%)", 
        y = "Tasa de mortalidad por cáncer") +
   theme_minimal()
 ```
@@ -267,9 +266,9 @@ datos |>
 
 -   Donde:
 
-    -   $Y$ es la variable dependiente (`tasa_mortalidad`).
+    -   $Y$ es la variable dependiente (`target_death_rate`).
 
-    -   $X$ es la variable independiente (`pct_desempleo`).
+    -   $X$ es la variable independiente (`poverty_percent`).
 
     -   $\beta_0$ es el intercepto.
 
@@ -325,7 +324,7 @@ datos |>
     datos1 <- sample_n(datos, 25)
 
     # Ajusta modelo
-    fit <- lm(tasa_mortalidad ~ pct_desempleo, data = datos1)
+    fit <- lm(target_death_rate ~ poverty_percent, data = datos1)
 
     # Añade datos ajustados
     datos1 <- datos1 |> 
@@ -333,17 +332,17 @@ datos |>
 
     # Genera scatter plot con residuales
     datos1 |> 
-      ggplot(mapping = aes(x = pct_desempleo, 
-                           y = tasa_mortalidad)) +
+      ggplot(mapping = aes(x = poverty_percent, 
+                           y = target_death_rate)) +
       
-      geom_segment(aes(xend = pct_desempleo, yend = y_fit),
+      geom_segment(aes(xend = poverty_percent, yend = y_fit),
                    linetype = "dashed") +
       
       geom_point(color = "#105185", size = 3, alpha = .8) +
       geom_smooth(method = "lm", se = F, color = "#021326") +
       
       
-      labs(x = "Desempleo (%)", 
+      labs(x = "Pobreza porcentual", 
            y = "Tasa de mortalidad por cáncer") +
       theme_minimal()
     ```
@@ -406,7 +405,7 @@ datos |>
 
 ```{r}
 # Modelo lineal
-fit <- lm(tasa_mortalidad ~ pct_desempleo, data = datos)
+fit <- lm(target_death_rate ~ poverty_percent, data = datos)
 
 # Gráfico normalidad y linealidad
 check_model(fit, check = c("qq", "linearity"))
@@ -425,24 +424,24 @@ check_model(fit, check = c("homogeneity", "outliers"))
 
 -   Activar RCommander (`library(Rcmdr`) y el plugin `KMggplot2`.
 
--   Cargar los datos del ejemplo de covarianza ("`cancer_USA.txt`").
+-   Cargar los datos del ejemplo de covarianza ("`cancer.txt`").
 
 -   Vamos a **Estadísticos \> Ajuste de Modelos \> Modelo Lineal**.
 
--   Seleccionamos `tasa_mortalidad` como variable dependiente y `mediana_edad` como variable explicativa.
-
--   Apretamos **Aceptar** o **Aplicar**.
+-   Seleccionamos `target_death_rate` como variable dependiente y `median_age` como variable explicativa.
 
 ------------------------------------------------------------------------
 
-![](images/clipboard-3795598142.png)
+-   Apretamos **Aplicar** o **Aceptar** y nos aparecerá lo siguiente:
+
+    ![](images/clipboard-816084763.png)
 
 ------------------------------------------------------------------------
 
--   **Obtendremos la siguiente salida**
+-   **Analizemos las partes de la salida del modelo...**
 
     ```{r}
-    mod1 <- lm(tasa_mortalidad ~ mediana_edad, data = datos)
+    mod1 <- lm(target_death_rate ~ median_age, data = datos)
 
     summary(mod1)
     ```
@@ -479,19 +478,15 @@ check_model(fit, check = c("homogeneity", "outliers"))
 
 -   Si en lugar de los coeficientes y sus errores estándar quisiéramos visualizar los intervalos de confianza, debemos calcularlos desde **Modelos \> Intervalos de Confianza:**
 
-    ![](images/clipboard-3569637504.png){width="60%"}
-
-    ```{r}
-    confint(mod1)
-    ```
+    ![](images/clipboard-3010459011.png)
 
 ------------------------------------------------------------------------
 
--   Podemos chequear si la relación lineal es estadísticamente significativa desde **Modelos \> Test de hipótesis \> Tabla ANOVA**
+Podemos chequear si la relación lineal es estadísticamente significativa desde **Modelos \> Test de hipótesis \> Tabla ANOVA**
 
-    ```{r}
-    anova(mod1)
-    ```
+```{r}
+anova(mod1)
+```
 
 ------------------------------------------------------------------------
 
@@ -533,15 +528,15 @@ check_model(mod1)
 
 ------------------------------------------------------------------------
 
-#### Interpretación
+-   Interpretación de los resultados:
 
--   La tasa de mortalidad por cáncer (`tasa_mortalidad`) disminuye significativamente (p = 0,0007 ) a medida que aumenta la edad (`mediana_edad`).
+    -   La tasa de mortalidad por cáncer (`target_death_rate`) disminuye significativamente (p = 0,039) a medida que aumenta la mediana de edad (`median_age`).
 
--   Este modelo solo explica un porcentaje muy bajo de la variabilidad observada en los datos ($R^2 =$ `r r2(mod1)[2]`).
+    -   Este modelo solo explica un porcentaje muy bajo de la variabilidad observada en los datos ($R^2 =$ `r r2(mod1)[2]`).
 
--   Los residuos cumplen con los supuestos de normalidad, linealidad y homogeneidad de varianza.
+    -   Los residuos cumplen con los supuestos de normalidad, linealidad y homogeneidad de varianza.
 
--   No se detectaron valores extremos.
+    -   No se detectaron valores extremos.
 
 ------------------------------------------------------------------------
 
@@ -549,210 +544,51 @@ check_model(mod1)
 
 -   Compara la media de la variable independiente $Y$ entre niveles de una variable explicativa categórica ($X$).
 
--   Al igual que en la regresión lineal simple, se asume que los residuales son normales y homocedásticos.
-
 -   Se basa en la hipótesis estadística de que los grupos son distintos entre sí:
 
     -   $H_0: \mu_1 = \mu_2 = ... = \mu_i$ (la media de $Y$ no difiere entre grupos)
 
     -   $H_1: \mu_1 \not= \mu_2 \not= ...\not=\mu_i$ (la media de $Y$ difiere entre grupos)
 
--   La variabilidad entonces se descompone en variabilidad **entre grupos (SSB)** y variabilidad **dentro de los grupos (SSE)**.
+------------------------------------------------------------------------
+
+-   Divide la variación total en:
+
+    -   variación entre muestras
+
+    -   variación dentro de las muestras
 
 ------------------------------------------------------------------------
 
--   Para evaluar si existen diferencias en las medias de los grupos se utiliza el estadístico $F$ :
-
-    $$
-    F = \frac{SSB/(k-1)}{SSE/(n-k)}
-    $$
-
--   donde:
-
-    -   $k$ es el número de grupos
-
-    -   $n$ es el número de observaciones
-
--   Valores altos de $F$ indican que existen diferencias en las medias de los grupos.
-
--   Para saber cuáles grupos son diferentes entre sí, hay que realizar tests *post-hoc* de comparaciones múltiples.
-
-------------------------------------------------------------------------
-
-## Ejemplo en R Commander
+### Ejemplo en R Commander
 
 -   Vamos a **Estadísticos \> Ajuste de Modelos \> Modelo Lineal**.
 
--   Seleccionamos `tasa_mortalidad` como variable dependiente y `estado` como variable explicativa.
+-   Seleccionamos `target_death_rate` como variable dependiente y `median_age_cat` como variable explicativa y apretamos **Aceptar** o **Aplicar.**
 
--   Apretamos **Aceptar** o **Aplicar** y nos aparecerá la salida del modelo lineal (ignorar por ahora).
-
-------------------------------------------------------------------------
-
-![](images/clipboard-1105295263.png)
-
-------------------------------------------------------------------------
-
--   Vamos al menú **Modelos \> Test de hipótesis \> Tabla ANOVA**.
-
--   En la nueva ventana presionamos **Aceptar.**
+-   A continuación vamos a **Modelos \> Test de hipótesis \> Tabla ANOVA.**
 
     ```{r}
-    mod2 <- lm(tasa_mortalidad ~ estado, data = datos)
+    mod2 <- lm(target_death_rate ~ median_age_cat, data = datos)
 
     anova(mod2)
     ```
 
--   A partir de los resultados podemos ver que existen diferencias significativas entre grupos.
+------------------------------------------------------------------------
+
+-   Sin embargo, en el ANOVA nos interesa saber **cuáles grupos** son diferentes entre sí mediante tests de comparaciones múltiples.
+
+-   Para que R Commander nos permita realizar estos test, debemos ingresar el modelo desde **Estadísticos \> Medias \> ANOVA de un factor** y marcar la opción "Comparaciones dos a dos de las medias".
 
 ------------------------------------------------------------------------
 
--   Para el test de comparaciones múltiples vamos a usar el paquete `emmeans`:
+-   Nos aparecerá en la consola una salida equivalente a la obtenida ajustando como modelo lineal más el resultado de los test de comparaciones múltiples:
 
-    `library(emmeans)`
-
--   En la consola de R Commander creamos el objeto `comp` usando el siguiente código:
-
-    `comp<- emmeans(mod2, specs = "estado", contr = "pairwise")`
-
--   Presionamos **Ejecutar.**
+    ![](images/clipboard-4111011610.png)
 
 ------------------------------------------------------------------------
 
--   Para visualizar los resultados del test de comparaciones múltiples escribimos el código:
-
-    `plot(comp)` y presionamos **Ejecutar.**
-
-------------------------------------------------------------------------
-
--   Nos aparecerá una nueva ventana con el siguiente gráfico:
-
-    ```{r}
-    comp<- emmeans(mod2, specs = "estado", contr = "pairwise")
-
-    plot(comp)
-    ```
-
--   Debemos observar entre cuáles grupos **no se superponen** los intervalos de confianza.
-
-------------------------------------------------------------------------
-
--   Otra opción es escribir `comp` en la consola y **Ejecutar** para que nos aparezca la tabla de comparaciones múltiples.
-
-    ```{r}
-    comp$contrasts
-    ```
-
-------------------------------------------------------------------------
-
--   Finalmente chequeamos los supuestos de residuales con `check_model(mod2)`:
-
-    ```{r}
-    check_model(mod2)
-    ```
-
-------------------------------------------------------------------------
-
-#### Interpretación
-
--   La tasa de mortalidad por cáncer (`tasa_mortalidad`) difiere significativamente entre los estados de la Costa Este (p \< 0,001 ).
-
--   Se encontró que la tasa de mortalidad en Connecticut es significativamente menor que en Pennsylvania y Maine.
-
--   La tasa de mortalidad en Maine es significativamente mayor que en Massachusetts, New Jersey y New York.
-
--   Los residuos cumplen con los supuestos de normalidad, linealidad y homogeneidad de varianza.
-
--   No se detectaron valores extremos.
-
-------------------------------------------------------------------------
-
-## Resumiendo...
-
-```{dot}
-//| echo: false
-digraph G {
- node [style = filled, fontcolor = "white"];
-    n0 [shape = ellipse, 
-    label = "Variable respuesta \n continua", 
-    color = "#1B0D33"];
-    
-    n1 [shape = box, 
-    label = "Intensidad de \n asociación", 
-    color = "#4B2044"];
-    
-    n2 [shape = box, 
-    label = "Predicción o \n estimación", 
-    color = "#8DC16E"];
-    
-    n3 [shape = box, 
-    label = "Correlación",
-    color = "#683F4D"];
-    
-    n4 [shape = box, 
-    label = "Correlación de \n Pearson", 
-    color = "#705751"];
-    
-    n5 [shape = box, 
-    label = "Correlación de \n Spearman y \n de Kendall",
-    color = "#705751"];
-    
-   
-    n6 [shape = box, 
-    label = "Modelo lineal general",
-    color = "#7B9859"];
-    
-    n7 [shape = box,
-    label = "ANOVA",
-    color = "#757A53"];
-    
-    n8 [shape = box, 
-    label = "Regresión lineal",
-    color = "#757A53"];
-    
-    n0 -> n1;
-    n0 -> n2;
-    
-    n1-> n3 
-    n3 -> n4 [labeldistance=2.5, labelangle=90, fontsize=10, headlabel="Paramétrico"];
-    n3-> n5 [labeldistance=4.5,labelangle=-70, fontsize=10,headlabel="No \n paramétrico"];
-    
-    n2 -> n6;
-    n6 -> n7;
-    n6 -> n8;
-}
+```{r}
+library(multcomp)
+glht(mod2, linfct = mcp(median_age_cat = "Tukey"))
 ```
-
-## Trabajo práctico 3 (parte 2)
-
--   **Carga de Datos**:
-
-    -   Importar el archivo “`enterobacterias.txt`” en R Commander.
-
-    -   Esta base de datos contiene información sobre presencia de enterobacterias en cortes cárnicos almacenados a distintos tiempos.
-
--   **Regresión lineal simple**:
-
-    -   Ajustar modelos de regresión lineal simple para evaluar la relación entre `enterobacterias` y cada variable independiente numérica.
-
-    -   Chequear los supuestos de los residuales para cada modelo.
-
-------------------------------------------------------------------------
-
--   **ANOVA:**
-
-    -   Ajustar modelos ANOVA para evaluar la diferencia en la media de `enterobacterias` según `tratamiento` y `tiempo` categorizado.
-
-    -   Realizar los tests de comparaciones múltiples para cada modelo.
-
-    -   Chequear los supuestos de los residuales.
-
--   **Entrega:**
-
-    -   Subir al entorno **un archivo por grupo** que contenga un informe de:
-
-        -   Análisis exploratorio de datos
-
-        -   Resultados de los test de correlación e interpretación
-
-        -   Resultados de las regresiones simples/ANOVA y su interpretación

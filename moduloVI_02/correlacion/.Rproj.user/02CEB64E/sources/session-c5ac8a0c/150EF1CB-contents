@@ -131,7 +131,7 @@ tibble(
 
 ## Covarianza ($Cov_{XY}$)
 
--   La **covarianza** es una medida estadística que indica el grado de variabilidad conjunta de dos variables cuantitativas $X$ e $Y$
+-   La **covarianza** es una medida estadística que indica el grado de variabilidad conjunta de dos variables cuantitativas $X$ e $Y$:
 
     -   **Covarianza positiva**: ambas variables aumentan o disminuyen en simultáneo.
 
@@ -295,27 +295,53 @@ No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ 
 
 ## Ejemplo en R Commander
 
--   Activar R Commander (`library(Rcmdr)`) y el plugin `KMggplot2`.
+-   Activar R Commander (`library(Rcmdr)`) y el plugin `KMggplot2`
 
--   Importar datos desde `Datos > Importar datos> desde archivos de texto, portapapeles o URL...`
-
--   Seleccionamos las opciones `Separador de campos: punto y coma [;]` y `Separador decimal: coma [,]`.
-
--   Seleccionamos el archivo "`cancer_USA.txt`", que contiene información sobre la tasa de mortalidad por cáncer para distintos condados de USA.
+    ![](images/library_rcmdr.png){width="55%"}
 
 ------------------------------------------------------------------------
 
--   Apretamos el botón ![](images/clipboard-646228797.png){width="25%"} y eliminamos las columnas de tipo caracter.
+-   Importar datos desde `Datos > Importar datos> desde archivos de texto, portapapeles o URL...`
 
--   Vamos al menú `KMggplot2 > Scatter plot`.
+    ![](images/import.png)
 
--   En la nueva ventana seleccionamos `mediana_edad` como variable $X$, `tasa_mortalidad` como variable $Y$, y activamos la casilla `Smoothing with CI (linear regression)`.
+------------------------------------------------------------------------
+
+-   Seleccionamos las opciones `Separador de campos: punto y coma [;]` y `Separador decimal: coma [,]`.
+
+    ![](images/import2.png)
+
+------------------------------------------------------------------------
+
+-   Seleccionamos el archivo "`cancer_USA.txt`", que contiene información sobre la tasa de mortalidad por cáncer para distintos condados de USA.
+
+-   Apretamos el botón ![](images/edit.png){width="25%"} y se abrirá una nueva ventana.
+
+------------------------------------------------------------------------
+
+-   En la nueva ventana seleccionamos las columnas de tipo caracter (`condado`, `estado`, `mediana_edad_cat`) y las eliminamos.
+
+    ![](images/edit2.png)
+
+------------------------------------------------------------------------
+
+-   Cerramos la ventana y aceptamos los cambios.
+
+-   Vamos al menú `KMggplot2 > Scatter plot`:
+
+    ![](images/scatter.png)
+
+------------------------------------------------------------------------
+
+-   En la nueva ventana seleccionamos `mediana_edad` como variable $X$ y `tasa_mortalidad` como variable $Y$.
+
+-   Activamos la casilla `Smoothing with CI (linear regression)`.
 
 -   Renombramos el eje X como `Edad (mediana)` y el eje Y como `Tasa de mortalidad` y apretamos **Preview**.
 
 ------------------------------------------------------------------------
 
-![](images/clipboard-1732843492.png){fig-align="center"}
+![](images/scatter2.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
@@ -536,35 +562,45 @@ tibble(
 
 ## Ejemplo en R Commander
 
--   Ir al menú **Estadísticos \> Resúmenes \> Test de correlación** para probar la correlación entre las variables como `mediana_edad` y `tasa_mortalidad`.
+-   Ir al menú **Estadísticos \> Resúmenes \> Test de correlación**.
+
+    ![](images/cor_test.png){width="85%"}
+
+------------------------------------------------------------------------
+
+-   En la nueva ventana seleccionamos las variables `mediana_edad` y `tasa_mortalidad` y presionamos **Aceptar** o **Aplicar.**
+
+    ![](images/cor_test2.png)
+
+------------------------------------------------------------------------
+
+-   Obtendremos la siguiente salida:
+
+    ```{r}
+    ## Carga datos
+    datos <- read_csv2("../cancer_USA.txt")
+
+    # Test de correlación
+    cor.test(datos$mediana_edad, datos$tasa_mortalidad)
+    ```
+
+------------------------------------------------------------------------
 
 -   Para una matriz de correlación de todas las variables numéricas, ir al menú **Estadísticos \> Resúmenes \> Matriz de correlaciones**.
 
-------------------------------------------------------------------------
-
-![](images/clipboard-1173782349.png){fig-align="center"}
-
-```{r}
-## Carga datos
-datos <- read_csv2("../cancer_USA.txt")
-
-# Test de correlación
-cor.test(datos$mediana_edad, datos$tasa_mortalidad)
-```
+    ![](images/cor_mat.png)
 
 ------------------------------------------------------------------------
 
-![](images/clipboard-747358656.png){fig-align="center"}
+-   Nos aparecerá lo siguiente:
 
-------------------------------------------------------------------------
+    ```{r}
+    datos |> 
 
-```{r}
-datos |> 
+      select(where(is.numeric)) |> 
 
-  select(where(is.numeric)) |> 
-
-  cor()
-```
+      cor()
+    ```
 
 ------------------------------------------------------------------------
 
@@ -572,43 +608,45 @@ datos |>
 
 -   Podemos visualizar la matriz de correlación desde el menú `KMggplot2 > Scatter matrix`.
 
--   También podemos representarla usando **correlogramas.**
+    ![](images/scatter_mat.png)
+
+------------------------------------------------------------------------
+
+-   Presionamos **Aceptar** o **Preview.**
+
+    ![](images/scatter_mat2.png)
+
+------------------------------------------------------------------------
+
+-   También podemos representar la matriz usando **correlogramas:**
 
     -   Estos gráficos muestran tanto la matriz de correlaciones como signos y/o coeficientes.
 
     -   R Commander no incluye una opción para realizarlos, pero podemos utilizar el paquete `GGally`.
 
-    -   Para ello vamos al menú `Herramientas>Cargar paquetes`, seleccionamos `GGally` de la lista y presionamos **Aceptar**.
+    -   Para ello vamos al menú `Herramientas > Cargar paquetes`, seleccionamos `GGally` de la lista y presionamos **Aceptar**.
 
 ------------------------------------------------------------------------
 
-#### Scatter matrix
-
-![](images/clipboard-505853380.png){fig-align="center"}
+![](images/ggally.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
-#### ggpairs(datos)
+-   Para visualizar el correlograma escribimos `ggcorr(datos)` y presionamos **Ejecutar**
 
-```{r}
-datos |> 
-
-  select(where(is.numeric)) |> 
-  
-  ggpairs()
-```
+    ![](images/ggcorr.png)
 
 ------------------------------------------------------------------------
 
-#### ggcorr(datos, method = c("pairwise", "pearson"))
+-   Aparecerá el siguiente gráfico:
 
-```{r}
-datos |> 
+    ```{r}
+    datos |> 
 
-  select(where(is.numeric)) |> 
-  
-  ggcorr()
-```
+      select(where(is.numeric)) |> 
+      
+      ggcorr()
+    ```
 
 ------------------------------------------------------------------------
 
@@ -678,15 +716,11 @@ datos |>
 
 -   Para comparar variables numéricas mediante correlación de Spearman vamos al menú `Estadísticos > Resúmenes > Matriz de correlaciones` y seleccionamos la opción `Coeficiente de Spearman`.
 
--   Si quisiéramos utilizar correlación de Kendall, debemos hacerlo para cada par de variables por separado mediante el menú `Estadísticos > Resúmenes > Test de correlación` y seleccionar la opción `Coeficiente tau de Kendall`.
+    ![](images/cor_test_spearman.png){width="90%"}
 
 ------------------------------------------------------------------------
 
-![](images/clipboard-245801609.png){fig-align="center"}
-
-------------------------------------------------------------------------
-
-#### ggcorr(datos, method = c("pairwise", "spearman"))
+-   Para generar el correlograma de Spearman escribimos el siguiente código en la consola: `ggcorr(datos, method = c("pairwise", "spearman"))`
 
 ```{r}
 datos |> 
@@ -698,42 +732,18 @@ datos |>
 
 ------------------------------------------------------------------------
 
-#### ggcorr(datos, method = c("pairwise", "kendall"))
+-   Para correlación de Kendall debemos ir a **Estadísticos \> Resúmenes \> Test de correlación** y seleccionar **Coeficiente tau de Kendall**:
 
-```{r}
-datos |> 
-
-  select(where(is.numeric)) |> 
-
-  ggcorr(method = c("pairwise", "kendall"))
-```
+    ![](images/cor_test_kendall.png){width="90%"}
 
 ------------------------------------------------------------------------
 
-## Trabajo práctico 3 (parte 1)
+-   Para generar el correlograma de Kendall escribimos el siguiente código en la consola: `ggcorr(datos, method = c("pairwise", "kendall"))`
 
--   **Carga de Datos**:
+    ```{r}
+    datos |> 
 
-    -   Importar el archivo "`enterobacterias.txt`" en R Commander.
+      select(where(is.numeric)) |> 
 
-    -   Esta base de datos contiene información sobre presencia de enterobacterias en cortes cárnicos almacenados a distintos tiempos.
-
--   **Covarianza**:
-
-    -   Se desea saber si la carga de enterobacterias co-varía en función de las aminas biogénicas (histamina, tiramina, putrescina y cadaverina).
-
-------------------------------------------------------------------------
-
--   **Evaluación de correlación**:
-
-    -   Si las relaciones parecen lineales, usar correlación de Pearson.
-
-    -   Si hay valores atípicos o distribuciones no normales, elegir correlación de Spearman o Kendall.
-
-    -   Visualizar todas las correlaciones mediante una **matrices de correlación** y **correlogramas**.
-
--   **Interpretación de resultados:**
-
-    -   Elaborar un informe con los resultados obtenidos, incorporando las gráficas y capturas de pantalla que consideren necesarias.
-
-    -   Entregar un solo informe por grupo al finalizar la segunda parte del práctico.
+      ggcorr(method = c("pairwise", "kendall"))
+    ```
