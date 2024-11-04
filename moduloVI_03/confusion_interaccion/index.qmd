@@ -74,8 +74,8 @@ tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2),
   bold(part = "header") |> 
   fontsize(size = 16, part = "all") |>   
   merge_v() |>  
-  color(i = 3:6, color = "gray40") |> 
-  highlight(i = 5, color = "#FFB90F") |> 
+  color(i = 1:5, color = "gray40") |> 
+  highlight(i = 6, color = "#FFB90F") |> 
   autofit() 
 ```
 :::
@@ -112,22 +112,72 @@ tibble(
 ## OBJETIVOS DE HOY
 
 ::: incremental
--   
+- Comprender los conceptos de confusión e interacción en los estudios epidemiológicos.
+
+- Detectar las variables confusoras y modificadoras de efecto en las regresiones lineales.
+
+- Interpretar los coeficientes correctamente frente al ajuste en la regresión.  
 
 :::
 
 ## CONFUSIÓN {transition="zoom"}
 
-Definición diccionario epidemiologia
+::: {.callout-tip icon=false style="font-size: 1.2em;"}
+## Confusión (del latín confundere, mezclar)
+
+En términos generales, es la distorsión de una medida del efecto de una exposición sobre un resultado debido a la asociación de la exposición 
+con otros factores que influyen en la ocurrencia del resultado. 
+La confusión se produce cuando toda o parte de la asociación aparente entre la exposición y el resultado se explica de hecho por otras 
+variables que afectan al resultado y que no se ven afectadas por la exposición.
+:::
+
+*M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
+
+## CONFUSIÓN
+
+Por lo tanto, una variable confusora es una variable que distorsiona la medida de asociación entre las variables principales. El resultado, en presencia de una variable de confusión, puede ser la observación de:
+
+- Efecto donde en realidad no existe (asociación espuria)
+- Exageración o atenuación de una asociación real (confusión positiva)
+- Inversión del sentido de una asociación real (confusión negativa) - paradoja de Simpson
+
+## CONFUSIÓN
+
+La variable confusora puede ser "real" dentro del modelo teórico estudiado y haberse recolectado en los datos (por ejemplo, la edad y el sexo son variables confusoras en muchos procesos de salud-enfermedad)
+
+La variable confusora puede estar representada en los datos debido al desequilibrio de los grupos (heterogeneidad) pero no tener efecto confusor real en el modelo teórico.
+
+Podría existir una variable confusora dentro del modelo teórico y no haberse medido (análisis de sensibilidad)
+
 
 ## SESGOS EN ESTUDIOS EPIDEMIOLÓGICOS
+
+
 
 sesgos en estudios epidemiológicos
 sesgo de confusión
 
+
+Ejemplos de causas de la confusión en estudios observacionales 
+
+- Confusión por indicación: Al evaluar el efecto de un medicamento en particular, muchas veces las personas que toman el medicamento difieren de las que no lo toman según la indicación médica para la que se prescribe el medicamento. 
+
+- Sesgo de selección: No todas las personas invitadas a participar en un estudio participan, lo que causa un desequilibrio entre los grupos. 
+
+- Sesgo de recuerdo: No todas las personas con una exposición recuerdan su historial de exposición correctamente, lo que quizás cause un recuerdo desigual en diferentes grupos. 
+
+De muchas otras maneras, incluidos grupos desequilibrados por casualidad, especialmente en estudios más pequeños.
+
+
 ## MODELOS TEÓRICOS - DAG
 
-modelos teóricos, inferencia causal, DAG
+Para conceptualizar este y otros mecanismos en epidemiología se suele utilizar graficos acíclicos dirigidos (**DAG**s en inglés). 
+
+Su nombre se debe a que no forman un ciclo cerrado y las variables están unidas por flechas dirigidas.
+
+
+
+Un factor de confusión no debe ser un paso intermedio en la vía causal entre la exposición y el resultado.
 
 ## ROL DE LAS COVARIABLES
 
@@ -137,10 +187,44 @@ ejemplos en DAG, ejemplo en la practica
 
 ## CONTROL DE LA CONFUSIÓN
 
+- En el diseño del estudio:
+  - Aleatorización (estudios experimentales)
+  - Restricción
+  - Pareamiento
+
+- Al momento de analizar los datos:
+  - Estandarización (ajuste de tasas)
+  - Estratificación 
+  - Modelos multivariados (ajuste).
+
 control en distintas etapas del estudio
 control en la regresión multiple
 
+## ALEATORIZACIÓN 
+
+El objetivo de la asignación al azar de los tratamientos (exposición), que solo se puede hacer en los **estudios experimentales**, es lograr la formación de grupos homogéneos en lo que se refiere a todas las características que puedan influir en el riesgo de desarrollar el evento (edad, sexo, masa corporal u otras características que no se puedan medir), lo que se busca lograr es que los grupos sean similares en todo excepto en la exposición que se busca evaluar.
+
+## RESTRICCIÓN
+
+La restricción limita el estudio a personas que tienen características especiales.
+
+## APAREAMIENTO
+
+Cuando se controla el fenómeno de confusión mediante apareamiento,
+los participantes en el estudio (casos y controles) se seleccionan de manera que los potenciales factores de confusión se encuentren distribuidos de forma similar en los dos grupos que van a compararse.
+
+## ESTANDARIZACIÓN
+
+## ESTRATIFICACIÓN
+
+## ANALISIS MULTIVARIADO
+
+
 ## INTERPRETACIÓN EN LA RLM
+
+En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión. 
+
+Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de al menos un 10% en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
 
 Interpretación del ajuste y cuando detectar que hay confusion en la regresion
 
@@ -155,7 +239,17 @@ buscar ejemplo completo
 
 ## INTERACCIÓN{transition="zoom"}
 
-Definición diccionario epidemiologia
+<br>
+
+::: {.callout-note icon=false style="font-size: 1.2em;"}
+
+## Modificación de efecto (sin.: modificación de medida de efecto) 
+
+Variación en la medida de efecto seleccionada para el factor en estudio a través de los niveles de otro factor.
+
+:::
+
+*M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
 
 ## DAG CON INTERACCIÓN
 
