@@ -150,13 +150,7 @@ La variable confusora puede estar representada en los datos debido al desequilib
 Podría existir una variable confusora dentro del modelo teórico y no haberse medido (análisis de sensibilidad)
 
 
-## SESGOS EN ESTUDIOS EPIDEMIOLÓGICOS
-
-
-
-sesgos en estudios epidemiológicos
-sesgo de confusión
-
+## CONFUSIÓN PRODUCTO DE OTROS SESGOS 
 
 Ejemplos de causas de la confusión en estudios observacionales 
 
@@ -175,7 +169,21 @@ Para conceptualizar este y otros mecanismos en epidemiología se suele utilizar 
 
 Su nombre se debe a que no forman un ciclo cerrado y las variables están unidas por flechas dirigidas.
 
+```{dot}
+//| echo: false
+//| fig-width: 6
+digraph G {
+  rankdir="LR";
+  ratio = compress;
+  size=8;
+  margin=0;
+  exposicion->resultado
+}
 
+```
+
+
+## ggg
 
 Un factor de confusión no debe ser un paso intermedio en la vía causal entre la exposición y el resultado.
 
@@ -199,6 +207,10 @@ ejemplos en DAG, ejemplo en la practica
 
 control en distintas etapas del estudio
 control en la regresión multiple
+
+## PARADOJA DE SIMPSON
+
+
 
 ## ALEATORIZACIÓN 
 
