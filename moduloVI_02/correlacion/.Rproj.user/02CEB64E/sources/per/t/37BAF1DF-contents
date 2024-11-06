@@ -200,7 +200,7 @@ data_pos |>
 rm(list = ls())
 ```
 
-::: {.fragment style="font-size: 0.75em;"}
+::: fragment
 Cuando crece $X$ (minutos de actividad física semanal) también crece $Y$ (capacidad aeróbica), casi todos los puntos pertenecen a los cuadrantes primero y tercero.
 :::
 
@@ -243,7 +243,7 @@ data_neg |>
 rm(list = ls())
 ```
 
-::: {.fragment style="font-size: 0.75em;"}
+::: fragment
 Cuando crece $X$ (gramos alcohol por semana) decrece $Y$ (enzimas hepáticas), casi todos los puntos pertenecen a los cuadrantes segundo y cuarto.
 :::
 
@@ -287,7 +287,7 @@ data_cero |>
 rm(list = ls())
 ```
 
-::: {.fragment style="font-size: 0.75em;"}
+::: fragment
 No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ (niveles de colesterol).
 :::
 
@@ -321,7 +321,7 @@ No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ 
 
 -   En la nueva ventana seleccionamos las columnas de tipo caracter (`condado`, `estado`, `mediana_edad_cat`) y las eliminamos.
 
-    ![](images/edit2.png)
+    ![](images/edit2.png){width="100%"}
 
 ------------------------------------------------------------------------
 
@@ -329,7 +329,7 @@ No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ 
 
 -   Vamos al menú `KMggplot2 > Scatter plot`:
 
-    ![](images/scatter.png)
+    ![](images/scatter.png){width="100%"}
 
 ------------------------------------------------------------------------
 
@@ -359,11 +359,13 @@ No se observa un patrón claro de dispersión entre $X$ (horas de sueño) e $Y$ 
 
     $$r = \frac{Cov_{XY}}{S_xS_y} $$
 
+    ::: {style="font-size: .75em;"}
     donde:
 
     -   $Cov_{XY}$ es la covarianza entre las variables $X$ e $Y$.
 
     -   $S_x$ y $S_y$ son las desviaciones estándar de las variables $X$ e $Y$.
+    :::
 
 ------------------------------------------------------------------------
 
@@ -606,9 +608,11 @@ tibble(
 
 ### Visualización
 
--   Podemos visualizar la matriz de correlación desde el menú `KMggplot2 > Scatter matrix`.
+-   ::: {style="font-size: 0.75em;"}
+    Podemos visualizar la matriz de correlación desde el menú `KMggplot2 > Scatter matrix`.
+    :::
 
-    ![](images/scatter_mat.png)
+    ![](images/scatter_mat.png){width="80%"}
 
 ------------------------------------------------------------------------
 
@@ -687,7 +691,7 @@ tibble(
     \rho = \frac{1 - 6\sum d_i^2}{n(n^2-1)}
     $$
 
-    $d_i$​ es la diferencia en los rangos de cada par de observaciones.
+    $d_i$ es la diferencia en los rangos de cada par de observaciones.
 
     $n$ es el número de observaciones.
     :::
@@ -714,9 +718,11 @@ tibble(
 
 ## Ejemplo en R Commander
 
--   Para comparar variables numéricas mediante correlación de Spearman vamos al menú `Estadísticos > Resúmenes > Matriz de correlaciones` y seleccionamos la opción `Coeficiente de Spearman`.
+-   ::: {style="font-size: 0.8em;"}
+    Para comparar variables numéricas mediante correlación de Spearman vamos al menú `Estadísticos > Resúmenes > Matriz de correlaciones` y seleccionamos la opción `Coeficiente de Spearman`.
+    :::
 
-    ![](images/cor_test_spearman.png){width="70%"}
+    ![](images/cor_test_spearman.png){width="50%"}
 
 ------------------------------------------------------------------------
 
@@ -734,7 +740,7 @@ tibble(
 
 -   Para correlación de Kendall debemos ir a **Estadísticos \> Resúmenes \> Test de correlación** y seleccionar **Coeficiente tau de Kendall**:
 
-    ![](images/cor_test_kendall.png){width="90%"}
+    ![](images/cor_test_kendall.png){width="85%"}
 
 ------------------------------------------------------------------------
 
