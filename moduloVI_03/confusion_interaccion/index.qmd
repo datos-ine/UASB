@@ -80,35 +80,6 @@ tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2),
 ```
 :::
 
-## ESTRUCTURA DE LA CLASE
-
-::: {style="margin-top: 2em;"}
-```{r}
-# Genera datos para la tabla
-tibble(
-  Horario = c("18:30hs", 
-             "18:40hs", 
-             "20:00hs",
-             "20:15hs", 
-             "21:30hs"),
-  
-  Descripción = c("Ingreso a la videollamada", 
-                  "Inicio de la clase",
-                  "Receso", 
-                  "Continuación clase", 
-                  "Cierre")
-) |> 
-  
-  #  Genera tabla    
-  flextable() |>    
-  bold(part = "header") |> 
-  fontsize(size = 20, part = "all") |>   
-  merge_v() |>  
-  autofit() 
-
-```
-:::
-
 ## OBJETIVOS DE HOY
 
 ::: incremental
@@ -137,61 +108,179 @@ variables que afectan al resultado y que no se ven afectadas por la exposición.
 
 Por lo tanto, una variable confusora es una variable que distorsiona la medida de asociación entre las variables principales. El resultado, en presencia de una variable de confusión, puede ser la observación de:
 
+. . .  
+
 - Efecto donde en realidad no existe (asociación espuria)
+ 
+. . .  
+ 
 - Exageración o atenuación de una asociación real (confusión positiva)
+
+. . .  
+
 - Inversión del sentido de una asociación real (confusión negativa) - paradoja de Simpson
 
 ## CONFUSIÓN
 
-La variable confusora puede ser "real" dentro del modelo teórico estudiado y haberse recolectado en los datos (por ejemplo, la edad y el sexo son variables confusoras en muchos procesos de salud-enfermedad)
+::: incremental
 
-La variable confusora puede estar representada en los datos debido al desequilibrio de los grupos (heterogeneidad) pero no tener efecto confusor real en el modelo teórico.
+- La variable confusora puede ser "real" dentro del modelo teórico estudiado y haberse recolectado en los datos (por ejemplo, la edad y el sexo son variables confusoras en muchos procesos de salud-enfermedad)
 
-Podría existir una variable confusora dentro del modelo teórico y no haberse medido (análisis de sensibilidad)
+- La variable confusora puede estar representada en los datos debido al desequilibrio de los grupos (heterogeneidad) pero no tener efecto confusor real en el modelo teórico.
 
+- Podría existir una variable confusora dentro del modelo teórico y no haberse medido (variable no observada - análisis de sensibilidad)
+
+:::
 
 ## CONFUSIÓN PRODUCTO DE OTROS SESGOS 
 
 Ejemplos de causas de la confusión en estudios observacionales 
 
+::: {.fragment .fade-in-then-semi-out}
+
 - Confusión por indicación: Al evaluar el efecto de un medicamento en particular, muchas veces las personas que toman el medicamento difieren de las que no lo toman según la indicación médica para la que se prescribe el medicamento. 
+
+:::
+
+## CONFUSIÓN PRODUCTO DE OTROS SESGOS 
+
+::: {.fragment .fade-in-then-semi-out}
 
 - Sesgo de selección: No todas las personas invitadas a participar en un estudio participan, lo que causa un desequilibrio entre los grupos. 
 
+:::
+
+::: {.fragment .fade-in-then-semi-out}
+
 - Sesgo de recuerdo: No todas las personas con una exposición recuerdan su historial de exposición correctamente, lo que quizás cause un recuerdo desigual en diferentes grupos. 
 
-De muchas otras maneras, incluidos grupos desequilibrados por casualidad, especialmente en estudios más pequeños.
-
+:::
 
 ## MODELOS TEÓRICOS - DAG
 
-Para conceptualizar este y otros mecanismos en epidemiología se suele utilizar graficos acíclicos dirigidos (**DAG**s en inglés). 
+Para conceptualizar este y otros mecanismos en epidemiología se suele utilizar *grafos acíclicos dirigidos* (**DAG**s en inglés). 
 
-Su nombre se debe a que no forman un ciclo cerrado y las variables están unidas por flechas dirigidas.
+- Su nombre se debe a que no forman un ciclo cerrado y las variables están unidas por flechas dirigidas.
+
+- Se aplican en la inferencia causal para abordar estudios observacionales y a partir de las asociaciones asegurar relaciones causales entre las variables.
+
+- Permiten visualizar el modelo teórico de manera sencilla y controlar sesgos, variables confusoras, etc, 
+
+## DAG - SIMPLE
 
 ```{dot}
 //| echo: false
-//| fig-width: 6
+//| fig-width: 8
 digraph G {
   rankdir="LR";
   ratio = compress;
+  size=10;
+  margin=0;
+  exposicion->desenlace
+}
+
+```
+
+## ROL DE LAS VARIABLES
+
+Además de las variables de exposición y desenlace (medida o evento de interés), las variables pueden tomar diferentes roles:
+
+::: incremental
+
+- Mediadora
+
+- Confusora
+
+- Modificadora de efecto
+
+- Colisionadora
+
+- Antecesora
+
+- No observada
+
+:::
+
+## VARIABLES CONFUSORAS
+
+
+
+## DAG - CONFUSION
+
+```{dot}
+//| echo: false
+//| fig-width: 8
+digraph G {
+  ratio = compress;
   size=8;
   margin=0;
-  exposicion->resultado
+  ranksep = 0.6;
+  confusor->desenlace
+  confusor->exposicion
+  exposicion->desenlace
+  
+  subgraph x {
+        
+            rank = same;
+            exposicion; desenlace; 
+        
+  }
 }
 
 ```
 
 
-## ggg
+## PARADOJA DE SIMPSON
+
+Es el caso de confusión en sentido negativo, cuando se invierte el sentido de una asociación. 
+
+Descripta en 1951 por Edward Simpson y conocida también bajo el nombre "efecto Yule-Simpson"
+
+Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo en la vacunación de covid
+
+Habitualmente la encontramos junto con la falacia ecológica 
+
+## PARADOJA DE SIMPSON
+
+ejemplo gráfico para explicar - cinturón de seguridad
+
+## VARIABLES MEDIADORAS
 
 Un factor de confusión no debe ser un paso intermedio en la vía causal entre la exposición y el resultado.
 
-## ROL DE LAS COVARIABLES
+A estas variables se las denominan mediadoras y no se deben ajustar en un modelo de regresión múltiple.
 
-variables confundidoras y mediadoras
+Un ejemplo, es la relación entre tabaquismo (exposición) y enfermedad cardiovascular (resultado), donde hipertensión (mediadora) actúa como un mecanismo intermedio.
 
-ejemplos en DAG, ejemplo en la practica
+
+
+## DAG - MEDIADORA
+
+```{dot}
+//| echo: false
+//| fig-width: 8
+digraph G {
+  ratio = compress;
+  size=8;
+  margin=0;
+  ranksep = 0.6;
+  mediadora->desenlace
+  exposicion->mediadora
+  exposicion->desenlace
+  
+  subgraph x {
+            rank = same;
+            exposicion; desenlace; 
+        
+  }
+}
+
+```
+
+
+## EJEMPLOS
+
+
 
 ## CONTROL DE LA CONFUSIÓN
 
@@ -204,13 +293,6 @@ ejemplos en DAG, ejemplo en la practica
   - Estandarización (ajuste de tasas)
   - Estratificación 
   - Modelos multivariados (ajuste).
-
-control en distintas etapas del estudio
-control en la regresión multiple
-
-## PARADOJA DE SIMPSON
-
-
 
 ## ALEATORIZACIÓN 
 
@@ -263,9 +345,8 @@ Variación en la medida de efecto seleccionada para el factor en estudio a trav�
 
 *M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
 
-## DAG CON INTERACCIÓN
 
-modelo DAG y ejemplo
+
 
 ## INTERPRETACIÓN EN LA RLM
 
