@@ -234,25 +234,114 @@ digraph G {
 
 Es el caso de confusión en sentido negativo, cuando se invierte el sentido de una asociación. 
 
-Descripta en 1951 por Edward Simpson y conocida también bajo el nombre "efecto Yule-Simpson"
+- Descripta en 1951 por Edward Simpson y conocida también bajo el nombre "efecto Yule-Simpson"
 
-Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo en la vacunación de covid
+- Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo en la vacunación de covid
 
-Habitualmente la encontramos junto con la falacia ecológica 
 
-## PARADOJA DE SIMPSON
 
-ejemplo gráfico para explicar - cinturón de seguridad
+## PARADOJA DE SIMPSON {.smaller}
+
+Un ejemplo claro lo observamos aquí: si analizamos los datos totales, vemos que un 75% de las personas que fallecieron en accidentes de tráfico llevaba el cinturón de seguridad (110 de 145), llegando a la conclusión (errónea) de que el cinturón de seguridad no es eficaz. 
+
+Sin embargo, si analizamos los datos por subgrupos, vemos que en los accidentes sin cinturón mueren el 70% de las personas (35 de 50) y en aquellos donde las personas llevaban el cinturón mueren solo el 11% (110 de 950). Es la conclusión contraria a la anterior.
+
+![](images/cinturon.webp){fig-align="center"}
+
+## CONTROL DE LA CONFUSIÓN
+
+- En el diseño del estudio:
+  - Aleatorización (estudios experimentales)
+  - Restricción
+  - Pareamiento
+
+- Al momento de analizar los datos:
+  - Estandarización (ajuste de tasas)
+  - Estratificación 
+  - Modelos multivariados (ajuste).
+
+## CONTROL EN EL DISEÑO {.smaller}
+
+<br>
+
+**Aleatorización**
+
+El objetivo de la asignación al azar de los tratamientos (exposición), que solo se puede hacer en los **estudios experimentales**, es lograr la formación de grupos homogéneos en lo que se refiere a todas las características que puedan influir en el riesgo de desarrollar el evento (edad, sexo, masa corporal u otras características que no se puedan medir), lo que se busca lograr es que los grupos sean similares en todo excepto en la exposición que se busca evaluar.
+
+**Restricción**
+
+La restricción limita el estudio a personas que tienen características especiales.Por ejemplo, para controlar la edad se puede restringir la muestra a un grupo de edad específico al momento de diseñar el estudio.
+
+## CONTROL EN EL DISEÑO  {.smaller}
+
+<br>
+
+**Apareamiento**
+
+Cuando se controla el fenómeno de confusión mediante apareamiento o emparejamiento,
+los participantes en el estudio (por ejemplo, casos y controles) se seleccionan de manera que los potenciales factores de confusión se encuentren distribuidos de forma similar en los dos grupos que van a compararse.
+
+Por ejemplo, un estudio caso-control para investigar la relación entre la exposición al humo de tabaco (exposición) y el riesgo de cáncer de pulmón (desenlace).
+
+Emparejas cada caso con un control que tenga el mismo sexo y una edad similar (ej: dentro de 5 años de diferencia).
+
+## CONTROL EN EL ANÁLISIS {.smaller}
+
+<br>
+
+**Estandarización**
+
+Es una técnica estadística utilizada para controlar variables confusoras al comparar tasas (como tasas de incidencia o mortalidad) entre diferentes poblaciones. Permite ajustar las diferencias en la distribución de variables como la edad, género u otras características demográficas que podrían influir en las tasas. Existen métodos directos e indirectos.
+
+**Estratificación**
+
+Consiste en dividir los datos en estratos según los valores de una o más confusoras y luego analizar la asociación entre exposición y desenlace dentro de cada estrato.Permite observar la asociación en subgrupos homogéneos, eliminando el sesgo por confusión en cada estrato.
+
+## ANALISIS MULTIVARIADO
+
+
+Todos los modelos de regresión posibilitan incluir variables confusoras o potencialmente confusoras que se ajustan en la relación entre la exposición y el desenlace, proporcionando una estimación del efecto controlado por el impacto de estos confusores. 
+
+Es importante desarrollar el modelo teórico del objeto que se está estudiando para caracterizar el verdadero rol de cada covariable y así identificar estas potenciales confusoras para ajustar adecuadamente la regresión.
+
+
+## INTERPRETACIÓN EN LA RLM
+
+<br>
+
+En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión. 
+
+Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de al menos un 10% en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
+
+
+## SOSPECHA EN LA EXPLORACIÓN {.smaller}
+
+<br>
+
+Los gráficos estadísticos pueden ser herramientas muy útiles para sospechar la presencia de confusión al observar la relación entre la exposición y el desenlace junto con posibles variables confusoras.
+
+- Si al observar los gráficos se detecta que los patrones entre exposición y desenlace cambian al controlar visualmente por una tercera variable, eso sugiere una posible confusión.
+
+- Si encontramos diferencias significativas en la distribución de una variable confusora entre grupos de exposición también pueden indicar confusión.
+
+- Gráficos de dispersión, de barras apiladas o segmentadas y boxplots son útiles para explorar estas situaciones.
+
+## SOSPECHA EN LA EXPLORACIÓN
+
+## EJEMPLO EN RCOMMANDER
+
+buscar ejemplo completo
+
 
 ## VARIABLES MEDIADORAS
 
-Un factor de confusión no debe ser un paso intermedio en la vía causal entre la exposición y el resultado.
+No se debe incluir como factor de confusión a una variable que es se ubica en el paso intermedio de la vía causal entre la exposición y el desenlace.
 
 A estas variables se las denominan mediadoras y no se deben ajustar en un modelo de regresión múltiple.
 
 Un ejemplo, es la relación entre tabaquismo (exposición) y enfermedad cardiovascular (resultado), donde hipertensión (mediadora) actúa como un mecanismo intermedio.
 
-
+Si se la incluye, estaremos midiendo el efecto directo e indirecto
 
 ## DAG - MEDIADORA
 
@@ -278,58 +367,18 @@ digraph G {
 ```
 
 
-## EJEMPLOS
+## EJEMPLO {.smaller}
 
+<br>
 
+Imaginemos un estudio sobre la relación entre `actividad física` (**exposición**), índice de masa corporal - `IMC` (**mediadora**), y riesgo de `diabetes` (**desenlace**):
 
-## CONTROL DE LA CONFUSIÓN
+**Efecto directo**: Al incluir el IMC en el modelo, obtienes el efecto de la actividad física sobre el riesgo de diabetes independientemente de los cambios en el IMC.
 
-- En el diseño del estudio:
-  - Aleatorización (estudios experimentales)
-  - Restricción
-  - Pareamiento
+**Efecto indirecto**: Parte del efecto de la actividad física sobre el riesgo de diabetes ocurre a través de la reducción del IMC. Este efecto indirecto solo puede estimarse modelando la relación entre actividad física y IMC y luego el impacto del IMC sobre la diabetes.
 
-- Al momento de analizar los datos:
-  - Estandarización (ajuste de tasas)
-  - Estratificación 
-  - Modelos multivariados (ajuste).
+**Efecto total**: Si no incluyeras el IMC en el modelo, obtendrías el efecto total de la actividad física en el riesgo de diabetes, que incluye tanto los efectos directos como los indirectos.
 
-## ALEATORIZACIÓN 
-
-El objetivo de la asignación al azar de los tratamientos (exposición), que solo se puede hacer en los **estudios experimentales**, es lograr la formación de grupos homogéneos en lo que se refiere a todas las características que puedan influir en el riesgo de desarrollar el evento (edad, sexo, masa corporal u otras características que no se puedan medir), lo que se busca lograr es que los grupos sean similares en todo excepto en la exposición que se busca evaluar.
-
-## RESTRICCIÓN
-
-La restricción limita el estudio a personas que tienen características especiales.
-
-## APAREAMIENTO
-
-Cuando se controla el fenómeno de confusión mediante apareamiento,
-los participantes en el estudio (casos y controles) se seleccionan de manera que los potenciales factores de confusión se encuentren distribuidos de forma similar en los dos grupos que van a compararse.
-
-## ESTANDARIZACIÓN
-
-## ESTRATIFICACIÓN
-
-## ANALISIS MULTIVARIADO
-
-
-## INTERPRETACIÓN EN LA RLM
-
-En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión. 
-
-Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de al menos un 10% en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
-
-Interpretación del ajuste y cuando detectar que hay confusion en la regresion
-
-## SOSPECHA EN LA EXPLORACIÓN
-
-sospecha gráfica
-ejemplos
-
-## EJEMPLO EN RCOMMANDER
-
-buscar ejemplo completo
 
 ## INTERACCIÓN{transition="zoom"}
 
