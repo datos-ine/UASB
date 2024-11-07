@@ -328,9 +328,11 @@ Los gráficos estadísticos pueden ser herramientas muy útiles para sospechar l
 
 ## SOSPECHA EN LA EXPLORACIÓN
 
+incluir grafico de ejemplo
+
 ## EJEMPLO EN RCOMMANDER
 
-buscar ejemplo completo
+ejemplo de VEF desarrollado
 
 
 ## VARIABLES MEDIADORAS
@@ -366,7 +368,6 @@ digraph G {
 
 ```
 
-
 ## EJEMPLO {.smaller}
 
 <br>
@@ -394,18 +395,16 @@ Variación en la medida de efecto seleccionada para el factor en estudio a trav�
 
 *M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
 
+## SOSPECHA EN LA EXPLORACIÓN
 
-
+sospecha en gráficos - ejemplo
 
 ## INTERPRETACIÓN EN LA RLM
 
 interpretación de coeficientes en la RLM
 ejemplos
 
-## SOSPECHA EN LA EXPLORACIÓN
-
-sospecha en gráficos
 
 ## EJEMPLO EN RCOMMANDER
 
-ejemplo completo
+ejemplo VEF
