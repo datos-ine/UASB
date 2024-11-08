@@ -607,19 +607,61 @@ digraph G {
 
 :::
 
-## INTERACCIÓN{transition="zoom"}
+## INTERACCIÓN {transition="zoom"}
 
 <br>
 
 ::: {.callout-note icon=false style="font-size: 1.2em;"}
 
-## Modificación de efecto (sin.: modificación de medida de efecto) 
+## Modificación de efecto (sin.: modificación de medida de efecto, interacción) 
 
 Variación en la medida de efecto seleccionada para el factor en estudio a través de los niveles de otro factor.
 
 :::
 
 *M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
+
+## INTERACCIÓN
+
+::: {style="font-size: .90em;"}
+
+- Se habla de interacción biológica entre dos o más factores causales cuando existe una interdependencia entre sus mecanismos de acción para causar, prevenir o controlar una enfermedad, de manera que la incidencia de enfermedad
+atribuible a este conjunto de factores causales es diferente de la incidencia esperable de sus efectos individuales.
+
+- A diferencia de la confusión, que es un sesgo o distorsión que se debe controlar y corregir, el fenómeno de interacción no debe *"controlarse"*, sino que debe ser descriptto, del modo más exhaustivo que sea posible, porque enriquece al análisis del objeto de estudio.
+
+::: 
+
+## INTERACCIÓN
+
+- Si una variable es un modificador de efecto, el papel como posible variable de confusión es secundario.
+
+- Las interacciones se pueden encontrar entre una variable cuantitativa y una categórica, entre dos variables categóricas o dos variables continuas. 
+Los mismos conceptos se aplican a cualquier combinación de variables en una interacción.
+
+- Descubrir interacciones siempre es un objeto que debe incluirse en el estudio
+
+## INTERACCIÓN
+
+**Ejemplo de interacciones**
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+Dada dos variables X e Y, donde X es la exposición e Y es el desenlace, las pendientes difieren en función de C, que modifica el efecto de X sobre Y.
+
+
+:::
+
+::: {.column width="60%"}
+
+![](images/graf_interaccion.PNG){fig-align="center" width=100%}
+
+:::
+
+::::
+
 
 
 ## EJEMPLO
@@ -655,6 +697,19 @@ crudo <- lm(vef ~ tabaco, data = vef)
 extract_eq(crudo, use_coefs = T)
 ```
 
+------------------------------------------------------------------------
+
+::: {style="font-size: .75em;"}
+
+La formula en el modelo se hace multiplicativa entre las variables independientes.
+
+$$
+VEF \sim TABACO * EDAD
+$$
+
+::: 
+
+![](images/RCommander_interaccionCaptura.PNG){fig-align="center"}
 
 ------------------------------------------------------------------------
 
@@ -672,7 +727,7 @@ extract_eq(int_edad, use_coefs = T)
 
 La variable **EDAD** tiene una interacción significativa sobre **TABACO**.
 
-Además el $R^2$ ajustado aumenta del 6 al 62 %, evidenciando que esa interacción explica mejor de **VEF**. 
+Además el $R^2$ ajustado aumenta al 62 %, evidenciando que esa interacción explica mejor al **VEF**. 
 
 :::
 
