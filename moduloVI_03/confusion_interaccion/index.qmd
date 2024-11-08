@@ -159,11 +159,15 @@ Ejemplos de causas de la confusión en estudios observacionales
 
 Para conceptualizar este y otros mecanismos en epidemiología se suele utilizar *grafos acíclicos dirigidos* (**DAG**s en inglés). 
 
+::: incremental
+
 - Su nombre se debe a que no forman un ciclo cerrado y las variables están unidas por flechas dirigidas.
 
-- Se aplican en la inferencia causal para abordar estudios observacionales y a partir de las asociaciones asegurar relaciones causales entre las variables.
+- Se aplican en la *inferencia causal* para abordar estudios observacionales y a partir de las asociaciones asegurar relaciones causales entre las variables.
 
 - Permiten visualizar el modelo teórico de manera sencilla y controlar sesgos, variables confusoras, etc, 
+
+:::
 
 ## DAG - SIMPLE
 
@@ -186,9 +190,9 @@ Además de las variables de exposición y desenlace (medida o evento de interés
 
 ::: incremental
 
-- Mediadora
-
 - Confusora
+
+- Mediadora
 
 - Modificadora de efecto
 
@@ -242,11 +246,17 @@ digraph G {
 
 Es el caso de confusión en sentido negativo, cuando se invierte el sentido de una asociación. 
 
+::: {.fragment .fade-in-then-semi-out}
+
 - Descripta en 1951 por Edward Simpson y conocida también bajo el nombre "efecto Yule-Simpson"
 
-- Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo en la vacunación de COVID-19, aprovechado por grupos antivacunas que decían que se morian mas vacunados que no vacunados (tasas crudas globales), haciendo que la edad confundiera la relación.
+:::
 
+::: {.fragment .fade-in-then-semi-out}
 
+- Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo, en la vacunación de COVID-19, aprovechado por grupos antivacunas que decían que se morían mas vacunados que no vacunados (a partir de tasas crudas globales), donde la edad confundía la relación.
+
+:::
 
 ## PARADOJA DE SIMPSON {.smaller}
 
@@ -291,7 +301,7 @@ los participantes en el estudio (por ejemplo, casos y controles) se seleccionan 
 
 Por ejemplo, un estudio caso-control para investigar la relación entre la exposición al humo de tabaco (exposición) y el riesgo de cáncer de pulmón (desenlace).
 
-Emparejas cada caso con un control que tenga el mismo sexo y una edad similar (ej: dentro de 5 años de diferencia).
+Se empareja cada caso con un control que tenga el mismo sexo y una edad similar (ej: dentro de 5 años de diferencia).
 
 ## CONTROL EN EL ANÁLISIS {.smaller}
 
@@ -299,11 +309,11 @@ Emparejas cada caso con un control que tenga el mismo sexo y una edad similar (e
 
 **Estandarización**
 
-Es una técnica estadística utilizada para controlar variables confusoras al comparar tasas (como tasas de incidencia o mortalidad) entre diferentes poblaciones. Permite ajustar las diferencias en la distribución de variables como la edad, género u otras características demográficas que podrían influir en las tasas. Existen métodos directos e indirectos.
+Es una técnica estadística utilizada para controlar variables confusoras al comparar tasas (como tasas de incidencia o mortalidad) entre diferentes poblaciones. Permite ajustar las diferencias en la distribución de variables como la edad, sexo u otras características demográficas que podrían influir en las tasas. Existen métodos directos e indirectos.
 
 **Estratificación**
 
-Consiste en dividir los datos en estratos según los valores de una o más confusoras y luego analizar la asociación entre exposición y desenlace dentro de cada estrato.Permite observar la asociación en subgrupos homogéneos, eliminando el sesgo por confusión en cada estrato.
+Consiste en dividir los datos en estratos según los valores de una o más confusoras y luego analizar la asociación entre exposición y desenlace dentro de cada estrato.Permite observar la asociación en subgrupos homogéneos, eliminando el sesgo por confusión en cada estrato. La desventaja es que no obtenemos resultados globales.
 
 ## ANALISIS MULTIVARIADO
 
@@ -317,9 +327,9 @@ Es importante desarrollar el modelo teórico del objeto que se está estudiando 
 
 <br>
 
-En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión. 
+En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión, o el efecto cambia la significación.
 
-Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de al menos un **10%** en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
+Existe un consenso en la bibliografía: una variable puede considerarse confusora cuando su ajuste es responsable de un cambio de al menos un **10%** en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
 
 
 ## SOSPECHA EN LA EXPLORACIÓN {.smaller}
@@ -328,30 +338,31 @@ Existe un consenso en la bibliografía: un factor puede considerarse de confusi�
 
 Los gráficos estadísticos pueden ser herramientas muy útiles para sospechar la presencia de confusión al observar la relación entre la exposición y el desenlace junto con posibles variables confusoras.
 
+::: incremental
+
 - Si al observar los gráficos se detecta que los patrones entre exposición y desenlace cambian al controlar visualmente por una tercera variable, eso sugiere una posible confusión.
 
-- Si encontramos diferencias significativas en la distribución de una variable confusora entre grupos de exposición también pueden indicar confusión.
+- Si encontramos diferencias visualmente notables en la distribución de una variable confusora entre grupos de exposición también pueden indicar confusión.
 
 - Gráficos de dispersión, de barras apiladas o segmentadas y boxplots son útiles para explorar estas situaciones.
 
-## SOSPECHA EN LA EXPLORACIÓN
-
-incluir grafico de ejemplo
+:::
 
 ## EJEMPLO 
 
-El volumen espiratorio forzado (VEF1) es un índice de la función pulmonar que mide el volumen de aire expulsado 
-después de 1 segundo de esfuerzo constante. En 1970 se realizó un estudio de enfermedades respiratorias infantiles (ERC) con 654 niños de 3 a 19 años de East Boston, Massachusetts. 
+El volumen espiratorio forzado (VEF1) es un índice de la función pulmonar que mide el volumen de aire expulsado después de 1 segundo de esfuerzo constante. En 1970 se realizó un estudio de enfermedades respiratorias infantiles (ERC) con 654 niños de 3 a 19 años de East Boston, Massachusetts. 
 
-En una tabla se recolectaron los datos de VEF, TABACO (si fuma o no), SEXO, EDAD, ALTURA (centímetros).
+En una tabla se recolectaron los datos de VEF, TABACO (si fuma o no), SEXO, EDAD, ALTURA (medida en centímetros).
 
-Una de las preguntas de investigación fue ¿si el fumar afecta la capacidad pulmonar?
+Una de las preguntas de investigación fue ***¿si el fumar afecta la capacidad pulmonar?***
 
 ------------------------------------------------------------------------
 
-La regresión lineal simple (relación cruda) entre tabaco y el vef resulta:
+La regresión lineal simple (relación cruda) entre **TABACO** y el **VEF** resulta:
 
 ![](images/confusion1.PNG){fig-align="center"}
+
+::: {style="font-size: .75em;"}
 
 Es decir la ecuación de la RL sería:
 
@@ -363,51 +374,104 @@ crudo <- lm(vef ~ tabaco, data = vef)
 extract_eq(crudo, use_coefs = T)
 ```
 
+:::
+
+Parece que el fumar afecta al volumen espiratorio forzado aumentando la capacidad pulmonar. Será así?
+
 ------------------------------------------------------------------------
 
-La regresión lineal múltiple (relación ajustada por EDAD) es de:
+La regresión lineal múltiple (relación ajustada por **ALTURA**) es de:
 
-![](images/confusion2.PNG){fig-align="center"}
+![](images/confusion2.PNG){fig-align="center" width=60%}
+
+::: {style="font-size: .75em;"}
 
 ```{r}
-ajustado_edad <- lm(vef ~ tabaco + edad, data = vef)
+ajustado_altura <- lm(vef ~ tabaco + altura, data = vef)
 
-extract_eq(ajustado_edad, use_coefs = T)
+extract_eq(ajustado_altura, use_coefs = T)
 ```
 
-$$
-\frac{0.27 - (-0.09)}{0.27} * 100 = 133.33
-$$
+La variable **ALTURA** provoca que la variable **TABACO** pierda significación.
+
+Además el $R^2$ ajustado aumenta del 6 al 79,5 %, evidenciando que **ALTURA** explica mucho más de la variabilidad de **VEF** por si sola. 
+
+:::
 
 ------------------------------------------------------------------------
 
-La regresión lineal múltiple (relación ajustada por ALTURA) es:
+Veamos como se relaciona **ALTURA** con la exposición y el desenlace:
 
-![](images/confusion3.PNG){fig-align="center"}
+::: {style="font-size: .75em;"}
 
-. . .
+$$
+desenlace \sim confusora = VEF \sim ALTURA
+$$
 
-La variable confusora ALTURA provoca que la variable TABACO pierda significación.
+![](images/confusion6.PNG){fig-align="center" width=60%}
 
-Además el $R^2$ ajustado aumenta del 6 al 60 %, evidenciando que ALTURA explica mucho más de la variabilidad de VEF por si sola. 
+
+$$
+exposicion \sim confusora = ALTURA \sim TABACO
+$$
+:::
+
+![](images/confusion7.PNG){fig-align="center" width=60%}
+
+------------------------------------------------------------------------
+
+Como se visualiza en la exploración gráfica. Si observamos como se relaciona **VEF** con **TABACO**:
+
+![](images/vef_tabaco.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
 
+Y si vemos las variables juntas (**VEF** + **ALTURA** + **TABACO**):
+
+![](images/vef_tabaco_altura_puntos.png){fig-align="center"}
+
+## CONCLUSIÓN
 
 
+Encontramos que en esta muestra el efecto del **TABACO** sobre el **volumen espiratorio forzado (VEF)** visto en la regresión lineal simple pierde significación frente al ajuste con la variable **ALTURA**, que explica el 79,5% de la variabilidad.
 
+La **ALTURA** resulta un confusor en la relación **TABACO ~ VEF**.
+
+```{dot}
+//| echo: false
+//| fig-width: 6
+digraph G {
+  ratio = compress;
+  size=6;
+  margin=2;
+  ranksep = 0.6;
+  ALTURA->VEF
+  ALTURA->TABACO
+  TABACO->VEF
+  
+  subgraph x {
+        
+            rank = same;
+            TABACO; VEF; 
+        
+  }
+}
+
+```
 
 
 ## VARIABLES MEDIADORAS
 
-No se debe incluir como factor de confusión a una variable que se ubica en el paso intermedio de la vía causal entre la exposición y el desenlace.
+<br>
 
-A estas variables se las denominan mediadoras y no se deben ajustar en un modelo de regresión múltiple.
+Decíamos que no se debe incluir como confusora a una variable que se ubica en el paso intermedio de la vía causal entre la exposición y el desenlace. A estas variables se las denominan **mediadoras**.
 
-Un ejemplo, es la relación entre tabaquismo (exposición) y enfermedad cardiovascular (resultado), donde hipertensión (mediadora) actúa como un mecanismo intermedio.
+. . .
 
-Si se la incluye, estaremos midiendo el efecto directo e indirecto
+El **efecto total** de una exposición sobre el desenlace se divide en **efecto directo** y **efecto indirecto** que pasa por la variable mediadora si la incluímos en el modelo.
+
+
 
 ## DAG - MEDIADORA
 
@@ -438,12 +502,110 @@ digraph G {
 
 Imaginemos un estudio sobre la relación entre `actividad física` (**exposición**), índice de masa corporal - `IMC` (**mediadora**), y riesgo de `diabetes` (**desenlace**):
 
-**Efecto directo**: Al incluir el IMC en el modelo, obtienes el efecto de la actividad física sobre el riesgo de diabetes independientemente de los cambios en el IMC.
+**Efecto directo**: Al incluir el `IMC` en el modelo, obtienes el efecto de la `actividad física` sobre el riesgo de `diabetes` independientemente de los cambios en el `IMC`.
 
-**Efecto indirecto**: Parte del efecto de la actividad física sobre el riesgo de diabetes ocurre a través de la reducción del IMC. Este efecto indirecto solo puede estimarse modelando la relación entre actividad física y IMC y luego el impacto del IMC sobre la diabetes.
+**Efecto indirecto**: Parte del efecto de la `actividad física` sobre el riesgo de diabetes ocurre a través de la reducción del `IMC`. Este efecto indirecto solo puede estimarse modelando la relación entre `actividad física` e `IMC` y luego el impacto del `IMC` sobre la `diabetes`.
 
-**Efecto total**: Si no incluyeras el IMC en el modelo, obtendrías el efecto total de la actividad física en el riesgo de diabetes, que incluye tanto los efectos directos como los indirectos.
+**Efecto total**: Si no incluyeras el `IMC` en el modelo, obtendríamos el efecto total de la `actividad física` en el riesgo de `diabetes`, que incluye tanto los efectos directos como los indirectos.
 
+## EJEMPLO FEV {.smaller}
+
+<br>
+
+En el modelo teórico del volumen expiratorio forzado la ALTURA es una variable que está relacionada con EDAD en estos niños y jóvenes de 3 a 19 años. A mayor EDAD, mayor ALTURA y por lo tanto mayor capacidad pulmonar.
+
+:::: {.columns}
+
+::: {.column width="33%"}
+
+![](images/vef_edad_puntos.png){fig-align="center"}
+
+:::
+
+::: {.column width="33%"}
+
+![](images/vef_altura_puntos.png){fig-align="center"}
+
+:::
+
+::: {.column width="33%"}
+
+![](images/edad_altura_puntos.png){fig-align="center"}
+
+:::
+
+::::
+
+------------------------------------------------------------------------
+
+Por lo tanto, si comparamos los efectos que tienen estas variables (que explicarían lo mismo) sobre el VEF:
+
+**RLS VEF ~ EDAD**
+
+![](images/mediadora1.PNG){fig-align="center"}
+
+**RLS VEF ~ ALTURA**
+
+![](images/mediadora2.PNG){fig-align="center"}
+
+------------------------------------------------------------------------
+
+**RLM VEF ~ EDAD + ALTURA**
+
+![](images/mediadora3.PNG){fig-align="center"}
+
+::: {style="font-size: .75em;"}
+
+```{r}
+edad <- lm(vef ~ edad, data = vef)
+
+extract_eq(edad, use_coefs = T, coef_digits = 3)
+```
+
+
+```{r}
+altura <- lm(vef ~ altura, data = vef)
+
+extract_eq(altura, use_coefs = T, coef_digits = 3)
+```
+
+```{r}
+edad_y_altura <- lm(vef ~ edad + altura, data = vef)
+
+extract_eq(edad_y_altura, use_coefs = T, coef_digits = 3)
+```
+
+:::
+
+------------------------------------------------------------------------
+
+## CONCLUSIÓN
+
+Encontramos que si incorporamos la **ALTURA** a la regresión de **VEF** según **EDAD**, el efecto de **EDAD** se divide en efecto directo e indirecto. Si utilizamos solo una de ellas vemos el efecto total sobre el **VEF**.
+
+```{dot}
+//| echo: false
+//| fig-width: 8
+digraph G {
+  ratio = compress;
+  size=6;
+  margin=2;
+  ranksep = 0.6;
+  ALTURA->VEF
+  EDAD->ALTURA
+  EDAD->VEF
+  
+  subgraph x {
+            rank = same;
+            EDAD; ALTURA; VEF; 
+        
+  }
+}
+
+```
+
+
+:::
 
 ## INTERACCIÓN{transition="zoom"}
 
@@ -459,16 +621,77 @@ Variación en la medida de efecto seleccionada para el factor en estudio a trav�
 
 *M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
 
-## SOSPECHA EN LA EXPLORACIÓN
 
-sospecha en gráficos - ejemplo
+## EJEMPLO
 
-## INTERPRETACIÓN EN LA RLM
+<br>
 
-interpretación de coeficientes en la RLM
-ejemplos
+Continuemos con la anterior tabla de datos sobre el volumen espiratorio forzado (**VEF**), ahora utilizando la variable **EDAD** como ajuste sobre el efecto de **TABACO** sobre **VEF**.
+
+Primero vamos a mostrar los gráficos exploratorios, similares a los vistos con ALTURA y luego procederemos con las regresiones.
+
+------------------------------------------------------------------------
 
 
-## EJEMPLO EN RCOMMANDER
+Visualizamos las variables juntas (**VEF** + **EDAD** + **TABACO**):
 
-ejemplo VEF
+![](images/vef_tabaco_edad_puntos.png){fig-align="center" width=60%}
+
+A partir del gráfico sospechamos que TABACO tiene efectos diferentes a distintos niveles de EDAD, por lo que vamos a analizar incluyéndola como variable de interacción
+
+------------------------------------------------------------------------
+
+Volvamos a ver la regresión lineal simple (relación cruda) entre **TABACO** y el **VEF**:
+
+![](images/confusion1.PNG){fig-align="center"}
+
+Es decir la ecuación de la RL es:
+
+```{r}
+vef <- read_csv2("vef2.txt")
+
+crudo <- lm(vef ~ tabaco, data = vef)
+
+extract_eq(crudo, use_coefs = T)
+```
+
+
+------------------------------------------------------------------------
+
+La regresión lineal múltiple (incorporando **EDAD** como *modificadora de efecto*) es:
+
+![](images/interaccion1.PNG){fig-align="center" width=60%}
+
+::: {style="font-size: .75em;"}
+
+```{r}
+int_edad <- lm(vef ~ tabaco * edad, data = vef)
+
+extract_eq(int_edad, use_coefs = T)
+```
+
+La variable **EDAD** tiene una interacción significativa sobre **TABACO**.
+
+Además el $R^2$ ajustado aumenta del 6 al 62 %, evidenciando que esa interacción explica mejor de **VEF**. 
+
+:::
+
+
+
+------------------------------------------------------------------------
+
+## INTERPRETACIÓN 
+
+::: {style="font-size: .80em;"}
+
+<br>
+
+Cuando una interacción es significativa no se puede hablar de una variable sin mencionar a la otra, es decir no podemos hablar de efecto de TABACO sin incluir en la interpretación a EDAD.
+
+```{r}
+extract_eq(int_edad, use_coefs = T)
+```
+
+Se interpreta que el **VEF** varía 0,95 por cada año que aumenta la **EDAD** en los que **no fuman** y varía 0,88 por cada año que aumenta la **EDAD** en los que **fuman**.
+
+:::
