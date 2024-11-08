@@ -23,6 +23,7 @@ pacman::p_load(
   patchwork,
   rio,
   janitor,
+  equatiomatic,
   tidyverse
 )
 ```
@@ -96,10 +97,8 @@ tibble(Semana = c(rep("30 oct. al 03 nov. 2024", 2),
 ::: {.callout-tip icon=false style="font-size: 1.2em;"}
 ## Confusión (del latín confundere, mezclar)
 
-En términos generales, es la distorsión de una medida del efecto de una exposición sobre un resultado debido a la asociación de la exposición 
-con otros factores que influyen en la ocurrencia del resultado. 
-La confusión se produce cuando toda o parte de la asociación aparente entre la exposición y el resultado se explica de hecho por otras 
-variables que afectan al resultado y que no se ven afectadas por la exposición.
+En términos generales, es la distorsión de una medida del efecto de una exposición sobre un resultado debido a la asociación de la exposición con otros factores que influyen en la ocurrencia del resultado. 
+La confusión se produce cuando toda o parte de la asociación aparente entre la exposición y el resultado se explica de hecho por otras variables que afectan al resultado y que no se ven afectadas por la exposición.
 :::
 
 *M. Porta - A Dictionary of Epidemiology - 6th Edition - 2016*
@@ -203,6 +202,15 @@ Además de las variables de exposición y desenlace (medida o evento de interés
 
 ## VARIABLES CONFUSORAS
 
+<br>
+
+- Una variable cumple el rol de confusora, si:
+
+- Se asocia con la exposición.
+
+- Se asocia con el desenlace.
+
+Nota: la variable confusora no puede ser un paso intermedio en la vía causal entre la exposición y el desenlace (variable mediadora).
 
 
 ## DAG - CONFUSION
@@ -236,7 +244,7 @@ Es el caso de confusión en sentido negativo, cuando se invierte el sentido de u
 
 - Descripta en 1951 por Edward Simpson y conocida también bajo el nombre "efecto Yule-Simpson"
 
-- Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo en la vacunación de covid
+- Existe como caso de confusión en muchas situaciones de la epidemiología, como por ejemplo en la vacunación de COVID-19, aprovechado por grupos antivacunas que decían que se morian mas vacunados que no vacunados (tasas crudas globales), haciendo que la edad confundiera la relación.
 
 
 
@@ -311,7 +319,7 @@ Es importante desarrollar el modelo teórico del objeto que se está estudiando 
 
 En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión. 
 
-Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de al menos un 10% en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
+Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de al menos un **10%** en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
 
 
 ## SOSPECHA EN LA EXPLORACIÓN {.smaller}
@@ -330,14 +338,70 @@ Los gráficos estadísticos pueden ser herramientas muy útiles para sospechar l
 
 incluir grafico de ejemplo
 
-## EJEMPLO EN RCOMMANDER
+## EJEMPLO 
 
-ejemplo de VEF desarrollado
+El volumen espiratorio forzado (VEF1) es un índice de la función pulmonar que mide el volumen de aire expulsado 
+después de 1 segundo de esfuerzo constante. En 1970 se realizó un estudio de enfermedades respiratorias infantiles (ERC) con 654 niños de 3 a 19 años de East Boston, Massachusetts. 
+
+En una tabla se recolectaron los datos de VEF, TABACO (si fuma o no), SEXO, EDAD, ALTURA (centímetros).
+
+Una de las preguntas de investigación fue ¿si el fumar afecta la capacidad pulmonar?
+
+------------------------------------------------------------------------
+
+La regresión lineal simple (relación cruda) entre tabaco y el vef resulta:
+
+![](images/confusion1.PNG){fig-align="center"}
+
+Es decir la ecuación de la RL sería:
+
+```{r}
+vef <- read_csv2("vef2.txt")
+
+crudo <- lm(vef ~ tabaco, data = vef)
+
+extract_eq(crudo, use_coefs = T)
+```
+
+------------------------------------------------------------------------
+
+La regresión lineal múltiple (relación ajustada por EDAD) es de:
+
+![](images/confusion2.PNG){fig-align="center"}
+
+```{r}
+ajustado_edad <- lm(vef ~ tabaco + edad, data = vef)
+
+extract_eq(ajustado_edad, use_coefs = T)
+```
+
+$$
+\frac{0.27 - (-0.09)}{0.27} * 100 = 133.33
+$$
+
+------------------------------------------------------------------------
+
+La regresión lineal múltiple (relación ajustada por ALTURA) es:
+
+![](images/confusion3.PNG){fig-align="center"}
+
+. . .
+
+La variable confusora ALTURA provoca que la variable TABACO pierda significación.
+
+Además el $R^2$ ajustado aumenta del 6 al 60 %, evidenciando que ALTURA explica mucho más de la variabilidad de VEF por si sola. 
+
+------------------------------------------------------------------------
+
+
+
+
+
 
 
 ## VARIABLES MEDIADORAS
 
-No se debe incluir como factor de confusión a una variable que es se ubica en el paso intermedio de la vía causal entre la exposición y el desenlace.
+No se debe incluir como factor de confusión a una variable que se ubica en el paso intermedio de la vía causal entre la exposición y el desenlace.
 
 A estas variables se las denominan mediadoras y no se deben ajustar en un modelo de regresión múltiple.
 
