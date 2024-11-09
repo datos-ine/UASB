@@ -579,7 +579,7 @@ check_model(mod1)
 
 #### Interpretación
 
--   La tasa de mortalidad por cáncer (`tasa_mortalidad`) disminuye significativamente (p = 0,0007 ) a medida que aumenta la edad (`mediana_edad`).
+-   La tasa de mortalidad por cáncer (`tasa_mortalidad`) aumenta significativamente (p = 0,0007 ) a medida que aumenta la edad (`mediana_edad`).
 
 -   Este modelo solo explica un porcentaje muy bajo de la variabilidad observada en los datos ($R^2 =$ `r r2(mod1)[2]`).
 
