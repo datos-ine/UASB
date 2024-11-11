@@ -750,3 +750,17 @@ extract_eq(int_edad, use_coefs = T)
 Se interpreta que el **VEF** varía 0,95 por cada año que aumenta la **EDAD** en los que **no fuman** y varía 0,88 por cada año que aumenta la **EDAD** en los que **fuman**.
 
 :::
+
+## RESUMEN
+
+::: incremental
+
+- Las regresiones son herramientas de análisis muy útiles para aislar el efecto de las variables y controlar múltiples confusores.
+
+- El rol de las variables depende fundamentalmente del modelo teórico del contexto en el que estamos trabajando.
+
+- Si deseamos medir el efecto total de una variable, no se debe incluir otra si cumple el rol de mediadora.
+
+- Las interacciones que existan en las complejas relaciones entre variables de un modelo, pueden y deben ser incluidas en la regresión.
+
+:::
