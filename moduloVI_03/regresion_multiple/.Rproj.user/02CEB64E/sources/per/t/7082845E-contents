@@ -1,0 +1,682 @@
+---
+author: "Christian Ballejo, Andrea Silva, Tamara Ricardo"
+css: references.css
+---
+
+```{r}
+#| echo: false
+source("setup.R")
+pacman::p_load(
+  plotly,
+  patchwork,
+  broom
+)
+```
+
+# Regresión lineal múltiple {#sec-rlm}
+
+## Introducción
+
+Los modelos de Regresión Lineal Múltiple (RLM) son típicamente empleados cuando la variable dependiente (también llamada variable respuesta, resultado o desenlace) es continua. Las variables independientes (variables explicativas, covariables o predictores) pueden ser tanto continuas como categóricas. A su vez las variables categóricas pueden ser dicotómicas, ordinales o tener múltiples niveles, siendo tratadas, en esta situación, como variables *dummy* (según veremos más adelante).
+
+Así como la RLS nos permite estimar el efecto bruto de una variable independiente sobre una variable respuesta, la RLM nos permite conocer el efecto conjunto de dos o más variables independientes ($X_1$, $X_2$,...$X_k$) sobre la variable respuesta ($Y$). De esta manera podemos decir que la RLM nos permite:
+
+-   Analizar la dirección y fuerza de la asociación entre la variable dependiente y las variables independientes.
+
+-   Determinar cuáles variables independientes son importantes en la **predicción/explicación** de la variable dependiente.
+
+-   Describir la relación entre una o más variables independientes controlando por el efecto de las otras variables independientes (**confusión**).
+
+-   Identificar si la relación de la variable respuesta y una variable independiente cambia de acuerdo al nivel de otra variable independiente (**interacción**).
+
+El modelo estadístico de la RLS que expresa la relación entre $X$ e $Y$ es:
+
+$$ Y = \beta_0 + \beta_1X_1   $$
+
+La representación gráfica de dicha relación es una recta de ajuste que se realiza en un plano (2 dimensiones).
+
+El modelo estadístico de la RLM es:
+
+$$ Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ...+\beta_kX_k   $$
+
+Donde $\beta_0$, $\beta_1$, $\beta_2$,...,$\beta_k$ son los parámetros de la regresión. Para cada combinación de valores de $X_1$, $X_2$,...$X_k$ existe una distribución $Y$ cuya **media** es una función lineal de $X_1$, $X_2$,..., $X_k$.
+
+```{r}
+#| echo: false
+## Sample data
+set.seed(1234)
+
+dat <- tibble(
+  x = runif(100, 0, 50),
+  y = rnorm(100, 10*x, 100)) |> 
+  # breaks
+  mutate(section =  cut(x, breaks = seq(min(x), max(x), len = 5),
+                       labels = c("X1", "X2", "X3", "X4"))
+  ) |> 
+  
+  # residuals
+  mutate(res = residuals(lm(y ~ x)))
+
+
+## Compute normal densities for each section
+normal_dens <- do.call(rbind, lapply(split(dat, dat$section), function(x) {
+  xs <- seq(min(x$res), max(x$res), len = 50)
+  res <- data.frame(y = xs + mean(x$y),
+                    x = max(x$x) - 2000*dnorm(xs, 0, sd(x$res)))
+  res$type <- "normal"
+  res
+}))
+normal_dens$section <- rep(levels(dat$section), each = 50)
+
+## Plot
+ggplot() +
+  
+  geom_smooth(data = dat, mapping = aes(x = x, y = y),
+              method = "lm", se = F, color = "grey5") +
+  
+  geom_line(data = normal_dens,
+            aes(x = x, y = y, color = section),
+            size = 1, alpha = .7) +
+  
+  scale_color_manual(values = pal) +
+ 
+  scale_x_continuous(breaks = c(11, 24, 36, 46),
+                     labels = c("X1", "X2", "X3", "X4")) +
+  
+  annotate(geom = "text", x = 40, y = 100, 
+           label = expression(y  == alpha + beta*x)) +
+  
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+La representación gráfica de la recta de ajuste se realiza en el espacio de dimensión $K + 1$ (donde $K$ es el número de variables). Recordamos que en el caso de la RLS, podíamos representarla en un plano (2 dimensiones), en el caso de la RLM, se nos dificulta la representación espacial si el modelo tuviera más de 2 variables.
+
+En el caso puntual que el modelo tuviera 2 variables independientes, la ecuación sería:
+
+$$ Y = \beta_0 + \beta_1 X_1 + \beta_2X_2 $$
+
+Y podríamos representarlo en un plano como:
+
+```{r}
+#| echo: false
+
+# Sample data
+set.seed(123)
+
+data <- tibble(
+  x1 = rnorm(100), 
+  x2 = rnorm(100), 
+  y = 2 * x1 + 3 * x2 + rnorm(100)
+)
+
+error <- rnorm(100, mean = 0, sd = 0.5)
+
+# Fit multiple linear regression model
+model <- lm(y ~ x1 + x2, data = data)
+
+# Generate points for the plane
+x1_range <- range(data$x1)
+
+x2_range <- range(data$x2)
+
+x1_grid <- seq(x1_range[1], x1_range[2], length.out = 20)
+
+x2_grid <- seq(x2_range[1], x2_range[2], length.out = 20)
+
+grid <- expand.grid(x1 = x1_grid, x2 = x2_grid)
+
+grid$y <- predict(model, newdata = grid)
+
+# Plot
+plot_ly(data = data, x = ~ x1, y = ~ x2, z = ~ y) |>
+  
+  add_markers(error_x = list(array = error), 
+              error_y = list(array = error),
+              showlegend = F) |> 
+  
+  add_surface(x = ~ x1_grid, y = ~ x2_grid,
+              z = ~ matrix(grid$y, 
+                           nrow = length(x1_grid), 
+                           ncol = length(x2_grid)),
+              showscale = F, opacity = .75) |>
+
+  layout(scene = list(xaxis = list(title = "X1"),
+                      yaxis = list(title = "X2"),
+                      zaxis = list(title = "Y")))
+```
+
+En forma similar a la RLS, la interpretación de cada parámetro $\beta$ de la regresión es:
+
+-   $\beta_0$: es el valor esperado de $Y$ cuando todas las otras variables son iguales a cero.
+
+-   $\beta_1$ es la pendiente a lo largo del eje $X_1$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_1$ a valores constantes de $X_2$.
+
+-   $\beta_2$ es la pendiente a lo largo del eje $X_2$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_2$ a valores constantes de $X_1$.
+
+## Presupuestos del modelo de RLM
+
+### Independencia
+
+Las observaciones $Y_i$ son independientes unas de otras: el efecto de $X_1$ sobre la respuesta media no depende de $X_2$ y viceversa, siempre y cuando no exista interacción. Cuando existe interacción entre $X_1$ e $X_2$ , el efecto de $X_1$ sobre la respuesta media de $Y$ depende $X_2$ y viceversa ($X_1$ e $X_2$ no son independientes cuando existe interacción).
+
+### Linealidad
+
+Para cada combinación de valores de las variables independientes ($X_1$, $X_2$,..., $X_k$) el valor medio de $Y$ es función lineal de $X_1$, $X_2$,...,$X_k$.. La linealidad se define en relación a los coeficientes de la regresión, por lo tanto el modelo puede incluir términos cuadráticos e interacciones
+
+-   Modelo con interacción
+
+$$ Y = \beta_0X_1 + \beta_2X_2 + \beta_3X_1X_2 $$
+
+-   Modelo con términos cuadráticos
+
+    $$ Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_1^2 + \beta_4X_2^2 $$
+
+### Homocedasticidad
+
+la varianza de $Y$ para los distintos valores de $X_1$, $X_2$,...,$X_k$ se mantiene constante.
+
+### Normalidad
+
+Los valores de $Y$ tienen una distribución normal según los valores de $X_1$, $X_2$, $X_k$ , ésto nos permite realizar inferencias en relación a los parámetros del modelo.
+
+Al igual que en la RLS la estimación de los parámetros de la regresión (coeficientes) se realiza mediante el **Método de los Mínimos Cuadrados** **(MMC)**.
+
+El MMC consiste en adoptar como estimativas de los parámetros de la regresión los valores que minimicen la suma de los cuadrados de los residuos.
+
+$$ \sum_{i=1}^{i=n}e_1^2=\sum_{i=1}^{i=n}(Y_i-\hat{Y_i})^2=\sum_{i=n}^{i=n}(Y_i-(\hat{\beta}_0+\hat{\beta}_1X_1+\dots+\hat{\beta}_kX_k))^2  $$
+
+## Interpretación de un modelo de RLM
+
+Comenzaremos aprendiendo a interpretar un modelo de RLM, para luego aprender a construirlos. Para ello, observemos detalladamente la salida de R para un modelo de RLM, donde modelamos la `V23`, en función de las variables `V10`, `V11`, `V12`, `V14`, `V15`, `V17`, `V18` y `V24`.
+
+```{r}
+#| echo: false
+
+# Generate sample data
+set.seed(123)
+n <- 100  # Number of observations
+
+# Create a data frame with the specified variable names
+data <- data.frame(
+  V23 = rnorm(n),
+  V10 = rnorm(n),
+  V11 = rnorm(n),
+  V12 = rnorm(n),
+  V14 = rnorm(n),
+  V15 = rnorm(n),
+  V17 = rnorm(n),
+  V18 = rnorm(n),
+  V24 = rnorm(n)
+)
+
+## RLM
+lm(V23 ~ ., data = data) |> summary()
+```
+
+Donde:
+
+`Estimate`: muestra los coeficientes $\beta$ estimados para el intercepto ($\beta_0$) y cada una de las variables explicativas ($\beta_i$),
+
+`Std. Error`: error estándar de cada coeficiente $\beta$,
+
+`t-value`: valores del test $F$ parcial,
+
+`Pr(>|t|)` : $p$-valores para el test $F$ parcial,
+
+`Residual standard error`: error estándar de los residuales,
+
+`Multiple R-squared`: $R^2$ múltiple,
+
+`Adjusted R-squared`: $R^2$ ajustado,
+
+`F-statistic`: resultados del test $F$ global y su $p$-valor
+
+Profundicemos ahora en lo que significan algunos de estos puntos.
+
+### Test F parcial
+
+Como estamos sacando conclusiones partiendo de una muestra, es obvio que distintas muestras van a dar distintos valores de los parámetros. Es por eso que el test $F$ parcial, testea la siguiente afirmación o hipótesis:
+
+$$ H_0 = \beta_1 = \beta_2 = ... \beta_n = 0$$
+
+$$
+ H_1 = \exists\beta_i \neq 0
+$$
+
+Donde $H_1$ indica que existe al menos un coeficiente $\neq$ 0
+
+De alguna forma, evalúa la contribución de cada variable al modelo. Nos dice si la inclusión de esa variable es útil para explicar significativamente la variabilidad observada en $Y$. En los modelos lineales generalizados (GLM por sus siglas en inglés), el *test de Wald* testea esta $H_0$. Para RLM, el test $F$ parcial es idéntico a Wald.
+
+### Varianza residual
+
+Como vimos en ANOVA y al igual que en el caso de regresión lineal simple, vamos a descomponer la variabilidad de la variable dependiente $Y$ en dos componentes o fuentes de variabilidad: un componente va a representar la variabilidad explicada por el modelo de regresión y el otro componente va a representar la variabilidad no explicada por el modelo y, por tanto, atribuida a factores aleatorios.
+
+$$ Variabilidad \ total = Variabilidad \ regresión \ + \ Variabilidad \ residual $$
+
+Del mismo modo, podemos decir que la suma de cuadrados totales (SCT) es igual a la suma de cuadrados de la regresión (SCR) y la suma de cuadrados residuales (SCR)
+
+$$ \sum (y_i-\bar{y})^2 = \sum (\hat{y}-\bar{y})^2 + \sum (y_i -\hat{y}_i)^2  $$
+
+$$ SCT = SCR + SCE $$
+
+Recordemos que cada uno de estos términos, se divide por sus grados de libertad para obtener los cuadrados medios correspondientes (CMT/CMR/CME)
+
+```{r}
+#| echo: false
+
+# Datos tabla
+tibble(
+  " " = c("SCT", "SCR", "SCE"),
+  `Grados de libertad` = c("n-1", "k-1", "n-k-1"),
+  CM = c("CMT = SCT/n-1", "CMR = SCR/k-1", "CME = SCE/n-k-1") 
+) |> 
+  
+  # Formato tabla
+  tab_style()
+```
+
+### Test F global
+
+Compara el modelo de regresión con el modelo nulo. Evalúa el efecto conjunto de las variables independientes incluidas en el modelo ajustado.
+
+$$ F = CMR/CME \quad gl = (k -1, n - k - 1) $$
+
+### Coeficiente de determinación
+
+Al igual de lo que aprendimos en la RLS la bondad de ajuste del modelo de RLM se valora con el coeficiente de determinación ($R^2$), que nos dice qué proporción de la variabilidad de $Y$ es explicada por los coeficientes de la regresión del modelo en estudio. El $R^2$ es útil para comparar entre modelos
+
+$$ R^2 = \frac{SCT-SCE}{SCT}=\frac{SCR}{SCT} $$
+
+Sin embargo, en el caso de la RLM, en donde deseamos incluir en el modelo más de una variable independiente, el $R^2$ siempre va a mejorar al agregar una nueva variable, aunque su inclusión no mejore sustancialmente el modelo. El $R^2$ más grande se obtiene por el simple hecho de incluir todas las variables disponibles, pero la mejor ecuación de regresión múltiple no necesariamente utiliza todas las variables. El $R^2$ ajustado o corregido tiene esta expresión:
+
+$$ R^2_a = 1 - \bigg [ \frac{n-1}{n-(k+1)}\bigg]\frac{SCE}{SCT}=1-\bigg[\frac{n-1}{n-(k+1)}\bigg](1-R^2)  $$
+
+Teniendo en cuenta que 1-$R^2$ es un número constante y que $n$ es mayor que $k$, a medida que añadimos variables al modelo, el cociente entre paréntesis se hace más grande. Consecuentemente, también el resultado de multiplicar este por 1-$R^2$. Con lo cual vemos que la fórmula está construida para ajustar y penalizar la inclusión de coeficientes en el modelo.
+
+::: callout-tip
+## Nota
+
+Cuando tenemos que elegir el mejor modelo será necesario utilizar distintos criterios para compararlos y basar nuestra decisión en elegir el modelo que mejor explique la variación de $Y$ con el menor número de variables independientes, el modelo más simple y efectivo, también llamado el modelo más **parsimonioso**.
+:::
+
+## Confusión e interacción en RLM
+
+Antes de aprender a construir modelos de regresión, vamos a repasar algunos conceptos.
+
+Los estudios epidemiológicos suelen partir de modelos teóricos conocidos y vinculados al tema que se está estudiando. Las variables de interés que se recolectan surgen en la elaboración de los estudios y todas ellas cumplen con un rol hipotético que queremos probar. Solemos distinguir dos variables principalesy excluyentes: la exposición (variable independiente) y el resultado (variable dependiente). Una vez seleccionadas estas dos variables, las otras variables del estudio (medidas o no medidas) se denominan covariables.
+
+Las covariables, dentro del proceso salud-enfermedad, pueden tener varios roles, tales como confusoras, mediadoras de efecto, intermedias, colisionadoras, exposiciones en competencia, etc. Aplicado al tema de investigación sobre el que estemos trabajando, algunos de estos roles serán conocidos previamente por la literatura y otros hallados o sospechados durante el análisis.
+
+### Confusión
+
+Una variable de confusión es una variable que distorsiona la medida de asociación entre las variables principales. El resultado, en presencia de una variable de confusión, puede ser la observación de:
+
+1.  Efecto donde en realidad no existe (asociación espuria)
+2.  Exageración o atenuación de una asociación real (confusión positiva)
+3.  Inversión del sentido de una asociación real (confusión negativa).
+
+Según @gordis2017, en un estudio sobre si la exposición `x` es una causa de la enfermedad `y`, se dice que un tercer factor, el factor `z`, es un factor de confusión si se cumple lo siguiente:
+
+1.  El factor `z` es un factor de riesgo conocido para la enfermedad `y`.
+2.  El factor `z` se asocia con la exposición `x`, pero no es un resultado de la exposición `x`.
+
+Para conceptualizar este y otros mecanismos en epidemiología se suele utilizar graficos acíclicos dirigidos (**DAGs** en inglés). Su nombre se debe a que no forman un ciclo cerrado y las variables están unidas por flechas dirigidas.
+
+::: {layout-nrow="2"}
+![DAG de efecto directo entre x e y](images/dag_directo.PNG)
+
+![DAG con z como variable confusora](images/dag_confusion.PNG)
+:::
+
+Para quienes necesitan repasar este tema, pueden leer el artículo de @deirala2001 accediendo desde [aquí](http://halweb.uc3m.es/esp/Personal/personas/amalonso/esp/bstat-tema8vc.pdf).
+
+Dentro de las estrategias para manejar la confusión, podemos pensar en dos momentos:
+
+-   A la hora de diseñar y llevar a cabo el estudio:
+    -   Emparejamiento individual.
+    -   Emparejamiento de grupo.
+-   Al momento de analizar los datos:
+    -   Estratificación.
+    -   Ajuste.
+
+El ajuste estadístico es la propiedad de los análisis multivariados por la que se determina la influencia específica de cada variable independiente sobre la variable dependiente al mantener el resto de variables constantes.
+
+En términos generales, se habla de confusión cuando existen diferencias estadísticas importantes entre las estimaciones brutas de una asociación y las ajustadas por los posibles factores de confusión. Existe un consenso en la bibliografía: un factor puede considerarse de confusión cuando su ajuste es responsable de un cambio de **al menos un 10%** en la magnitud de la diferencia entre las estimaciones ajustadas y las brutas.
+
+En muchos estudios epidemiológicos, la edad y el sexo son variables que juegan roles de confusión y generalmente son pocos los trabajos que no presentan datos ajustados por estas covariables.
+
+Durante el curso vamos a utilizar la regresión lineal y otras regresiones lineales generalizadas para resolver la confusión ajustando los efectos de múltiples variables.
+
+Si lo mirásemos desde el punto gráfico de los datos podríamos partir de un diagrama de dispersión de puntos, con la variable dependiente de nombre `y` y la variable independiente de nombre `x`.
+
+```{r}
+#| echo: false
+datos_conf <- read_csv2("data/datos_conf.csv")
+
+datos_conf |> 
+  ggplot(aes(x = x, y = y)) +
+  geom_point(color = pal[5], size = 2, alpha = .9) +
+  geom_smooth(method = "lm", se = F, color = pal[6]) +
+  theme_minimal()
+```
+
+Observamos que la recta de regresión muestra una correlación positiva entre los valores de las variables, representando la ecuación:
+
+$$\hat{y} = b_0 + b_1x_1 + \epsilon$$
+
+Un posible resultado resumen en R de esta regresión se muestra en la siguiente salida de consola.
+
+```{r}
+#| echo: false
+
+modelo <- lm(y ~ x, data = datos_conf)
+
+summary(modelo)
+```
+
+El intercepto ($b_0$) es de 2,45 y el coeficiente $b_1$ (pendiente) significativo de 0,78 que explica un 56% de los valores de `y` ($R^2$)
+
+En la ecuación el valor de `y` en la recta es 2,45 ($b_0$) + 0,78\* el valor de `x` ($b_1*x$).
+
+Ahora incorporemos la covariable `z`, con categorías **A** y **B**, que sospechamos tiene un rol de confusión en el modelo teórico.
+
+```{r}
+#| echo: false
+
+datos_conf |> 
+  ggplot(aes(x = x, y = y, color = z)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = F)  +
+  scale_color_manual(values = c(pal[2], pal[5])) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+El gráfico de dispersión muestra que hay una diferencia entre las rectas de regresión que se mantiene prácticamente constante (paralelas) en todo su desarrollo. Esa distancia medida en valores de `y` es $b_2$, para la ecuación:
+
+$$\hat{y} = b_0 + b_1x_1 + b_2x_2 + \epsilon$$
+
+Visto en resultados de consola:
+
+```{r}
+#| echo: false
+
+modelo_conf <- lm(y ~ x + z, data = datos_conf)
+
+summary(modelo_conf)
+```
+
+El coeficiente $b_1$ de la variable independiente principal `x` varió al incorporar la nueva variable `z`, pasando de 0,78 (cruda) a 0,65 (ajustada), es decir que disminuyó casi un 20%. A la vez, la covariable tiene una relación significativa con la variable dependiente `y` y el modelo aumenta el $R^2$ ajustado a 0,70.
+
+Entonces podemos ver que la regresión multiple ajustó el efecto de `x` sobre `y`, teniendo en cuenta el efecto confusor de `z` que sospechabamos.
+
+El valor de `y` ahora es 0,66 ($b_0$) + 0,65\* el valor de `x` ($b_1*x$) mientras `z` es igual al nivel de referencia **A**, en cambio `y` vale 0,66 ($b_0$) + 0,65\* el valor de `x` ($b_1*x$) + 4,55 ($b_2$) cuando `z` es igual a **B**.
+
+### Interacción o modificación de efecto
+
+@macmahon1972 definió la interacción de la siguiente manera:
+
+::: {.callout-note appearance="simple" icon="false"}
+*"Cuando la incidencia de la enfermedad en presencia de dos o más factores de riesgo difiere de la incidencia que sería previsible por sus efectos individuales"*
+:::
+
+El efecto puede ser mayor de lo esperado (interacción positiva, sinergismo) o menor de lo esperado (interacción negativa, antagonismo).
+
+Entonces la modificación del efecto ocurre cuando el tamaño del efecto de la variable explicativa de interés (exposición) sobre el resultado (variable dependiente) difiere según el nivel de una tercera variable.
+
+Para quienes necesiten profundizar el tema, pueden leer el documento de @deirala2001a del siguiente [\[Link\]](https://halweb.uc3m.es/esp/personal/personas/amalonso/esp/bstat-tema8vme.pdf){.uri}
+
+Es importante destacar que mediante la RLM es posible identificar la presencia de modificadores de efecto mediante la inclusión de términos de interacción.
+
+Seguramente recordarán de cursos previos de epidemiología, que frente a un modificador de efecto (ME) lo más adecuado era presentar las medidas de asociación según los estratos formados por las categorías de la variable ME (no estimar una medida ajustada para ambos estratos, como se hace en caso de variables confusoras).
+
+Al ajustar un modelo de RLM podemos incluir un término de interacción en la ecuación (que es el producto de ambas variables), el cual representa una nueva variable. El término de interacción implica el exceso de la variabilidad de los datos que no puede ser explicada por la suma de las variables consideradas.
+
+Un ejemplo similar al recién mostrado para la confusión, pero para la interacción podría ser:
+
+![DAG interacción](images/dag_interaccion.PNG)
+
+```{r}
+#| echo: false
+datos_int <- read_csv2("data/datos_int.csv")
+
+datos_int |> 
+  ggplot(aes(x = x, y = y)) +
+  geom_point(color = pal[5], size = 2, alpha = .9) +
+  geom_smooth(method = "lm", se = F, color = pal[6]) +
+  theme_minimal()
+```
+
+$$\hat{y} = b_0 + b_1x_1 + \epsilon$$
+
+Partimos de esta relación entre `x` e `y` representada por la recta de la ecuación con los valores de la siguiente tabla:
+
+```{r}
+#| echo: false
+
+modelo2 <- lm(y ~ x, data = datos_int)
+
+summary(modelo2)
+```
+
+El intercepto ($b_0$) es de 4,0 y el coeficiente $b_1$ (pendiente) significativo de 0,54.
+
+Ahora incorporemos la covariable `z`, con categorías **A** y **B**, que sospechamos tiene un rol de interacción.
+
+```{r}
+#| echo: false
+
+datos_int |> 
+  ggplot(aes(x = x, y = y, color = z)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = F)  +
+  scale_color_manual(values = c(pal[2], pal[5])) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+El gráfico de dispersión muestra que hay una diferencia entre las rectas de regresión que tienen distintas pendientes según el valor de `z`. Esa diferencia no es aditiva y pasa a ser multiplicativa y da lugar a la ecuación:
+
+$$\hat{y} = b_0 + b_1x_1 + b_2x_2 + b_3x_1x_2 + \epsilon$$
+
+Visto en resultados de consola:
+
+```{r}
+#| echo: false
+
+modelo_int <- lm(y ~ x*z, data = datos_int)
+
+summary(modelo_int)
+```
+
+El término de interacción es significativo, aunque la variable `z` pareciese que no, es decir la significación se asocia a uno de los niveles (la categoría **B**). No hay manera de escindir un nivel del otro por lo que debemos dejar la variable `z`. A su vez aumentó el $R^2$ ajustado del modelo de 0,28 a 0,80.
+
+El valor de `y` en este caso es 2,77 ($b_0$) + 0,23\* el valor de `x` ($b_1*x$) mientras `z` es igual al nivel de referencia **A**, en cambio `y` vale 2,77 ($b_0$) + 0,23\* el valor de `x` ($b_1*x$) + 2,49 ($b_2$) + 0,46\*x ($b_3*x$) cuando `z` es igual a **B**. Observamos una sinergia entre el nivel **B** de la variable `z` y la variable `x` en el efecto causado a la variable `y`.
+
+## Variables *dummy*
+
+Recordemos que en el modelo de regresión podemos incluir como variables independientes tanto variables cuantitativas como variables categóricas. Las variables categóricas pueden ser dicotómicas (sexo: fem/masc; hábito de fumar: si/no) o tener más de dos categorías, por ejemplo: grupo sanguíneo, religión, color de ojos.
+
+Para ser modeladas: cada categoría se transforma en una variable dicotómica ($n$ de categorías -1) donde $1 =$ tener esa característica. Se utiliza como grupo basal (no expuestos) a la categoría de menor valor. Cuando las variables cualitativas no ordinales sufren esta transformación se denominan variables *dummy*.
+
+Veamos un ejemplo con una variable cualitativa dicotómica Hábito de Fumar (1: si 0: no):
+
+Al ajustar un modelo con la variable Hábito de Fumar (1: si 0: no) el modelo quedaría:
+
+$$ Y = b_0+b_1F_1  $$
+
+$b_1$ es la variación que experimentará $Y$ en caso de que el individuo fume.
+
+Veamos un ejemplo con la variable *“región”* con 3 categorías: Noreste (NE), Norte (N), Centro Oeste (CO).
+
+Para modelarlas la transformaremos en 2 categorías: $Re_1$ y $Re_2$ ($n$ categorías -1)
+
+```{r}
+#| echo: false
+
+# Datos tabla
+tibble(
+  `Región` = c("NE (basal)", "N", "CO"),
+  `RE1` = c("0", "1", "0"),
+  `RE2`= c("0", "0", "1")
+  ) |> 
+  
+  # Formato tabla
+  tab_style()
+
+pacman::p_unload(all)
+```
+
+$Re_1$=1 si vive en el norte
+
+$Re_1$=0 si vive en otra región
+
+$Re_2$=1 si vive en el CO
+
+$Re_2$=0 si vive en otra región
+
+Ahora imaginemos el modelo de regresión entre $Y$ y la variable *“región”* (supongamos que $Y$ es la Tasa de Mortalidad Infantil)
+
+$$ Y = b_0+b_1Re_1 + b_2Re_2 $$
+
+Para interpretar el modelo, cuando consideremos la región norte ($Re_1$=1 y $Re_2$=0) la ecuación será:
+
+$$ Y=b_0+b_1Re_1  $$
+
+Cuando consideremos la región CO ($Re_1$=0 y $Re_2$=1) la ecuación será:
+
+$$ Y=b_0+b_2Re_2  $$
+
+Cuando consideremos la región NE ($Re_1$=0 y $Re_2$=0) la ecuación será:
+
+$$ Y=b_0 $$
+
+El coeficiente $b_1$ y $b_2$ nos estarán indicando cuánto se modifica la TMI según consideremos la región N o CO. El coeficiente $b_0$ es el valor basal medio de la TMI considerada en la región NE.
+
+Las variables *dummy* (también llamadas variables indicadoras) no tienen ningún sentido por sí solas y, por lo tanto, deben figurar todas las categorías en los modelos y se debe contrastar su inclusión siempre en bloque, aunque el test $F$ parcial para alguna categoría resulte no significativo. Hay que notar que cuando se agrega una variable *dummy* al modelo, ésta le suma tantos grados de libertad a la regresión como categorías tenga.
+
+## Estimación y predicción
+
+Los modelos de regresión se pueden utilizar esencialmente:
+
+-   Con fines explicativos: obtener estimativas precisas sobre variables de interés para realizar inferencias o cuantificar relaciones entre variables controlando por otras variables)
+
+-   Con fines predictivos: a partir de los datos de una muestra predecir el comportamiento de $Y$ según posibles valores de $X_k$.
+
+Es importante tener en cuenta que si el propósito es construir un modelo predictivo a partir de una ecuación de regresión debe tener en cuenta:
+
+1.  Si no existe una correlación lineal, no utilice la ecuación de regresión para hacer predicciones. En ese caso el mejor predictor de los datos será su media muestral. Sólo haga predicciones si la ecuación de regresión es un buen modelo para los datos.
+2.  No haga predicciones en base a valores que rebasen las fronteras de los datos muestrales conocidos.
+3.  Debe estar basada en datos actualizados
+4.  No haga predicciones acerca de una población distinta de la población de donde se obtuvieron los datos muestrales.
+5.  La relación entre la variable respuesta y la predictora no debe ser necesariamente causal. En cambio cuando el objetivo del modelo es explicativo la relación causal (particularmente la relación temporal entre la variable dependiente y la independiente) debe existir.
+
+## Lineamientos para el uso de la ecuación de regresión
+
+Dada una variable dependiente $Y$ y un conjunto de $k$ variables independientes $X_1$, $X_2$, $X_3$....,$X_k$ ¿cuál es el mejor conjunto de $p$ predictores ($p \leq k$) y el correspondiente modelo de regresión para describir la relación entre $Y$ y las variables $X$?
+
+Pasos para escoger la mejor ecuación de regresión:
+
+1.  Especificar el conjunto de variables potencialmente predictivas/explicativas y la forma del modelo
+2.  Especificar un criterio estadístico para la elección de las variables
+3.  Especificar una estrategia para seleccionar modelos
+4.  Conducir el análisis específico
+5.  Evaluar los presupuestos del modelo
+6.  Evaluar la confiabilidad del modelo escogido
+
+### Especificar el conjunto de variables potencialmente predictivas y la forma del modelo
+
+La finalidad es buscar de entre todas las posibles variables explicativas aquellas que más y mejor expliquen a la variable dependiente sin que ninguna de ellas sea combinación lineal de las restantes. Con este propósito primero identificaremos las relaciones entre la variable dependiente y las independientes de manera bivariada; y la relación entre las variables independientes entre sí, con el fin de identificar la presencia de colinelidad.
+
+### Colinealidad
+
+Un problema frecuente en los modelos de RLM es el de la **multicolinealidad**, que ocurre cuando los regresores están relacionados entre sí en forma lineal. Si bien no implica una violación de las hipótesis o presupuestos del modelo, puede ocasionar problemas en la inferencia, ya que:
+
+-   Aumenta las varianzas y covarianzas de los estimadores
+
+-   Los errores de las estimaciones serán grandes
+
+-   Tiende a producir estimadores con valores absolutos grandes
+
+-   Los coeficientes de cada variable independiente difieren notablemente de los que se obtendrían por RLS
+
+-   No se puede identificar de forma precisa el efecto individual de cada variable colineal sobre la variable respuesta
+
+Por consiguiente, a la hora de plantear modelos de RLM conviene estudiar previamente la existencia de casi-colinealidad (la colinealidad exacta no es necesario estudiarla previamente, ya que todos los algoritmos la detectan, de hecho no pueden acabar la estimación). Como medida de la misma hay varios estadísticos propuestos:
+
+-   Podemos examinar la matriz de correlación
+
+-   Realizar gráficos de dispersión entre las variables explicativas/predictivas
+
+-   Cálculo del factor de inflación de la varianza (VIF por sus siglas en inglés):
+
+$$
+VIF = \frac{1}{1-R^2_i}
+$$
+
+Una regla empírica, citada por @kleinbaum1988, consiste en considerar que existen problemas de colinealidad si algún VIF es superior a 10. Por otro lado @kim2019 considera que un VIF entre 5 y 10 indican la presencia de colinealidad. En caso de detectar colinealidad entre dos predictores, existen dos posibles soluciones:
+
+-   Excluir uno de los predictores problemáticos intentando conservar el que, a juicio del investigador, está influyendo realmente en la variable respuesta
+
+-   Combinar las variables colineales en un único predictor, aunque con el riesgo de perder su interpretación
+
+### Especificar un criterio estadístico para elección de variables
+
+Generalmente incluiremos en el modelo aquellas variables que resultaron significativas en el análisis bivariado y otras que, aun cuando no resultaran significativas, decidamos mantener por cuestiones teóricas, porque se necesitan establecer predicciones para distintas categorías de dicha variable, etc.
+
+El proceso de selección de variables puede realizarse en forma manual o automática, siendo este último desaconsejado por la mayoría de los autores, ya que en el proceso de ajuste de un modelo no sólo se involucran criterios estadísticos sino también conceptuales. Existen tres estrategias para realizar el proceso , basadas en el valor del test $F$ parcial:
+
+-   Método jerárquico o *forward:* se basa en el criterio del investigador que introduce predictores determinados en un orden específico en relación al marco teórico. Comienza con un modelo nulo que solo contiene el intercepto ($\beta_0$) y agrega secuencialmente una variable a la vez, eligiendo la que proporciona el mayor beneficio en términos de ajuste del modelo. Este proceso continúa hasta que agregar más variables no mejore significativamente el ajuste del modelo.
+
+-   Método de entrada forzada o *backward*: es el método inverso al anterior. Se introducen todos los predictores simultáneamente y, en cada paso, elimina la variable que tenga el menor impacto en el ajuste del modelo. Este proceso continúa hasta que eliminar más variables no mejore significativamente el ajuste del modelo. Permite evaluar cada variable en presencia de las otras.
+
+-   Método paso a paso o *stepwise*: emplea criterios matemáticos para decidir qué predictores contribuyen significativamente al modelo y en qué orden se introducen. Se trata de una combinación de la selección *forward* y *backward.* Comienza con un modelo nulo, pero tras cada nueva incorporación se realiza un test de extracción de predictores no útiles como en el *backward.* Presenta la ventaja de que si a medida que se añaden predictores, alguno de los ya presentes deja de contribuir al modelo, se elimina.
+
+### Especificar una estrategia para seleccionar modelos
+
+Hasta ahora hemos desarrollado algunos criterios que se pueden utilizar para comparar modelos como $R^2$, $R^2$ ajustado y $F$ global. Como hemos mencionado anteriormente el uso de $R^2$ como único criterio de selección tiene varias desventajas: tiende a sobreestimar, al adicionar variables siempre aumenta, por lo que si fuera el único criterio elegiría modelos con el mayor número de variables, no tiene en consideración la relación entre parámetros y tamaño muestral.
+
+Para modelos anidados, podemos realizar una comparación entre ambos modelos mediante un ANOVA. Existen otros criterios como el Criterio de Información de Akaike (**AIC**), el Criterio de Información Bayesiano (**BIC**), etc. Tanto el BIC como el AIC, son funciones del logaritmo de la verosimilitud y un término de penalidad basado en el número de parámetros del modelo.
+
+Recuerden que frente a $p$ variables independientes existen $2^p$ posibles modelos. No necesariamente el modelo con mayor número de variables es el mejor. Debemos priorizar siempre el principio de parsimonia (el modelo más simple que mejor explique). El tamaño de la muestra también es importante, algunos autores recomiendan que el número de observaciones sea como mínimo entre 10 y 20 veces el número de predictores del modelo.
+
+## Validación y diagnóstico del modelo
+
+En este apartado vamos a comprobar que se verifican los supuestos del modelo de regresión lineal (normalidad, homocedasticidad o igualdad de varianzas, linealidad), ya que estos supuestos resultan necesarios para validar la inferencia respecto a los parámetros. Utilizaremos el análisis de los residuales para realizar los contrastes *a posteriori* de dichas hipótesis del modelo. Recordemos que los residuos se definen como la diferencia entre el valor observado y el valor predicho por el modelo.
+
+$y-\hat{y}=e$ (residuo o error residual)
+
+El planteamiento habitual es considerar que, como dijimos inicialmente, los valores de $Y$ tienen una distribución normal según los valores de $X_1$, $X_2$,... $X_k$., entonces, los residuos también tendrán una distribución normal. Los residuos tienen unidades de medida y, por tanto no se puede determinar si es grande o pequeño a simple vista. Para solucionar este problema se define el residuo estandarizado como el cociente entre el residuo y su desvío standard. Se considera que un residuo tiene un valor alto, y por lo tanto puede influir negativamente en el análisis, si su residuo estandarizado es mayor a 3 en valor absoluto. También se trabaja con los residuos tipificados o con los residuos estudentizados.
+
+### Normalidad
+
+El análisis de normalidad de los residuos lo realizaremos gráficamente (Histograma y gráfico de probabilidad normal) y analíticamente (Contraste de Kolmogorov-Smirnov) o similar.
+
+### Homocedasticidad
+
+La hipótesis de homocedasticidad establece que la variabilidad de los residuos es independiente de las variables explicativas. En general, la variabilidad de los residuos estará en función de las variables explicativas, pero como las variables explicativas están fuertemente correlacionadas con la variable dependiente, bastara con examinar el gráfico de valores pronosticados versus residuos (a veces residuos al cuadrado).
+
+Comprobamos la hipótesis de homogeneidad de las varianzas gráficamente representando los residuos tipificados frente a los valores predichos por el modelo. El análisis de este gráfico puede revelar una posible violación de la hipótesis de homocedasticidad, por ejemplo si detectamos que el tamaño de los residuos aumenta o disminuye de forma sistemática para algunos valores ajustados de la variable $Y$, si observamos que el gráfico muestra forma de embudo. Si por el contrario dicho gráfico no muestra patrón alguno, entonces no podemos rechazar la hipótesis de igualdad de varianzas.
+
+### Linealidad
+
+Se evalúa en el mismo gráfico anterior (además de considerar $R^2$ ajustado)
+
+### Valores de influencia (*leverage*)
+
+Se considera que una observación es influyente *a priori* si su inclusión en el análisis modifica sustancialmente el sentido del mismo. Una observación puede ser influyente si es un *outlier* respecto a alguna de las variables explicativas. Para detectar estos problemas se utiliza la medida de **Leverage**:
+
+$$ l(i)=\frac{1}{n}\bigg(1+\frac{(x_i-\bar{x})^2}{S^2_x}\bigg)  $$
+
+Este estadístico mide la distancia de un punto a la media de la distribución. Valores cercanos a 2/$n$ indican casos que pueden influir negativamente en la estimación del modelo introduciendo un fuerte sesgo en el valor de los estimadores.
+
+### Distancia de Cook
+
+Es una medida de cómo influye la observación *i*-ésima sobre la estimación de $\beta$ al ser retirada del conjunto de datos. Una distancia de Cook grande significa que una observación tiene un peso grande en la estimación de $\beta$. Son puntos influyentes las observaciones que presenten
+
+$$ D_i=\frac{4}{n-p-2}  $$
+
+### Independencia de residuos
+
+La hipótesis de independencia de los residuos la realizaremos mediante el contraste de *Durbin-Watson*.

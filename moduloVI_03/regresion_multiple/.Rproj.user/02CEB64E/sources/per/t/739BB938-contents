@@ -1,0 +1,320 @@
+---
+format: 
+  revealjs: 
+    chalkboard: true
+    logo: logos_ine.png
+    incremental: true
+    slide-number: true
+    scrollable: false
+    css: custom.css
+---
+
+```{r}
+#| echo: false
+# Configuración global
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE,
+                      fig.align = "center")
+
+# Paquetes necesarios
+pacman::p_load(
+  flextable,
+  performance,
+  plotly,
+  rio,
+  janitor,
+  tidyverse
+)
+```
+
+## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
+
+:::: {style="margin-top: 1.5em;"}
+Docentes: Tamara Ricardo, Christian Ballejo
+
+::: {style="font-size: .75em; margin-bottom: 1.5em;"}
+Programa de Maestría en Epidemiología para la Salud Pública
+:::
+
+![](logos_ine.png){fig-align="center" width="70%"}
+::::
+
+## PROGRAMA DE LA UNIDAD
+
+::: {style="margin-top:1.5em;"}
+```{r}
+# Genera datos para la tabla 
+tibble(
+  Semana = c(rep("30 oct. al 03 nov. 2024", 2), 
+             rep("06 al 09 nov. 2024", 2),
+             "13 al 16 nov. 2024", ""),      
+  
+      Tema = c("- Introducción a los Paquetes y Lenguajes Estadístico. Diferencias entre interfaces gráficas (GUI) y de línea de comandos (CLI). Comparativa entre software privativo y gratuito/open source.",
+               "- R y R-Commander. Navegación del menú. Lectura e importación de archivos de datos. Estadística descriptiva. Agrupamiento de variables. Manejo de factores. Guardado de scripts y resultados. Paquetes y plugins.",
+               "- Relación entre variables numéricas. Covarianza y representación gráfica. Limitaciones. Correlación de Pearson: interpretación del signo y la magnitud.Visualización con correlogramas. Métodos no paramétricos: correlación de Spearman y de Kendall.",
+               "- Introducción al Modelado Estadístico. Modelo lineal general: concepto y supuestos. Bondad de ajuste y análisis de residuos. Regresión lineal simple y análisis de la varianza (ANOVA). Interpretación de los resultados.",
+               "- Regresión Lineal Múltiple. Selección de variables explicativas y control de multicolinealidad. Análisis e interpretación de residuos.",
+               "- Confusión e Interacción. Identificación y roles de las covariables. Control y detección de la confusión. Interpretación de resultados en presencia de interacción.")
+      ) |>    
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 16, part = "all") |>   
+  merge_v() |>  
+  color(i = c(1:4, 6), color = "gray40") |> 
+  highlight(i = 5, color = "#FFB90F") |> 
+  autofit() 
+```
+:::
+
+## ESTRUCTURA DE LA CLASE
+
+::: {style="margin-top: 2em;"}
+```{r}
+# Genera datos para la tabla
+tibble(
+  Tiempo = c("18:30hs", 
+             "18:40hs", 
+             "20:00hs",
+             "20:15hs", 
+             "21:30hs"),
+  
+  Descripción = c("Ingreso a la videollamada", 
+                  "Inicio de la clase",
+                  "Receso", 
+                  "Continuación clase", 
+                  "Cierre")
+) |> 
+  
+  #  Genera tabla    
+  flextable() |>    
+  bold(part = "header") |> 
+  fontsize(size = 20, part = "all") |>   
+  merge_v() |>  
+  autofit() 
+```
+:::
+
+## OBJETIVOS
+
+-   Definir la **regresión lineal múltiple** y su aplicación en el análisis de datos.
+
+-   Analizar **supuestos** como la normalidad de los errores, homocedasticidad, y ausencia de multicolinealidad.
+
+-   Explicar el significado de los **coeficientes** en términos de cambio en la variable dependiente.
+
+-   Interpretar **bondad de ajuste** y **residuales**.
+
+-   Introducir métodos de **selección de variables**.
+
+## Regresión lineal múltiple
+
+-   Estos modelos se utilizan cuando la variable respuesta es continua y tenemos dos o más variables independientes continuas o categóricas.
+
+-   De este modo nos permite:
+
+    -   Conocer el **efecto conjunto** de las variables independientes ($X_1$, $X_2$,...$X_k$) sobre la variable respuesta ($Y$).
+
+    -   Analizar la **dirección** y **fuerza** de la asociación.
+
+    -   Determinar cuáles variables independientes son importantes en la **predicción/explicación** de la variable dependiente.
+
+    -   Evaluar **interacción** y **confusión**.
+
+------------------------------------------------------------------------
+
+-   Recordemos el modelo estadístico para la regresión lineal simple:
+
+    $$
+    Y = \beta_0 + \beta_1X_1
+    $$
+
+-   En el caso de la regresión lineal múltiple la ecuación es:
+
+    $$
+    Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ...+\beta_kX_k
+    $$
+
+    -   Donde $\beta_0$, $\beta_1$, $\beta_2$,...,$\beta_k$ son los parámetros de la regresión.
+
+    -   Para cada combinación de valores de $X_1, X_2,...,X_k$, existe una distribución $Y$ cuya **media** es una función lineal de $X_1, X_2,...,X_k$.
+
+------------------------------------------------------------------------
+
+-   De esta manera, la representación gráfica deja de ser una recta representada en un plano de dos variables ($X$ e $Y$).
+
+-   Para un modelo con dos variables independientes, el modelo estadístico sería:
+
+    $$ 
+    Y = \beta_0 + \beta_1 X_1 + \beta_2X_2 
+    $$
+
+-   Y podríamos representarlo en un plano como un objeto tridimensional.
+
+------------------------------------------------------------------------
+
+**Representación gráfica de una RLM con dos variables independientes**
+
+```{r}
+#| fig-dpi: 115
+# Sample data
+set.seed(123)
+
+data <- tibble(
+  x1 = rnorm(100), 
+  x2 = rnorm(100), 
+  y = 2 * x1 + 3 * x2 + rnorm(100)
+)
+
+error <- rnorm(100, mean = 0, sd = 0.5)
+
+# Fit multiple linear regression model
+model <- lm(y ~ x1 + x2, data = data)
+
+# Generate points for the plane
+x1_range <- range(data$x1)
+
+x2_range <- range(data$x2)
+
+x1_grid <- seq(x1_range[1], x1_range[2], length.out = 20)
+
+x2_grid <- seq(x2_range[1], x2_range[2], length.out = 20)
+
+grid <- expand.grid(x1 = x1_grid, x2 = x2_grid)
+
+grid$y <- predict(model, newdata = grid)
+
+# Plot
+plot_ly(data = data, x = ~ x1, y = ~ x2, z = ~ y) |>
+  
+  add_markers(error_x = list(array = error), 
+              error_y = list(array = error),
+              showlegend = F) |> 
+  
+  add_surface(x = ~ x1_grid, y = ~ x2_grid,
+              z = ~ matrix(grid$y, 
+                           nrow = length(x1_grid), 
+                           ncol = length(x2_grid)),
+              showscale = F, opacity = .75) |>
+
+  layout(scene = list(xaxis = list(title = "X1"),
+                      yaxis = list(title = "X2"),
+                      zaxis = list(title = "Y")))
+```
+
+------------------------------------------------------------------------
+
+En forma similar a la RLS, la interpretación de cada parámetro $\beta$ de la regresión es:
+
+-   $\beta_0$: es el valor esperado de $Y$ cuando todas las otras variables son iguales a cero.
+
+-   $\beta_1$ es la pendiente a lo largo del eje $X_1$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_1$ a valores constantes de $X_2$.
+
+-   $\beta_2$ es la pendiente a lo largo del eje $X_2$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_2$ a valores constantes de $X_1$.
+
+------------------------------------------------------------------------
+
+### Presupuestos del modelo
+
+-   **Independencia:**
+
+    -   Las observaciones $Y_i$ son independientes unas de otras.
+
+    -   El efecto de $X_1$ sobre la respuesta media no depende de $X_2$ y viceversa.
+
+    -   Cuando existe interacción entre $X_1$ e $X_2$ , el efecto de $X_1$ sobre la respuesta media de $Y$ depende $X_2$ y viceversa.
+
+------------------------------------------------------------------------
+
+-   **Linealidad:**
+
+    -   Para cada combinación de valores de las variables independientes ($X_1$, $X_2$,..., $X_k$) el valor medio de $Y$ es función lineal de $X_1$, $X_2$,...,$X_k$.
+
+    -   La linealidad se define en relación a los coeficientes de la regresión, por lo tanto el modelo puede incluir términos cuadráticos e interacciones.
+
+------------------------------------------------------------------------
+
+-   **Homocedasticidad:**
+
+    -   la varianza de $Y$ para los distintos valores de $X_1$, $X_2$,...,$X_k$ se mantiene constante.
+
+-   **Normalidad:**
+
+    -   Los valores de $Y$ tienen una distribución normal según los valores de $X_1$, $X_2$, $X_k$.
+
+    -   La estimación de los parámetros (coeficientes) se realiza mediante el **Método de los Mínimos Cuadrados.**
+
+------------------------------------------------------------------------
+
+## Ejemplo en R Commander
+
+-   Abrimos R Commander con `library(Rcmdr)`.
+
+-   Desde el menú **Herramientas \> Cargar paquetes** activamos las librerías `performance` y `emmeans`.
+
+-   Vamos al menú **Datos \> Importar datos \> Desde archivo de texto, portapapeles o URL...** y cargamos el archivo `cancer_USA.txt`.
+
+------------------------------------------------------------------------
+
+-   Vamos al menú **Estadísticos \> Ajuste de modelos \> Modelo lineal**.
+
+-   Seleccionamos `tasa_mortalidad` como variable dependiente (casilla izquierda).
+
+-   Seleccionamos las variables `pct_desempleo` y `pct_salud_publica` como variables explicativas y las colocamos en la casilla de la derecha unidas por el signo `+` y presionamos **Aceptar**.
+
+------------------------------------------------------------------------
+
+![](images/clipboard-2335088996.png){fig-align="center"}
+
+------------------------------------------------------------------------
+
+Obtendremos la siguiente salida:
+
+```{r}
+# Carga datos
+datos <- read_csv2("../cancer_USA.txt")
+
+# Ajuste modelo
+mod1 <- lm(tasa_mortalidad ~ pct_desempleo + pct_salud_publica, 
+           data = datos)
+
+summary(mod1)
+```
+
+------------------------------------------------------------------------
+
+Realizamos el test de residuales con la función `check_model()` del paquete `performance`:
+
+```{r}
+check_model(mod1)
+```
+
+------------------------------------------------------------------------
+
+-   Como podemos observar, además de los gráficos que nos mostraba el análisis de residuales para la regresión simple, aparece un nuevo panel para **colinealidad**:
+
+    ```{r}
+    check_model(mod1, check = "vif")
+    ```
+
+------------------------------------------------------------------------
+
+#### ¿Qué es la colinealidad?
+
+-   Es un fenómeno que ocurre cuando las variables independientes se relacionan entre sí de forma lineal.
+
+-   Puede ocasionar problemas en la inferencia, ya que:
+
+    -   Aumenta las varianzas y covarianzas de los estimadores.
+
+    -   Los errores de las estimaciones serán grandes.
+
+    -   Tiende a producir estimadores con valores absolutos grandes.
+
+    -   Los coeficientes de cada variable independiente difieren notablemente de los que se obtendrían por RLS.
+
+    -   No se puede identificar el efecto individual de cada variable colineal sobre la variable respuesta.
+
+------------------------------------------------------------------------

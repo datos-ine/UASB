@@ -1,0 +1,2 @@
+"0","# Gráfico homocedasticidad y outliers"
+"0","check_model(fit, check = c(""homogeneity"", ""outliers""))"
