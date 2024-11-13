@@ -19,13 +19,16 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # Paquetes necesarios
 pacman::p_load(
-  flextable,
   performance,
   plotly,
+  flextable,
   rio,
   janitor,
   tidyverse
 )
+
+# Carga datos
+datos <- read_csv2("../cancer_USA.txt")
 ```
 
 ## Módulo VI: Análisis Epidemiológico Avanzado {.center style="text-align: center;"}
@@ -101,64 +104,79 @@ tibble(
 
 -   Definir la **regresión lineal múltiple** y su aplicación en el análisis de datos.
 
--   Analizar **supuestos** como la normalidad de los errores, homocedasticidad, y ausencia de multicolinealidad.
-
 -   Explicar el significado de los **coeficientes** en términos de cambio en la variable dependiente.
 
--   Interpretar **bondad de ajuste** y **residuales**.
+-   Evaluar **colinealidad** y su impacto en el modelo.
 
 -   Introducir métodos de **selección de variables**.
 
-## Regresión lineal múltiple
+## Regresión lineal múltiple (RLM)
 
--   Estos modelos se utilizan cuando la variable respuesta es continua y tenemos dos o más variables independientes continuas o categóricas.
+-   Analiza el efecto de dos o más variables independientes ($X_1$, $X_2$,...$X_k$) sobre la variable respuesta ($Y$).
 
--   De este modo nos permite:
+-   Aplicaciones:
 
-    -   Conocer el **efecto conjunto** de las variables independientes ($X_1$, $X_2$,...$X_k$) sobre la variable respuesta ($Y$).
+    -   Cuantificar el efecto de múltiples variables sobre $Y$.
 
-    -   Analizar la **dirección** y **fuerza** de la asociación.
+    -   Analizar la **dirección** y **magnitud** de la asociación.
 
-    -   Determinar cuáles variables independientes son importantes en la **predicción/explicación** de la variable dependiente.
+    -   Evaluar la capacidad **explicativa** y **predictiva** del modelo.
 
-    -   Evaluar **interacción** y **confusión**.
-
-------------------------------------------------------------------------
-
--   Recordemos el modelo estadístico para la regresión lineal simple:
-
-    $$
-    Y = \beta_0 + \beta_1X_1
-    $$
-
--   En el caso de la regresión lineal múltiple la ecuación es:
-
-    $$
-    Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ...+\beta_kX_k
-    $$
-
-    -   Donde $\beta_0$, $\beta_1$, $\beta_2$,...,$\beta_k$ son los parámetros de la regresión.
-
-    -   Para cada combinación de valores de $X_1, X_2,...,X_k$, existe una distribución $Y$ cuya **media** es una función lineal de $X_1, X_2,...,X_k$.
+    -   Detectar **interacción** y **confusión** entre variables.
 
 ------------------------------------------------------------------------
 
--   De esta manera, la representación gráfica deja de ser una recta representada en un plano de dos variables ($X$ e $Y$).
+-   El modelo matemático para la regresión múltiple es:
 
--   Para un modelo con dos variables independientes, el modelo estadístico sería:
-
-    $$ 
-    Y = \beta_0 + \beta_1 X_1 + \beta_2X_2 
+    $$
+    Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + ...+\beta_kX_k +\epsilon
     $$
 
--   Y podríamos representarlo en un plano como un objeto tridimensional.
+-   Donde:
+
+    -   $\beta_0$: Intercepto, valor esperado de $Y$ cuando todas las otras variables son iguales a cero.
+
+    -   $\beta_1$: Pendiente de $X_1$, mide el cambio en $Y$ por cada unidad de incremento en $X_1$, manteniendo constante $X_2$.
+
+    -   $\beta_2$: Pendiente de $X_2$, mide el cambio en $Y$ por cada unidad de incremento en $X_2$, manteniendo constante $X_1$.
 
 ------------------------------------------------------------------------
 
-**Representación gráfica de una RLM con dos variables independientes**
+#### Supuestos del modelo de regresión múltiple
+
+-   **Independencia**:
+
+    -   Las observaciones son independientes.
+
+    -   Cuando no hay interacción, el efecto de $X_1$ ​no depende de $X_2$, y viceversa.
+
+-   **Linealidad**:
+
+    -   El valor medio de $Y$ es una función lineal de $X_1, X_2, \dots, X_n$.
+
+    -   Se puede extender para incluir términos cuadráticos o interacciones.
+
+------------------------------------------------------------------------
+
+-   **Homocedasticidad**:
+
+    -   La varianza de $Y$ es constante a través de los valores de $X_1, X_2, \dots, X_n$.
+
+-   **Normalidad**:
+
+    -   Los valores de $Y$ tienen una distribución normal para cada combinación de $X_1, X_2, \dots, X_n$.
+
+------------------------------------------------------------------------
+
+#### Representación gráfica
+
+-   Debido a sus características, el modelo de regresión múltiple no puede representarse por una recta representada en un plano de dos variables ($X$ e $Y$).
+
+-   En un modelo de regresión con dos predictores, la relación entre $X_1, X_2$ e $Y$ se representa como un **plano en el espacio tridimensional**.
+
+------------------------------------------------------------------------
 
 ```{r}
-#| fig-dpi: 115
 # Sample data
 set.seed(123)
 
@@ -206,48 +224,6 @@ plot_ly(data = data, x = ~ x1, y = ~ x2, z = ~ y) |>
 
 ------------------------------------------------------------------------
 
-En forma similar a la RLS, la interpretación de cada parámetro $\beta$ de la regresión es:
-
--   $\beta_0$: es el valor esperado de $Y$ cuando todas las otras variables son iguales a cero.
-
--   $\beta_1$ es la pendiente a lo largo del eje $X_1$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_1$ a valores constantes de $X_2$.
-
--   $\beta_2$ es la pendiente a lo largo del eje $X_2$ y representa el cambio esperado en la respuesta por unidad de cambio en $X_2$ a valores constantes de $X_1$.
-
-------------------------------------------------------------------------
-
-### Presupuestos del modelo
-
--   **Independencia:**
-
-    -   Las observaciones $Y_i$ son independientes unas de otras.
-
-    -   El efecto de $X_1$ sobre la respuesta media no depende de $X_2$ y viceversa.
-
-    -   Cuando existe interacción entre $X_1$ e $X_2$ , el efecto de $X_1$ sobre la respuesta media de $Y$ depende $X_2$ y viceversa.
-
-------------------------------------------------------------------------
-
--   **Linealidad:**
-
-    -   Para cada combinación de valores de las variables independientes ($X_1$, $X_2$,..., $X_k$) el valor medio de $Y$ es función lineal de $X_1$, $X_2$,...,$X_k$.
-
-    -   La linealidad se define en relación a los coeficientes de la regresión, por lo tanto el modelo puede incluir términos cuadráticos e interacciones.
-
-------------------------------------------------------------------------
-
--   **Homocedasticidad:**
-
-    -   la varianza de $Y$ para los distintos valores de $X_1$, $X_2$,...,$X_k$ se mantiene constante.
-
--   **Normalidad:**
-
-    -   Los valores de $Y$ tienen una distribución normal según los valores de $X_1$, $X_2$, $X_k$.
-
-    -   La estimación de los parámetros (coeficientes) se realiza mediante el **Método de los Mínimos Cuadrados.**
-
-------------------------------------------------------------------------
-
 ## Ejemplo en R Commander
 
 -   Abrimos R Commander con `library(Rcmdr)`.
@@ -262,38 +238,74 @@ En forma similar a la RLS, la interpretación de cada parámetro $\beta$ de la r
 
 -   Seleccionamos `tasa_mortalidad` como variable dependiente (casilla izquierda).
 
--   Seleccionamos las variables `pct_desempleo` y `pct_salud_publica` como variables explicativas y las colocamos en la casilla de la derecha unidas por el signo `+` y presionamos **Aceptar**.
+-   Seleccionamos las variables `mediana_edad_cat`, `pct_pobreza`, `pct_desempleo` y `pct_salud_publica` como variables explicativas y las colocamos en la casilla de la derecha unidas por el signo `+` y presionamos **Aceptar**.
 
 ------------------------------------------------------------------------
 
-![](images/clipboard-2335088996.png){fig-align="center"}
+![](images/clipboard-2166872651.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
-Obtendremos la siguiente salida:
+-   Obtendremos la siguiente salida:
 
-```{r}
-# Carga datos
-datos <- read_csv2("../cancer_USA.txt")
+    ```{r}
+    # Ajuste modelo
+    mod1 <- lm(tasa_mortalidad ~ pct_salud_publica + pct_pobreza + pct_desempleo +
+                 mediana_edad_cat, 
+               data = datos)
 
-# Ajuste modelo
-mod1 <- lm(tasa_mortalidad ~ pct_desempleo + pct_salud_publica, 
-           data = datos)
-
-summary(mod1)
-```
+    summary(mod1)
+    ```
 
 ------------------------------------------------------------------------
 
-Realizamos el test de residuales con la función `check_model()` del paquete `performance`:
+-   Donde:
 
-```{r}
-check_model(mod1)
-```
+    -   `pct_salud_publica` ($\beta_1$): cambio en $Y$ cuando aumenta 1% la cobertura pública de salud, manteniendo constantes las otras variables.
+
+    -   `pct_pobreza` ($\beta_2$): cambio en $Y$ cuando aumenta 1% la pobreza, manteniendo constantes las otras variables.
+
+    -   `pct_desempleo` ($\beta_3$): cambio en $Y$ cuando aumenta 1% el desempleo, manteniendo constantes las otras variables.
+
+    -   `mediana_edad_cat`: cambio en $Y$ respecto de la categoría de referencia (23-35 años).
 
 ------------------------------------------------------------------------
 
--   Como podemos observar, además de los gráficos que nos mostraba el análisis de residuales para la regresión simple, aparece un nuevo panel para **colinealidad**:
+-   Si quisiéramos comparar que grupos de edad son diferentes entre sí, debemos realizar el test de comparaciones múltiples con `emmeans` usando el código:
+
+    `emmeans(mod1, specs = "mediana_edad_cat", contr = "pairwise")`
+
+    ```{r}
+    emmeans::emmeans(mod1, specs = "mediana_edad_cat", contr = "pairwise")$contrasts
+    ```
+
+------------------------------------------------------------------------
+
+-   Revisemos los supuestos de los residuales en forma gráfica usando `performance:`
+
+    ```{r}
+    #| echo: true
+    check_model(mod1)
+    ```
+
+------------------------------------------------------------------------
+
+-   También podemos usar los test de residuales:
+
+    ```{r}
+    #| echo: true
+    check_normality(mod1)
+
+    check_heteroscedasticity(mod1)
+
+    check_outliers(mod1)
+    ```
+
+------------------------------------------------------------------------
+
+### Colinealidad
+
+-   En los gráficos de residuales observamos la presencia de un nuevo panel correspodiente al **test de colinealidad**:
 
     ```{r}
     check_model(mod1, check = "vif")
@@ -301,20 +313,126 @@ check_model(mod1)
 
 ------------------------------------------------------------------------
 
-#### ¿Qué es la colinealidad?
+-   La **colinealidad** ocurre cuando dos o más variables independientes en un modelo de regresión están **altamente correlacionadas** entre sí, es decir, comparten información redundante.
 
--   Es un fenómeno que ocurre cuando las variables independientes se relacionan entre sí de forma lineal.
+-   Esto implica que una variable independiente puede ser predicha en gran medida por las otras variables independientes en el modelo.
 
--   Puede ocasionar problemas en la inferencia, ya que:
+-   Puede detectarse de dos formas:
 
-    -   Aumenta las varianzas y covarianzas de los estimadores.
+    -   Durante el análisis exploratorio observando la matriz de correlación.
 
-    -   Los errores de las estimaciones serán grandes.
-
-    -   Tiende a producir estimadores con valores absolutos grandes.
-
-    -   Los coeficientes de cada variable independiente difieren notablemente de los que se obtendrían por RLS.
-
-    -   No se puede identificar el efecto individual de cada variable colineal sobre la variable respuesta.
+    -   En el análisis de residuales por el factor de **inflación de la varianza** (VIF).
 
 ------------------------------------------------------------------------
+
+#### Factor de inflación de la varianza (VIF)
+
+-   Mide cuánto aumenta la varianza del coeficiente de una variable independiente debido a su correlación con las otras variables independientes en el modelo.
+
+-   Se calcula como:
+
+    $$
+    VIF = \frac{1}{1-R^2_i}
+    $$
+
+-   En general:
+
+    -   $VIF = 1$: Ausencia de colinealidad
+
+    -   $1 \geq VIF \geq 5$: Colinealidad moderada
+
+    -   $VIF > 5$: Colinealidad alta
+
+------------------------------------------------------------------------
+
+-   La colinealidad provoca los siguientes problemas:
+
+    -   Aumenta las varianzas y covarianzas de los estimadores
+    -   Los errores de las estimaciones serán grandes
+    -   Estimadores con valores absolutos grandes
+    -   Los coeficientes de cada variable independiente difieren notablemente de los que se obtendrían por RLS
+    -   No se puede identificar de forma precisa el efecto individual de cada variable colineal sobre la variable respuesta.
+
+------------------------------------------------------------------------
+
+### Selección de variables explicativas
+
+Al momento de ajustar un modelo de regresión múltiple debemos seguir los siguientes principios:
+
+-   Incluir en los modelos **variables independientes significativas** en modelos simples y aquellas útiles teóricamente.
+
+-   Un modelo con muchas variables no necesariamente es el mejor.
+
+-   Tener en cuenta el tamaño de la muestra:
+
+    -   Cada **variable numérica** resta un **grado de libertad**.
+
+    -   Cada **variable categórica** quita un grado de libertad **por nivel**.
+
+------------------------------------------------------------------------
+
+-   **Colinealidad**: Evaluar y eliminar variables que estén altamente correlacionadas.
+
+-   Priorizar siempre el **principio de parsimonia** (el modelo más simple que mejor explique).
+
+<!-- -->
+
+-   Para ello existen tres estrategias de selección de variables independientes:
+
+    -   *Forward*: ingresando variables independientes a partir de un modelo nulo.
+
+    -   *Stepwise:* añade o quita variables independientes por etapas.
+
+    -   ***Backwards*****: quita variables independientes de un modelo saturado en base al Criterio de Información de Akaike (AIC).**
+
+------------------------------------------------------------------------
+
+#### Criterio de Información de Akaike (AIC)
+
+Es una métrica que evalúa el ajuste del modelo y penaliza la complejidad (número de variables) del mismo.
+
+-   Se calcula como:
+
+    $$
+    AIC = 2k - 2\ln(L)
+    $$
+
+-   donde:
+
+    -   $k$: Número de parámetros en el modelo.
+
+    -   $L$: Verosimilitud del modelo (probabilidad de que el modelo haya generado los datos observados).
+
+-   Al comparar modelos anidados, **un AIC más bajo indica mejor ajuste**.
+
+------------------------------------------------------------------------
+
+## Ejemplo en R Commander
+
+-   En RCommander podemos seleccionar automáticamente el mejor modelo a partir de un modelo saturado yendo al menú **Modelos \> Selección de modelos paso a paso.**
+
+-   En la nueva ventana seleccionamos las opciones **atrás** y **AIC**.
+
+    ![](images/clipboard-2336083160.png)
+
+------------------------------------------------------------------------
+
+```{r}
+steps <- step(mod1, direction = 'backward')
+```
+
+-   El mejor modelo elimina la variable `pct_salud_publica`.
+
+-   En general, se toma una diferencia de $\Delta AIC \geq 2$ para elegir entre dos modelos similares.
+
+------------------------------------------------------------------------
+
+-   Si nos interesara ajustar modelos de forma manual y compararlos, el procedimiento a seguir es:
+
+    -   Ajustar el modelo saturado con todas las variables independientes.
+
+    -   Ajustar modelos quitando de a una variable independiente al modelo saturado.
+
+    -   Comparar el modelo saturado y los modelos reducidos usando la función `compare_performance(mod1, mod2, ..., modn)`.
+
+    -   Repetir los pasos anteriores hasta que no se produzcan cambios importantes en el AIC.

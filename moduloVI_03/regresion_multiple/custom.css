@@ -49,3 +49,11 @@ ul li ul li {
 .reveal code {
   max-height: 100% !important;
 }
+
+.reveal .plotly {
+  width: 100vw !important; /* Ancho completo de la ventana */
+  height: 100vh !important; /* Alto completo de la ventana */
+  max-width: 100%;          /* Evita desbordamientos */
+  max-height: 100%;         /* Evita desbordamientos */
+  margin: 0;                /* Sin márgenes */
+}
