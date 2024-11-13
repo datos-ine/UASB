@@ -208,7 +208,7 @@ Además de las variables de exposición y desenlace (medida o evento de interés
 
 <br>
 
-- Una variable cumple el rol de confusora, si:
+Una variable cumple el rol de confusora, si:
 
 - Se asocia con la exposición.
 
@@ -502,7 +502,7 @@ digraph G {
 
 Imaginemos un estudio sobre la relación entre `actividad física` (**exposición**), índice de masa corporal - `IMC` (**mediadora**), y riesgo de `diabetes` (**desenlace**):
 
-**Efecto directo**: Al incluir el `IMC` en el modelo, obtienes el efecto de la `actividad física` sobre el riesgo de `diabetes` independientemente de los cambios en el `IMC`.
+**Efecto directo**: Al incluir el `IMC` en el modelo, se obtiene el efecto de la `actividad física` sobre el riesgo de `diabetes` independientemente de los cambios en el `IMC`.
 
 **Efecto indirecto**: Parte del efecto de la `actividad física` sobre el riesgo de diabetes ocurre a través de la reducción del `IMC`. Este efecto indirecto solo puede estimarse modelando la relación entre `actividad física` e `IMC` y luego el impacto del `IMC` sobre la `diabetes`.
 
@@ -628,7 +628,7 @@ Variación en la medida de efecto seleccionada para el factor en estudio a trav�
 - Se habla de interacción biológica entre dos o más factores causales cuando existe una interdependencia entre sus mecanismos de acción para causar, prevenir o controlar una enfermedad, de manera que la incidencia de enfermedad
 atribuible a este conjunto de factores causales es diferente de la incidencia esperable de sus efectos individuales.
 
-- A diferencia de la confusión, que es un sesgo o distorsión que se debe controlar y corregir, el fenómeno de interacción no debe *"controlarse"*, sino que debe ser descriptto, del modo más exhaustivo que sea posible, porque enriquece al análisis del objeto de estudio.
+- A diferencia de la confusión, que es un sesgo o distorsión que se debe controlar y corregir, el fenómeno de interacción no debe *"controlarse"*, sino que debe ser descripto, del modo más exhaustivo que sea posible, porque enriquece al análisis del objeto de estudio.
 
 ::: 
 
