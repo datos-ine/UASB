@@ -747,7 +747,7 @@ Cuando una interacción es significativa no se puede hablar de una variable sin 
 extract_eq(int_edad, use_coefs = T)
 ```
 
-Se interpreta que el **VEF** varía 0,95 por cada año que aumenta la **EDAD** en los que **no fuman** y varía 0,88 por cada año que aumenta la **EDAD** en los que **fuman**.
+Se interpreta que el **VEF** varía 0,1 por cada año que aumenta la **EDAD** en los que **no fuman** y varía 0,03 (0,1-0,07) por cada año que aumenta la **EDAD** en los que **fuman**.
 
 :::
 
